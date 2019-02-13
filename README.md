@@ -1,2 +1,2 @@
 # TMCompression
-Simple Turing Machines, Statistic Complexity vsAlgorithmic Complexity
+Simple Turing Machines, Statistic Complexity vs Algorithmic Complexity
