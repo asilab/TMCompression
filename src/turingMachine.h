@@ -19,7 +19,7 @@ struct TuringRecord{
   Move move;
   State state;
 
-  bool next(size_t number_of_states, size_t alphabeth_size);
+  bool next(size_t number_of_states, size_t alphabet_size);
 };
 
 std::ostream& operator<<( std::ostream& o, const TuringRecord& r);
@@ -29,7 +29,7 @@ struct StateMatrix{
   size_t nbStates;
   size_t alphSz;
 
-  StateMatrix(size_t number_of_states, size_t alphabeth_size);
+  StateMatrix(size_t number_of_states, size_t alphabet_size);
 
   TuringRecord& at(Char alph, State state);
   const TuringRecord& at(Char alph, State state) const;
@@ -64,7 +64,7 @@ struct TuringMachine {
   Tape turingTape;
   StateMatrix stMatrix;
 
-  TuringMachine(size_t number_of_states, size_t alphabeth_size);
+  TuringMachine(size_t number_of_states, size_t alphabet_size);
   void reset();
   TapeMoves act();
 };

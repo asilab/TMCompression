@@ -26,15 +26,16 @@ int main (int argc, char **argv){
   Args argument = parseArgs(argc,argv);
 
   double NormalizedCompressionValue;
-  TuringMachine machine(argument.states, argument.alphabeth_size);
+  TuringMachine machine(argument.states, argument.alphabet_size);
   float mean;
   double stdev;
   double sq_sum;
   std::vector <double> avg_nc_results;
   unsigned int counter = 0;
+  bool normalizer = true;
   std::cout<< "TM \t k value \t iterations \t Compression Value " << std::endl; 
   std::cout<< "-------------------------------------------------" <<std::endl;    
-  NormalizedCompressionMarkovTable normalizedCompressionMarkovTable(argument.k , argument.alphabeth_size);
+  NormalizedCompressionMarkovTable normalizedCompressionMarkovTable(argument.k , argument.alphabet_size);
   counter = 0;
 
   do {
@@ -44,7 +45,7 @@ int main (int argc, char **argv){
       normalizedCompressionMarkovTable.mrkvTable.reset();
       TapeMoves tpMove = machine.act(); //importante ser antes
     }
-    NormalizedCompressionValue = normalizedCompressionMarkovTable.update_nc_mk_table(machine.turingTape);
+    NormalizedCompressionValue = normalizedCompressionMarkovTable.update_nc_mk_table(machine.turingTape,normalizer);
     avg_nc_results.push_back(NormalizedCompressionValue);
     std::cout << ++counter << "\t" << argument.k << "\t" << argument.numIt << "\t" <<  NormalizedCompressionValue << std::endl;
     normalizedCompressionMarkovTable.mrkvTable.reset();

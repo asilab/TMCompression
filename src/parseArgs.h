@@ -3,7 +3,7 @@
 
 struct Args{
     size_t states;
-    size_t alphabeth_size;
+    size_t alphabet_size;
     double threshold;
     unsigned int numIt;
     unsigned int k;

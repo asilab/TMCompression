@@ -8,8 +8,8 @@
 
 #include "turingMachine.h"
 
-bool TuringRecord::next(size_t number_of_states, size_t alphabeth_size) {
-  if (write < alphabeth_size - 1) {
+bool TuringRecord::next(size_t number_of_states, size_t alphabet_size) {
+  if (write < alphabet_size - 1) {
     write += 1;
     return true;
   }
@@ -35,8 +35,8 @@ std::ostream& operator<<( std::ostream& o, const TuringRecord& r) {
 }
 
 
-StateMatrix::StateMatrix(size_t number_of_states, size_t alphabeth_size):
-  v(alphabeth_size * number_of_states, TuringRecord{0, 0, 0}), nbStates(number_of_states), alphSz(alphabeth_size){}
+StateMatrix::StateMatrix(size_t number_of_states, size_t alphabet_size):
+  v(alphabet_size * number_of_states, TuringRecord{0, 0, 0}), nbStates(number_of_states), alphSz(alphabet_size){}
 
 TuringRecord& StateMatrix::at(Char alph, State state){
   return this->v.at(   (   (alph + 1) * this->nbStates   )   -   (   this->nbStates - state  )   );
@@ -179,8 +179,8 @@ std::ostream& operator<<( std::ostream& o, const Tape& t) {
 }
 
 
-TuringMachine::TuringMachine(size_t number_of_states, size_t alphabeth_size):
-  state(0), turingTape(), stMatrix(number_of_states,alphabeth_size){}
+TuringMachine::TuringMachine(size_t number_of_states, size_t alphabet_size):
+  state(0), turingTape(), stMatrix(number_of_states,alphabet_size){}
 
 TapeMoves TuringMachine::act(){
     TapeMoves tpMove;

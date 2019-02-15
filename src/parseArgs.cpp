@@ -22,16 +22,14 @@ Args parseArgs (int argc, char **argv){
             {"help",      no_argument,      0, 'h'},
             {"version",      no_argument,      0, 'v'},
             {"number_states",     required_argument,      0 , 's'},
-            {"alphabeth_size",  required_argument, 0, 'a'},
+            {"alphabet_size",  required_argument, 0, 'a'},
             {"iterations",  required_argument, 0, 'i'},
             {"context",  required_argument, 0, 'k'},
-            {"threshold",  required_argument, 0, 't'},
-
             {NULL, 0, NULL, 0}
         };
         int option_index = 0;
 
-        c = getopt_long (argc, argv, "s:a:i:k:t:hv",
+        c = getopt_long (argc, argv, "s:a:i:k:hv",
                         long_options, &option_index);
 
         if (c == -1)
@@ -55,12 +53,11 @@ Args parseArgs (int argc, char **argv){
             std::cout << "--verbose" << "\t" << "Indicates programs that will receive inputs in a verbose form." << std::endl;
             std::cout << "--brief" << "\t" << "Indicates programs that will receive inputs in a brief form." << std::endl<< std::endl;
 
-            std::cout << "Manditory Arguments:" << std::endl;
+            std::cout << "Mandatory  Arguments:" << std::endl;
             std::cout << "-s" << ", " <<"--number_states" << "\t" << "Number of States the Turing Machine has." << std::endl;
-            std::cout << "-a" << ", " << "--alphabeth_size" << "\t" << "Alphabeth size the Turing Machine considers." <<std::endl;
+            std::cout << "-a" << ", " << "--alphabet_size" << "\t" << "Alphabet size the Turing Machine considers." <<std::endl;
             std::cout << "-i" << ", " << "--iterations" << "\t " << "Number of iterations the Turing Machine makes in the tape."<<std::endl;
             std::cout << "-k" << ", " << "--context" << "\t" << "k indexes to consider as a context to fill the Markov Table." <<std::endl<<std::endl;
-            std::cout << "-t" << ", " << "--threshold" << "\t" << "threshold of compression" <<std::endl<<std::endl;
 
             std::cout << "Other Optional Arguments:" << std::endl;
             std::cout << "-v" << ", " << "--version" << "\t" << "Outputs the version of the program." <<std::endl;
@@ -68,8 +65,8 @@ Args parseArgs (int argc, char **argv){
             
             std::cout << "Examples:" << std::endl;
             std::cout << "./tm -s 2 -a 2 -i 10 -k 1 -t .5" << std::endl;
-            std::cout << "./tm --brief -s 2 -a 2 -i 10 -k 1 -t .5" << std::endl;
-            std::cout << "./tm --verbose --number_states=2 --alphabeth_size=2 --iterations=20 --context=2 --threshold=.5" << std::endl;
+            std::cout << "./tm --brief -s 2 -a 2 -i 10 -k 1" << std::endl;
+            std::cout << "./tm --verbose --number_states=2 --alphabet_size=2 --iterations=20 --context=2" << std::endl;
 
             exit (0);
 
@@ -95,14 +92,14 @@ Args parseArgs (int argc, char **argv){
             {
             correctInput = strtol(optarg, &end, 10);
             if (*end != '\0') {
-            std::cout << "invalid input for -a/--alphabeth_size.\n";
+            std::cout << "invalid input for -a/--alphabet_size.\n";
             exit(0);
             }
             else if (correctInput<=0){
-            printf ("-a/--alphabeth_size value was set to %d, must be an int larger than 0.\n",correctInput); 
+            printf ("-a/--alphabet_size value was set to %d, must be an int larger than 0.\n",correctInput); 
             exit(0);
             }
-            else argument.alphabeth_size = correctInput;
+            else argument.alphabet_size = correctInput;
             break;
             }
 
@@ -134,20 +131,6 @@ Args parseArgs (int argc, char **argv){
             else argument.k = correctInput;
             break;
         }
-            case 't':
-        {
-            double correctInput2 = strtof(optarg, &end);
-            if (*end != '\0') {
-            std::cout << "invalid input for -t/--threshold.\n";
-            exit(0);
-            }
-            else if (correctInput2<0 || correctInput2>1){
-            printf ("-t/--threshold value was set to %d, must be a double that belongs to the interval [0,1].\n",correctInput2); 
-            exit(0);
-            }
-            else argument.threshold = correctInput2;
-            break;
-        }
         case '?':
             break;
 
@@ -167,20 +150,20 @@ Args parseArgs (int argc, char **argv){
         putchar ('\n');
     }
 
-    if (argument.states==0 || argument.alphabeth_size==0 || argument.numIt==0 || argument.k==0 )
+    if (argument.states==0 || argument.alphabet_size==0 || argument.numIt==0 || argument.k==0 )
     {
     std::cout << "Please fill all the required arguments" <<std::endl;
     exit(0);
     }
 
-    printf ("states = %d, alphabeth_size = %d, number of iterations = %d , k = %d, threshold = %f\n",
-    argument.states, argument.alphabeth_size, argument.numIt, argument.k, argument.threshold);
+    printf ("states = %d, alphabet_size = %d, number of iterations = %d , k = %d\n",
+    argument.states, argument.alphabet_size, argument.numIt, argument.k);
 
-    if(ipow(argument.alphabeth_size,argument.k) >= ipow(2,28))
+    if(ipow(argument.alphabet_size,argument.k) >= ipow(2,28))
     {
-    printf ("k/context (%d) and Alphabet size/a (%d) is too large..\n", argument.k, argument.alphabeth_size);
-    printf (" please consider a size of a^k (%d^%d) smaller than 2^28..\n", argument.alphabeth_size,argument.k);
-    exit(0);
+        printf ("k/context (%d) and Alphabet size/a (%d) is too large..\n", argument.k, argument.alphabet_size);
+        printf (" please consider a size of a^k (%d^%d) smaller than 2^28..\n", argument.alphabet_size,argument.k);
+        exit(0);
     }
 
     return argument;
