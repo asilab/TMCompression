@@ -191,7 +191,7 @@ TapeMoves TuringMachine::act(){
     return tpMove;
 }
 
-void TuringMachine::reset(){
+void TuringMachine::reset_tape_and_state(){
  this->turingTape.resetTape();
  this->state=0;
 }

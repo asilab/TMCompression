@@ -133,9 +133,9 @@ void MarkovTable::print() const{
 
 
 NormalizedCompressionMarkovTable::NormalizedCompressionMarkovTable(unsigned int k, unsigned int alphabet_size):
-mrkvTable(k, alphabet_size),isfilled(false) {}
+mrkvTable(k, alphabet_size) {}
 
-double NormalizedCompressionMarkovTable::update_nc_mk_table(Tape & tape, bool normalize){
+double NormalizedCompressionMarkovTable::update_nc_mk_table(const Tape& tape, bool normalize){
     auto b = begin(tape.tape) + tape.ind_left- mrkvTable.k  + 1 ; // To have k context at the begining    
     auto e = begin(tape.tape) + tape.ind_right - mrkvTable.k;
     
@@ -153,7 +153,7 @@ double NormalizedCompressionMarkovTable::update_nc_mk_table(Tape & tape, bool no
     }
     
     if(normalize){
-    int diff_indexes = (tape.ind_right) - (tape.ind_left + 1);
+    unsigned int diff_indexes = (tape.ind_right) - (tape.ind_left + 1);
     return (value/normalization_base(diff_indexes, this->mrkvTable.alphSz));
     }
     else 
@@ -168,12 +168,6 @@ double NormalizedCompressionMarkovTable::update_nc_mk_table(Tape & tape, bool no
     @return void.
 */
 double NormalizedCompressionMarkovTable::normalization_base(unsigned int length_of_tape, unsigned int cardinality){
-   if (cardinality<0)
-    {
-        std::cerr << "Cardinality of string error " << std::endl;
-        exit(0);
-    }
-
    return ( length_of_tape * log2(cardinality) ); 
 }
 

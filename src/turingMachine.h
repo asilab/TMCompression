@@ -65,7 +65,7 @@ struct TuringMachine {
   StateMatrix stMatrix;
 
   TuringMachine(size_t number_of_states, size_t alphabet_size);
-  void reset();
+  void reset_tape_and_state();
   TapeMoves act();
 };
 
