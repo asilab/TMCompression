@@ -40,10 +40,10 @@ int main (int argc, char **argv){
 
   do {
     //machine.stMatrix.print();    
-    machine.reset();
+    machine.reset_tape_and_state();
     for (auto i = 0u; i < argument.numIt -1 ; ++i){
       normalizedCompressionMarkovTable.mrkvTable.reset();
-      TapeMoves tpMove = machine.act(); //importante ser antes
+      machine.act(); //importante ser antes
     }
     NormalizedCompressionValue = normalizedCompressionMarkovTable.update_nc_mk_table(machine.turingTape,normalizer);
     avg_nc_results.push_back(NormalizedCompressionValue);

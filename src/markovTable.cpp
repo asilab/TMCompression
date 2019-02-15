@@ -117,8 +117,7 @@ size_t MarkovTable::str_to_index(const Char* x) {
     @return void.
 */
 void MarkovTable::print() const{
-    unsigned int vector_size = this->markovVector.size();
-    int counter = 0;
+    unsigned int counter = 0;
     std::cout << std::endl;
     std::cout << "Markov Table" << std::endl;
     for(auto&& x: this->markovVector){
