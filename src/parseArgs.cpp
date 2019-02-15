@@ -77,11 +77,11 @@ Args parseArgs (int argc, char **argv){
             {
             correctInput = strtol(optarg, &end, 10);
             if (*end != '\0') {
-            std::cout << "invalid input for -s/--number_states.\n";
+            std::cerr << "invalid input for -s/--number_states.\n";
             exit(0);
             }
             else if (correctInput<=0){
-            printf ("-s/--number_states value was set to %d, must be an int larger than 0.\n",correctInput); 
+            fprintf (stderr, "-s/--number_states value was set to %d, must be an int larger than 0.\n",correctInput); 
             exit(0);
             }
             else argument.states = correctInput;
@@ -92,11 +92,11 @@ Args parseArgs (int argc, char **argv){
             {
             correctInput = strtol(optarg, &end, 10);
             if (*end != '\0') {
-            std::cout << "invalid input for -a/--alphabet_size.\n";
+            std::cerr << "invalid input for -a/--alphabet_size.\n";
             exit(0);
             }
             else if (correctInput<=0){
-            printf ("-a/--alphabet_size value was set to %d, must be an int larger than 0.\n",correctInput); 
+            fprintf (stderr, "-a/--alphabet_size value was set to %d, must be an int larger than 0.\n",correctInput); 
             exit(0);
             }
             else argument.alphabet_size = correctInput;
@@ -107,11 +107,11 @@ Args parseArgs (int argc, char **argv){
             {
             correctInput = strtol(optarg, &end, 10);
             if (*end != '\0') {
-            std::cout << "invalid input for -i/--iterations.\n";
+            std::cerr << "invalid input for -i/--iterations.\n";
             exit(0);
             }
             else if (correctInput<=0){
-            printf ("-i/--iterations value was set to %d, must be an int larger than 0.\n",correctInput); 
+            fprintf (stderr, "-i/--iterations value was set to %d, must be an int larger than 0.\n",correctInput); 
             exit(0);
             }
             else argument.numIt = correctInput;
@@ -121,11 +121,11 @@ Args parseArgs (int argc, char **argv){
         {
             correctInput = strtol(optarg, &end, 10);
             if (*end != '\0') {
-            std::cout << "invalid input for -k/--context.\n";
+            std::cerr << "invalid input for -k/--context.\n";
             exit(0);
             }
             else if (correctInput<=0){
-            printf ("-k/--context value was set to %d, must be an int larger than 0.\n",correctInput); 
+            fprintf (stderr, "-k/--context value was set to %d, must be an int larger than 0.\n",correctInput); 
             exit(0);
             }
             else argument.k = correctInput;
@@ -140,7 +140,7 @@ Args parseArgs (int argc, char **argv){
     }
 
     if (verbose_flag)
-    puts ("verbose flag is set");
+        std::cerr << "verbose flag is set" << std::endl;
 
     if (optind < argc)
     {
@@ -152,17 +152,17 @@ Args parseArgs (int argc, char **argv){
 
     if (argument.states==0 || argument.alphabet_size==0 || argument.numIt==0 || argument.k==0 )
     {
-    std::cout << "Please fill all the required arguments" <<std::endl;
+    std::cerr << "Please fill all the required arguments" <<std::endl;
     exit(0);
     }
 
-    printf ("states = %d, alphabet_size = %d, number of iterations = %d , k = %d\n",
+    printf ("states = %zu, alphabet_size = %zu, number of iterations = %u , k = %d\n",
     argument.states, argument.alphabet_size, argument.numIt, argument.k);
 
     if(ipow(argument.alphabet_size,argument.k) >= ipow(2,28))
     {
-        printf ("k/context (%d) and Alphabet size/a (%d) is too large..\n", argument.k, argument.alphabet_size);
-        printf (" please consider a size of a^k (%d^%d) smaller than 2^28..\n", argument.alphabet_size,argument.k);
+        fprintf (stderr, "k/context (%d) and Alphabet size/a (%zu) is too large..\n", argument.k, argument.alphabet_size);
+        fprintf (stderr, " please consider a size of a^k (%zu^%d) smaller than 2^28..\n", argument.alphabet_size,argument.k);
         exit(0);
     }
 
