@@ -135,7 +135,7 @@ void MarkovTable::print() const{
 NormalizedCompressionMarkovTable::NormalizedCompressionMarkovTable(unsigned int k, unsigned int alphabet_size):
 mrkvTable(k, alphabet_size),isfilled(false) {}
 
-double NormalizedCompressionMarkovTable::update_nc_mk_table(Tape tape, bool normalize){
+double NormalizedCompressionMarkovTable::update_nc_mk_table(Tape & tape, bool normalize){
     auto b = begin(tape.tape) + tape.ind_left- mrkvTable.k  + 1 ; // To have k context at the begining    
     auto e = begin(tape.tape) + tape.ind_right - mrkvTable.k;
     
