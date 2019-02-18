@@ -134,10 +134,11 @@ void MarkovTable::print() const{
 NormalizedCompressionMarkovTable::NormalizedCompressionMarkovTable(unsigned int k, unsigned int alphabet_size):
 mrkvTable(k, alphabet_size) {}
 
-double NormalizedCompressionMarkovTable::update_nc_mk_table(const Tape& tape, bool normalize){
+Metrics NormalizedCompressionMarkovTable::update_nc_mk_table(const Tape& tape){
     auto b = begin(tape.tape) + tape.ind_left- mrkvTable.k  + 1 ; // To have k context at the begining    
     auto e = begin(tape.tape) + tape.ind_right - mrkvTable.k;
-    
+    Metrics metrics;
+
 
     double value = 0 ;
 
@@ -151,12 +152,11 @@ double NormalizedCompressionMarkovTable::update_nc_mk_table(const Tape& tape, bo
             this->mrkvTable.at(&*it)+=1;
     }
     
-    if(normalize){
+    metrics.selfCompression = value;
     unsigned int diff_indexes = (tape.ind_right) - (tape.ind_left + 1);
-    return (value/normalization_base(diff_indexes, this->mrkvTable.alphSz));
-    }
-    else 
-    return  value; 
+    metrics.amplitude = diff_indexes;
+    metrics.normalizedCompression = (value/normalization_base(diff_indexes, this->mrkvTable.alphSz));
+    return  metrics;
     
 }
 
