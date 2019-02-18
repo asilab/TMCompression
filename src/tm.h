@@ -3,9 +3,9 @@
 
 struct CompressionResultsData
 {
-  std::vector <unsigned int> amplitudeResults;
-  std::vector <double> normalizedCompressionResults;
-  std::vector <double> selfCompressionResults;
+  std::vector <unsigned int> amplitude;
+  std::vector <double> normalized_compression;
+  std::vector <double> self_compression;
 };
 
 /** Evaluate all relative turing machine programs with the given architecture.
