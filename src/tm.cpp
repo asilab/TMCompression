@@ -5,6 +5,7 @@
 
 #include "markovTable.h"
 #include "turingMachine.h"
+#include "tm.h"
 
 /** Evaluate all relative turing machine programs with the given architecture.
  *
