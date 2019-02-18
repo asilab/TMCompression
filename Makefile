@@ -6,6 +6,7 @@ CXXFLAGS = -Wall -Wextra -O3 -m64 -g
 objects = src/turingMachine.o \
 		  src/markovTable.o \
 		  src/parseArgs.o \
+		  src/tm.o \
 		  src/main.o
 
 %.o: %.cpp
@@ -21,7 +22,9 @@ clean:
 
 # Dependencies
 
-main.o: src/main.cpp src/turingMachine.h src/markovTable.h src/parseArgs.h
+main.o: src/main.cpp src/tm.h src/parseArgs.h
+
+src/tm.o: src/tm.cpp src/tm.h src/turingMachine.h src/markovTable.h
 
 src/markovTable.o: src/markovTable.cpp src/markovTable.h src/turingMachine.h
 
