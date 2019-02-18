@@ -25,15 +25,23 @@
  * @param verbose
  * @return a vector of normalized compression values, one per turing machine
  */
-std::vector<double> tm(
+struct CompressionResultsData
+{
+  std::vector <unsigned int> amplitudeResults;
+  std::vector <double> normalizedCompressionResults;
+  std::vector <double> selfCompressionResults;
+};
+
+
+ CompressionResultsData tm(
     size_t states,
     size_t alphabet_size,
     unsigned int num_iterations,
     unsigned int k,
     bool verbose) {
+
   TuringMachine machine(states, alphabet_size);
-  std::vector <double> avg_nc_results;
-  bool normalizer = true;
+  CompressionResultsData data;
   NormalizedCompressionMarkovTable normalizedCompressionMarkovTable(k , alphabet_size);
 
   unsigned int counter = 0;  
@@ -43,19 +51,24 @@ std::vector<double> tm(
       normalizedCompressionMarkovTable.mrkvTable.reset();
       machine.act(); //importante ser antes
     }
-    double normalizedCompressionValue = normalizedCompressionMarkovTable.update_nc_mk_table(machine.turingTape, normalizer);
-    avg_nc_results.push_back(normalizedCompressionValue);
+    Metrics normalizedCompressionValue = normalizedCompressionMarkovTable.update_nc_mk_table(machine.turingTape);
+    data.amplitudeResults.push_back(normalizedCompressionValue.amplitude);
+    data.selfCompressionResults.push_back(normalizedCompressionValue.selfCompression);
+    data.normalizedCompressionResults.push_back(normalizedCompressionValue.normalizedCompression);
 
     if (verbose && counter % 65536 == 0) {
-      std::cerr << "TM #" << std::setw(8) << counter << ": ncv = " << normalizedCompressionValue << "\r";
+      std::cerr << "TM #" << std::setw(8) << counter << ": amplitude = " << normalizedCompressionValue.amplitude 
+      << ": sc = " << std::setprecision(5) <<normalizedCompressionValue.selfCompression <<": nc = " << std::setprecision(5) 
+      << normalizedCompressionValue.normalizedCompression << "\r";
     }
     counter += 1;
     normalizedCompressionMarkovTable.mrkvTable.reset();
   } while (machine.stMatrix.next());
+  
   if (verbose) {
     std::cerr << std::endl;
   }
-  return avg_nc_results;
+  return data;
 }
 
 /*
@@ -67,24 +80,40 @@ int main (int argc, char **argv){
 
   Args argument = parseArgs(argc,argv);
 
-  auto avg_nc_results = tm(
+  auto data = tm(
     argument.states,
     argument.alphabet_size,
     argument.numIt,
     argument.k,
     argument.verbose);
-
-  std::cout<< "TM \t k value \t iterations \t Compression Value " << std::endl;
+  
+  std::cout<< "TM \t k value \t iterations \t amplitude \t Self-Compression \t Normalized Compression " << std::endl; 
   std::cout<< "-------------------------------------------------" <<std::endl;
 
-  for (auto i = 0u; i < avg_nc_results.size(); ++i) {
-    std::cout << (i + 1) << "\t" << argument.k << "\t" << argument.numIt << "\t" << avg_nc_results[i] << std::endl;
+  for (auto i = 0u; i < data.amplitudeResults.size(); ++i) {
+    std::cout << (i + 1) << "\t" << argument.k << "\t" << argument.numIt << "\t" << data.amplitudeResults[i] << "\t" 
+    << std::setprecision(5) <<  data.selfCompressionResults[i] << "\t" << std::setprecision(5) << data.normalizedCompressionResults[i] << "\t" << std::endl;
   }
 
   std::cout<< "-------------------------------------------------" <<std::endl;
-  float mean = std::accumulate( avg_nc_results.begin(), avg_nc_results.end(), 0.0)/avg_nc_results.size();
-  double sq_sum = std::inner_product(avg_nc_results.begin(), avg_nc_results.end(), avg_nc_results.begin(), 0.0);
-  double stdev = std::sqrt(sq_sum / avg_nc_results.size() - mean * mean);
-  std::cout<< "Number of TM \t Mean \t Standard deviation" << std::endl;
-  std::cout << avg_nc_results.size() << "\t" << mean << "\t" << stdev << std::endl;
+  float mean_amp = std::accumulate( data.amplitudeResults.begin(), data.amplitudeResults.end(), 0.0)/data.amplitudeResults.size();
+  float mean_sc = std::accumulate( data.selfCompressionResults.begin(),  data.selfCompressionResults.end(), 0.0)/ data.selfCompressionResults.size();
+  float mean_nc = std::accumulate( data.normalizedCompressionResults.begin(), data.normalizedCompressionResults.end(), 0.0)/data.normalizedCompressionResults.size();
+  
+  double sq_amp_sum = std::inner_product(data.amplitudeResults.begin(), data.amplitudeResults.end(), data.amplitudeResults.begin(), 0.0);
+  double sq_sc_sum = std::inner_product(data.selfCompressionResults.begin(), data.selfCompressionResults.end(), data.selfCompressionResults.begin(), 0.0);
+  double sq_nc_sum = std::inner_product(data.normalizedCompressionResults.begin(), data.normalizedCompressionResults.end(), data.normalizedCompressionResults.begin(), 0.0);
+
+  double stdev_amp = std::sqrt(sq_amp_sum / data.amplitudeResults.size() - mean_amp * mean_amp);
+  double stdev_sc = std::sqrt(sq_sc_sum / data.selfCompressionResults.size() - mean_sc * mean_sc);
+  double stdev_nc = std::sqrt(sq_nc_sum / data.normalizedCompressionResults.size() - mean_nc * mean_nc);
+
+
+
+  std::cout<< "Number of TM \t Mean Amp+/-std \t Mean sc+/-std \t Mean nc+/-std" << std::endl;
+  std::cout << data.amplitudeResults.size() << "\t\t" << mean_amp << "+/-" << stdev_amp 
+                                            << "\t\t" << mean_sc << "+/-" << stdev_sc 
+                                            << "\t" << mean_nc << "+/-" << stdev_nc
+                                            << std::endl;
 }
+ 

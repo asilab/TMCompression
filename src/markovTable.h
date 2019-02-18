@@ -23,11 +23,17 @@ struct MarkovTable{
     size_t str_to_index(const Char* x);
 };
 
+struct Metrics{
+  unsigned int amplitude;
+  double selfCompression;
+  double normalizedCompression;
+};
+
 struct NormalizedCompressionMarkovTable{
     MarkovTable mrkvTable;
     NormalizedCompressionMarkovTable(unsigned int k, unsigned int alphabet_size);
 
-    double update_nc_mk_table(const Tape& tape, bool normalize);
+    Metrics update_nc_mk_table(const Tape& tape);
     double normalization_base(unsigned int length_of_tape, unsigned int cardinality);
     int sum_all_elements_vector(std::vector<unsigned int>& subvector_markovtable);
     double calculateLog(int index_value, int sum_all_line_elem);
