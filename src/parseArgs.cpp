@@ -6,7 +6,7 @@
 
 
 Args parseArgs (int argc, char **argv){
-    Args argument{0,0,0,0,0};    
+    Args argument{0, 0 ,0, 0, 0, false};    
     int c;
     opterr = 0;
 
@@ -139,8 +139,10 @@ Args parseArgs (int argc, char **argv){
         }
     }
 
-    if (verbose_flag)
+    if (verbose_flag) {
         std::cerr << "verbose flag is set" << std::endl;
+        argument.verbose = true;
+    }
 
     if (optind < argc)
     {

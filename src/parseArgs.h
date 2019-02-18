@@ -7,6 +7,7 @@ struct Args{
     double threshold;
     unsigned int numIt;
     unsigned int k;
+    bool verbose;
 };
 
 Args parseArgs (int argc, char **argv);
