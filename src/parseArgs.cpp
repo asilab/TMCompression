@@ -58,6 +58,10 @@ Args parseArgs (int argc, char **argv){
             std::cout << "Arguments to set flags:" << std::endl;
             std::cout << "--verbose" << "\t" << "Indicates programs that will receive inputs in a verbose form." << std::endl;
             std::cout << "--brief" << "\t" << "Indicates programs that will receive inputs in a brief form." << std::endl<< std::endl;
+            std::cout << "--tmverbose" << "\t" << "Indicates programs that tm output will be send to the user." << std::endl<< std::endl;
+            std::cout << "--replicate" << "\t" 
+            << "Indicates programs that will replicate experiment to determine the best k and it for a given number of states and alphabet size." 
+            << std::endl<< std::endl;
 
             std::cout << "Mandatory  Arguments:" << std::endl;
             std::cout << "-s" << ", " <<"--number_states" << "\t" << "Number of States the Turing Machine has." << std::endl;
@@ -175,19 +179,18 @@ Args parseArgs (int argc, char **argv){
         putchar ('\n');
     }
 
-    if (argument.states==0 || argument.alphabet_size==0 || argument.numIt==0 || argument.k==0 )
+    if ( (argument.states==0 || argument.alphabet_size==0 || argument.numIt==0 || argument.k==0) && replicate_flag==false) 
     {
     std::cerr << "Please fill all the required arguments" <<std::endl;
     exit(0);
     }
-    else
+    else if ( (argument.numIt==0 || argument.k==0) &&  argument.states!=0 && argument.alphabet_size!=0)
     {
         if (replicate_flag){
-            printf ("replication flag is set, the sistem will run for alphabet_size = %zu and states = %zu, number of iterations ={100, 1000, 10000} and k=[2,10] \n"
+            printf ("replication flag is set, the system will run for alphabet_size = %zu and states = %zu, number of iterations ={100, 1000, 10000} and k=[2,10] \n"
             ,argument.alphabet_size,argument.states);
 
             ktm(argument.states, argument.alphabet_size);
-
         }
     }
     
