@@ -16,6 +16,7 @@
  * @param verbose
  * @return a vector of normalized compression values, one per turing machine
  */
+
 CompressionResultsData tm(
     size_t states,
     size_t alphabet_size,
