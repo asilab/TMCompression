@@ -1,4 +1,5 @@
 #include <getopt.h>
+#include <cstring>
 #include <iostream>
 
 #include "markovTable.h"
@@ -6,7 +7,7 @@
 
 
 Args parseArgs (int argc, char **argv){
-    Args argument{0, 0 ,0, 0, 0, false};    
+    Args argument {};    
     int c;
     opterr = 0;
 
@@ -25,6 +26,7 @@ Args parseArgs (int argc, char **argv){
             {"alphabet_size",  required_argument, 0, 'a'},
             {"iterations",  required_argument, 0, 'i'},
             {"context",  required_argument, 0, 'k'},
+            {"strategy", optional_argument, 0, 'S'},
             {NULL, 0, NULL, 0}
         };
         int option_index = 0;
@@ -60,6 +62,7 @@ Args parseArgs (int argc, char **argv){
             std::cout << "-k" << ", " << "--context" << "\t" << "k indexes to consider as a context to fill the Markov Table." <<std::endl<<std::endl;
 
             std::cout << "Other Optional Arguments:" << std::endl;
+            std::cout << "-S" << ", " << "--strategy" << "\t" << "Turing Machine traversal strategy (default: sequential)" << std::endl;
             std::cout << "-v" << ", " << "--version" << "\t" << "Outputs the version of the program." <<std::endl;
             std::cout << "-h" << ", " << "--help" << "\t" << "Describes program." <<std::endl<<std::endl;
             
@@ -129,6 +132,18 @@ Args parseArgs (int argc, char **argv){
             exit(0);
             }
             else argument.k = correctInput;
+            break;
+        }
+        case 'S':
+        {
+            if (std::strcmp(optarg, "sequential") == 0) {
+                argument.strategy = TraversalStrategy::SEQUENTIAL;
+            } else if (std::strcmp(optarg, "monte_carlo") == 0) {
+                argument.strategy = TraversalStrategy::MONTE_CARLO;
+            } else {
+                std::cerr << "-S/--strategy must be either `sequential` or `monte_carlo`." << std::endl;
+                exit(0);
+            }
             break;
         }
         case '?':

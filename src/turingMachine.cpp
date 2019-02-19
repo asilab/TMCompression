@@ -34,9 +34,31 @@ std::ostream& operator<<( std::ostream& o, const TuringRecord& r) {
   return o;
 }
 
+TuringRecord TuringRecord::by_index(unsigned long long id, size_t number_of_states, size_t alphabet_size) {
+  // order of significance (least to most): character_write -> tape_move -> state
+  auto rest = id;
+  auto write = static_cast<Char>(rest % alphabet_size);
+  rest /= alphabet_size;
+  auto move = static_cast<Move>(rest % 3);
+  rest /= move;
+  auto state = static_cast<State>(rest % number_of_states);
+  return TuringRecord { write, move, state };
+}
 
 StateMatrix::StateMatrix(size_t number_of_states, size_t alphabet_size):
   v(alphabet_size * number_of_states, TuringRecord{0, 0, 0}), nbStates(number_of_states), alphSz(alphabet_size){}
+
+void StateMatrix::set_by_index(unsigned long long id) {
+  auto matrix = StateMatrix(this->nbStates, this->alphSz);
+  auto rest = id;
+  auto record_cardinality = this->nbStates * this->alphSz * 3;
+  for (auto& st: matrix.v) {
+    auto state_id = rest % record_cardinality;
+    st = TuringRecord::by_index(state_id, this->nbStates, this->alphSz);
+    rest /= record_cardinality;
+    if (rest == 0) break;
+  }
+}
 
 TuringRecord& StateMatrix::at(Char alph, State state){
   return this->v.at(   (   (alph + 1) * this->nbStates   )   -   (   this->nbStates - state  )   );

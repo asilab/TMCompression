@@ -1,5 +1,7 @@
+#pragma once
 #include <vector>
 
+#include "traversal.h"
 
 struct CompressionResultsData
 {
@@ -14,6 +16,7 @@ struct CompressionResultsData
  * @param alphabet_size
  * @param num_iterations
  * @param k
+ * @param strategy
  * @param verbose
  * @return a vector of normalized compression values, one per turing machine
  */
@@ -22,4 +25,7 @@ CompressionResultsData tm(
     size_t alphabet_size,
     unsigned int num_iterations,
     unsigned int k,
-    bool verbose);
+    TraversalStrategy strategy = TraversalStrategy::SEQUENTIAL,
+    unsigned long long traversal_len = 0,
+    unsigned long long traversal_offset = 0,
+    bool verbose = false);

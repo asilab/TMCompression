@@ -28,6 +28,6 @@ src/tm.o: src/tm.cpp src/tm.h src/turingMachine.h src/markovTable.h
 
 src/markovTable.o: src/markovTable.cpp src/markovTable.h src/turingMachine.h
 
-src/parseArgs.o: src/parseArgs.cpp src/parseArgs.h
+src/parseArgs.o: src/parseArgs.cpp src/parseArgs.h src/traversal.h
 
-src/turingMachine.o: src/turingMachine.cpp src/turingMachine.h
+src/turingMachine.o: src/turingMachine.cpp src/turingMachine.h src/traversal.h
