@@ -29,3 +29,6 @@ CompressionResultsData tm(
     unsigned long long traversal_len = 0,
     unsigned long long traversal_offset = 0,
     bool verbose = false);
+
+void ktm(size_t states,
+    size_t alphabet_size);

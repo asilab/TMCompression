@@ -4,7 +4,7 @@
 
 #include "markovTable.h"
 #include "parseArgs.h"
-
+#include "tm.h"
 
 Args parseArgs (int argc, char **argv){
     Args argument {};    
@@ -12,6 +12,8 @@ Args parseArgs (int argc, char **argv){
     opterr = 0;
 
     static int verbose_flag;
+    static int replicate_flag;
+    static int tm_verbose_flag;
     char *end;
     int correctInput;
     while (1)
@@ -20,6 +22,8 @@ Args parseArgs (int argc, char **argv){
         {
             {"verbose",   no_argument,      &verbose_flag, 1},
             {"brief",     no_argument,      &verbose_flag, 0},
+            {"tmverbose",   no_argument,      &tm_verbose_flag, 1},
+            {"replicate",      no_argument,      &replicate_flag, 1},
             {"help",      no_argument,      0, 'h'},
             {"version",      no_argument,      0, 'v'},
             {"number_states",     required_argument,      0 , 's'},
@@ -156,6 +160,10 @@ Args parseArgs (int argc, char **argv){
 
     if (verbose_flag) {
         std::cerr << "verbose flag is set" << std::endl;
+    }
+
+     if (tm_verbose_flag) {
+        std::cerr << "tm verbose flag is set, output will be send to the user" << std::endl;
         argument.verbose = true;
     }
 
@@ -172,6 +180,17 @@ Args parseArgs (int argc, char **argv){
     std::cerr << "Please fill all the required arguments" <<std::endl;
     exit(0);
     }
+    else
+    {
+        if (replicate_flag){
+            printf ("replication flag is set, the sistem will run for alphabet_size = %zu and states = %zu, number of iterations ={100, 1000, 10000} and k=[2,10] \n"
+            ,argument.alphabet_size,argument.states);
+
+            ktm(argument.states, argument.alphabet_size);
+
+        }
+    }
+    
 
     printf ("states = %zu, alphabet_size = %zu, number of iterations = %u , k = %d\n",
     argument.states, argument.alphabet_size, argument.numIt, argument.k);
