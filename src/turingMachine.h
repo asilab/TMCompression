@@ -4,6 +4,8 @@
 #include <iostream>
 #include <algorithm>
 
+#include "traversal.h"
+
 using State = unsigned int;
 using Char = unsigned int;
 using Move = unsigned int;
@@ -20,6 +22,8 @@ struct TuringRecord{
   State state;
 
   bool next(size_t number_of_states, size_t alphabet_size);
+
+  static TuringRecord by_index(unsigned long long id, size_t number_of_states, size_t alphabet_size);
 };
 
 std::ostream& operator<<( std::ostream& o, const TuringRecord& r);
@@ -30,6 +34,8 @@ struct StateMatrix{
   size_t alphSz;
 
   StateMatrix(size_t number_of_states, size_t alphabet_size);
+
+  void set_by_index(unsigned long long id);
 
   TuringRecord& at(Char alph, State state);
   const TuringRecord& at(Char alph, State state) const;
@@ -68,4 +74,3 @@ struct TuringMachine {
   void reset_tape_and_state();
   TapeMoves act();
 };
-

@@ -30,6 +30,9 @@ int main (int argc, char **argv){
     argument.alphabet_size,
     argument.numIt,
     argument.k,
+    argument.strategy,
+    0,
+    0,
     argument.verbose);
   
   std::cout<< "TM \t k value \t iterations \t amplitude \t Self-Compression \t Normalized Compression " << std::endl; 
