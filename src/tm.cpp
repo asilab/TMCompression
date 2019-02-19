@@ -14,7 +14,7 @@
  * @param num_iterations
  * @param k
  * @param verbose
- * @return a vector of normalized compression values, one per turing machine
+ * @return a struct containing the results of evaluation, one per turing machine
  */
 
 CompressionResultsData tm(
@@ -36,9 +36,9 @@ CompressionResultsData tm(
       machine.act(); //importante ser antes
     }
     Metrics normalizedCompressionValue = normalizedCompressionMarkovTable.update_nc_mk_table(machine.turingTape);
-    data.amplitudeResults.push_back(normalizedCompressionValue.amplitude);
-    data.selfCompressionResults.push_back(normalizedCompressionValue.selfCompression);
-    data.normalizedCompressionResults.push_back(normalizedCompressionValue.normalizedCompression);
+    data.amplitude.push_back(normalizedCompressionValue.amplitude);
+    data.self_compression.push_back(normalizedCompressionValue.selfCompression);
+    data.normalized_compression.push_back(normalizedCompressionValue.normalizedCompression);
 
     if (verbose && counter % 65536 == 0) {
       std::cerr << "TM #" << std::setw(8) << counter << ": amplitude = " << normalizedCompressionValue.amplitude 
