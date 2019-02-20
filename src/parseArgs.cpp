@@ -68,12 +68,17 @@ Args parseArgs (int argc, char **argv){
             std::cout << "--replicate" << "\t" 
             << "Indicates programs that will replicate experiment to determine the best k and it for a given number of states and alphabet size." 
             << std::endl<< std::endl;
+            std::cout << "--profile" << "\t" 
+            << "Indicates programs that will receive through the tm number through the flag tm and will create a profile of that turing" 
+            << std::endl<< std::endl;
+
 
             std::cout << "Mandatory  Arguments:" << std::endl;
             std::cout << "-s" << ", " <<"--number_states" << "\t" << "Number of States the Turing Machine has." << std::endl;
             std::cout << "-a" << ", " << "--alphabet_size" << "\t" << "Alphabet size the Turing Machine considers." <<std::endl;
             std::cout << "-i" << ", " << "--iterations" << "\t " << "Number of iterations the Turing Machine makes in the tape."<<std::endl;
             std::cout << "-k" << ", " << "--context" << "\t" << "k indexes to consider as a context to fill the Markov Table." <<std::endl<<std::endl;
+            std::cout << "-t" << ", " << "--tm" << "\t" << "Speciffy turing to obtain results, can only be activated with --profile flag." <<std::endl<<std::endl;
 
             std::cout << "Other Optional Arguments:" << std::endl;
             std::cout << "-S" << ", " << "--strategy" << "\t" << "Turing Machine traversal strategy (default: sequential)" << std::endl;
@@ -81,10 +86,17 @@ Args parseArgs (int argc, char **argv){
             std::cout << "-h" << ", " << "--help" << "\t" << "Describes program." <<std::endl<<std::endl;
             
             std::cout << "Examples:" << std::endl;
+            std::cout << "----------------" << std::endl;
+            std::cout << "Run all tms" << std::endl;
             std::cout << "./tm -s 2 -a 2 -i 10 -k 1 -t .5" << std::endl;
             std::cout << "./tm --brief -s 2 -a 2 -i 10 -k 1" << std::endl;
             std::cout << "./tm --verbose --number_states=2 --alphabet_size=2 --iterations=20 --context=2" << std::endl;
-
+            std::cout << "----------------" << std::endl;
+            std::cout << "Run specific tm and obtain profile:" << std::endl;
+            std::cout << "./tm --brief --profile -s 2 -a 2 -i 100 -k 2 -t 5" << std::endl;
+            std::cout << "----------------" << std::endl;
+            std::cout << "Replicate k and it determination:" << std::endl;
+            std::cout << "./tm --brief --replicate -s 2 -a 2 " << std::endl;
             exit (0);
 
         case 'v':
