@@ -36,12 +36,14 @@ std::ostream& operator<<( std::ostream& o, const TuringRecord& r) {
 
 TuringRecord TuringRecord::by_index(unsigned long long id, size_t number_of_states, size_t alphabet_size) {
   // order of significance (least to most): character_write -> tape_move -> state
+  unsigned long long nstates = number_of_states;
+  unsigned long long nalphabet = alphabet_size;
   auto rest = id;
-  auto write = static_cast<Char>(rest % alphabet_size);
-  rest /= alphabet_size;
+  auto write = static_cast<Char>(rest % nalphabet);
+  rest /= nalphabet;
   auto move = static_cast<Move>(rest % 3);
-  rest /= move;
-  auto state = static_cast<State>(rest % number_of_states);
+  rest /= 3;
+  auto state = static_cast<State>(rest % nstates);
   return TuringRecord { write, move, state };
 }
 
@@ -49,10 +51,9 @@ StateMatrix::StateMatrix(size_t number_of_states, size_t alphabet_size):
   v(alphabet_size * number_of_states, TuringRecord{0, 0, 0}), nbStates(number_of_states), alphSz(alphabet_size){}
 
 void StateMatrix::set_by_index(unsigned long long id) {
-  auto matrix = StateMatrix(this->nbStates, this->alphSz);
   auto rest = id;
   auto record_cardinality = this->nbStates * this->alphSz * 3;
-  for (auto& st: matrix.v) {
+  for (auto& st: this->v) {
     auto state_id = rest % record_cardinality;
     st = TuringRecord::by_index(state_id, this->nbStates, this->alphSz);
     rest /= record_cardinality;

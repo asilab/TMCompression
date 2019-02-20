@@ -3,12 +3,16 @@
 #include <vector>
 #include <numeric>
 #include <stdexcept>
-#include <numeric>
 #include <cmath>
+#include <thread>
+#include <future>
 
 #include "markovTable.h"
 #include "turingMachine.h"
+#include "util.h"
 #include "tm.h"
+
+
 
 /** Evaluate all relative turing machine programs with the given architecture.
  *
@@ -42,12 +46,16 @@ CompressionResultsData tm(
     machine.stMatrix.set_by_index(traversal_offset);
   }
 
+  if (traversal_len == 0) {
+    traversal_len = tm_cardinality(states, alphabet_size);
+  }
+
   unsigned int counter = 0;
   do {
     machine.reset_tape_and_state();
     for (auto i = 0u; i < num_iterations -1 ; ++i){
       normalizedCompressionMarkovTable.mrkvTable.reset();
-      machine.act(); //importante ser antes
+      machine.act(); // grave esti antaŭe
     }
     Metrics normalizedCompressionValue = normalizedCompressionMarkovTable.update_nc_mk_table(machine.turingTape);
     data.amplitude.push_back(normalizedCompressionValue.amplitude);
@@ -61,7 +69,8 @@ CompressionResultsData tm(
     }
     counter += 1;
     normalizedCompressionMarkovTable.mrkvTable.reset();
-  } while ((traversal_len == 0 && machine.stMatrix.next()) || counter < traversal_len);
+    machine.stMatrix.next();
+  } while (counter < traversal_len);
   
   if (verbose) {
     std::cerr << std::endl;
@@ -164,4 +173,72 @@ void ktm(size_t states,
                                          << std::endl;
     } 
   }
+}
+CompressionResultsData tm_multicore(
+    size_t states,
+    size_t alphabet_size,
+    unsigned int num_iterations,
+    unsigned int k,
+    TraversalStrategy strategy,
+    unsigned long long traversal_len,
+    unsigned long long traversal_offset,
+    bool verbose,
+    unsigned int threads)
+{
+  if (threads < 2) {
+    return tm(states, alphabet_size, num_iterations, k, strategy, traversal_len, traversal_offset, verbose);
+  }
+
+  if (strategy != TraversalStrategy::SEQUENTIAL) {
+    throw std::invalid_argument("Sorry, only sequential traversal is currently implemented");
+  }
+
+  // split work in partitions
+
+  auto real_len = traversal_len > 0 ? traversal_len : tm_cardinality(states, alphabet_size);
+  if (verbose) {
+    std::cerr << "Assuming a cardinality of " << real_len << std::endl;
+  }
+  if (threads > real_len) {
+    threads = real_len;
+    std::cerr << "Cardinality is low, using " << real_len << " threads instead" << std::endl;
+  }
+
+  auto partition_len = real_len / threads;
+  auto partition_rest = real_len % threads;
+
+  // spawn tm() tasks asynchronously
+
+  std::vector<std::future<CompressionResultsData>> jobs;
+  for (auto i = 0u; i < threads; ++i) {
+    auto offset = traversal_offset + partition_len * i;
+    auto len = partition_len;
+    if (i == threads - 1) {
+      len += partition_rest;
+    }
+
+    jobs.push_back(std::async([=]() {
+      if (verbose) {
+        std::cerr << "Worker #" << i << " started @ partition [" << offset << ", " << (offset + len) <<  "[" << std::endl;
+      }
+      auto o = tm(states, alphabet_size, num_iterations, k, strategy, len, offset, verbose);
+      if (verbose) {
+        std::cerr << "Worker #" << i << " finished" << std::endl;
+      }
+      return o;
+    }));
+  }
+
+  // await and merge results together
+
+  CompressionResultsData total;
+
+  for (auto& f: jobs) {
+    auto r = f.get();
+    total.amplitude.insert(end(total.amplitude), begin(r.amplitude), end(r.amplitude));
+    total.normalized_compression.insert(end(total.normalized_compression), begin(r.normalized_compression), end(r.normalized_compression));
+    total.self_compression.insert(end(total.self_compression), begin(r.self_compression), end(r.self_compression));
+  }
+
+  return total;
 }

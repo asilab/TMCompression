@@ -34,3 +34,26 @@ void ktm(size_t states,
     unsigned int num_iterations,
     unsigned int k,
     unsigned long int tm_number);
+
+/** Evaluate all relative turing machine programs with the given architecture,
+ * using multiple threads.
+ *
+ * @param states
+ * @param alphabet_size
+ * @param num_iterations
+ * @param k
+ * @param strategy
+ * @param verbose
+ * @param threads the number of threads to run in parallel
+ * @return a vector of normalized compression values, one per turing machine
+ */
+CompressionResultsData tm_multicore(
+    size_t states,
+    size_t alphabet_size,
+    unsigned int num_iterations,
+    unsigned int k,
+    TraversalStrategy strategy = TraversalStrategy::SEQUENTIAL,
+    unsigned long long traversal_len = 0,
+    unsigned long long traversal_offset = 0,
+    bool verbose = false,
+    unsigned int threads = 2);

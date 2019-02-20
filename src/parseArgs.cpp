@@ -2,7 +2,7 @@
 #include <cstring>
 #include <iostream>
 
-#include "markovTable.h"
+#include "util.h"
 #include "parseArgs.h"
 #include "tm.h"
 
@@ -36,12 +36,12 @@ Args parseArgs (int argc, char **argv){
             {"context",  required_argument, 0, 'k'},
             {"tm", optional_argument, 0, 't'},
             {"strategy", optional_argument, 0, 'S'},
-
+            {"jobs", optional_argument, 0, 'j'},
             {NULL, 0, NULL, 0}
         };
         int option_index = 0;
 
-        c = getopt_long (argc, argv, "s:a:i:k:t:hv",
+        c = getopt_long (argc, argv, "s:a:i:k:t:S:j:hv",
                         long_options, &option_index);
 
         if (c == -1)
@@ -162,9 +162,20 @@ Args parseArgs (int argc, char **argv){
             else argument.tm = correctInput;
             break;
         }
-
-
-
+        case 'j':
+        {
+            correctInput = strtol(optarg, &end, 10);
+            if (*end != '\0') {
+            std::cerr << "invalid input for -j/--jobs." << std::endl;
+            exit(0);
+            }
+            else if (correctInput<=0){
+            fprintf (stderr, "-j/--jobs value was set to %d, must be an int larger than 0.\n",correctInput); 
+            exit(0);
+            }
+            else argument.jobs = correctInput;
+            break;
+        }
         case 'S':
         {
             if (std::strcmp(optarg, "sequential") == 0) {
