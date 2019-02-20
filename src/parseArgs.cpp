@@ -14,6 +14,7 @@ Args parseArgs (int argc, char **argv){
     static int verbose_flag;
     static int replicate_flag;
     static int tm_verbose_flag;
+    static int tm_profile_flag;
     char *end;
     int correctInput;
     while (1)
@@ -24,18 +25,23 @@ Args parseArgs (int argc, char **argv){
             {"brief",     no_argument,      &verbose_flag, 0},
             {"tmverbose",   no_argument,      &tm_verbose_flag, 1},
             {"replicate",      no_argument,      &replicate_flag, 1},
+            {"profile", no_argument, &tm_profile_flag,1},
+            
             {"help",      no_argument,      0, 'h'},
             {"version",      no_argument,      0, 'v'},
+
             {"number_states",     required_argument,      0 , 's'},
             {"alphabet_size",  required_argument, 0, 'a'},
             {"iterations",  required_argument, 0, 'i'},
             {"context",  required_argument, 0, 'k'},
+            {"tm", optional_argument, 0, 't'},
             {"strategy", optional_argument, 0, 'S'},
+
             {NULL, 0, NULL, 0}
         };
         int option_index = 0;
 
-        c = getopt_long (argc, argv, "s:a:i:k:hv",
+        c = getopt_long (argc, argv, "s:a:i:k:t:hv",
                         long_options, &option_index);
 
         if (c == -1)
@@ -142,6 +148,23 @@ Args parseArgs (int argc, char **argv){
             else argument.k = correctInput;
             break;
         }
+        case 't':
+        {
+            correctInput = strtol(optarg, &end, 10);
+            if (*end != '\0') {
+            std::cerr << "invalid input for -t/--tm.\n";
+            exit(0);
+            }
+            else if (correctInput<=0){
+            fprintf (stderr, "-t/--tm value was set to %d, must be an int larger than 0.\n",correctInput); 
+            exit(0);
+            }
+            else argument.tm = correctInput;
+            break;
+        }
+
+
+
         case 'S':
         {
             if (std::strcmp(optarg, "sequential") == 0) {
@@ -179,21 +202,41 @@ Args parseArgs (int argc, char **argv){
         putchar ('\n');
     }
 
-    if ( (argument.states==0 || argument.alphabet_size==0 || argument.numIt==0 || argument.k==0) && replicate_flag==false) 
+    
+    if((argument.states==0 || argument.alphabet_size==0 || argument.numIt==0 || argument.k==0 || argument.tm ==0) && tm_profile_flag && replicate_flag==false ){
+        std::cerr << "Please fill all the required arguments" <<std::endl;
+        exit(0);
+    }
+    else if(argument.tm !=0 && tm_profile_flag==false && replicate_flag==false ){
+        std::cerr << "You can only provide tm with the --profile " <<std::endl;
+        exit(0);
+
+    }
+
+    else if ( (argument.states!=0 || argument.alphabet_size!=0 || argument.numIt!=0 || argument.k!=0 || argument.tm !=0) && tm_profile_flag && replicate_flag==false){
+        tmprofile(argument.states,
+                argument.alphabet_size,
+                argument.numIt,
+                argument.k,
+                argument.tm);
+    }
+    
+
+    else if ( (argument.states==0 || argument.alphabet_size==0 || argument.numIt==0 || argument.k==0) && replicate_flag==false && tm_profile_flag==false) 
     {
     std::cerr << "Please fill all the required arguments" <<std::endl;
     exit(0);
     }
-    else if ( (argument.numIt==0 || argument.k==0) &&  argument.states!=0 && argument.alphabet_size!=0)
-    {
-        if (replicate_flag){
-            printf ("replication flag is set, the system will run for alphabet_size = %zu and states = %zu, number of iterations ={100, 1000, 10000} and k=[2,10] \n"
-            ,argument.alphabet_size,argument.states);
-
-            ktm(argument.states, argument.alphabet_size);
-        }
+    else if ( (argument.numIt==0 || argument.k==0) &&  argument.states!=0 && argument.alphabet_size!=0 && replicate_flag)
+    { 
+        printf ("replication flag is set, the system will run for alphabet_size = %zu and states = %zu, number of iterations ={100, 1000, 10000} and k=[2,10] \n"
+        ,argument.alphabet_size,argument.states);
+        ktm(argument.states, argument.alphabet_size);
+ 
     }
     
+
+
 
     printf ("states = %zu, alphabet_size = %zu, number of iterations = %u , k = %d\n",
     argument.states, argument.alphabet_size, argument.numIt, argument.k);

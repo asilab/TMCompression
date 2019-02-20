@@ -135,8 +135,8 @@ NormalizedCompressionMarkovTable::NormalizedCompressionMarkovTable(unsigned int 
 mrkvTable(k, alphabet_size) {}
 
 Metrics NormalizedCompressionMarkovTable::update_nc_mk_table(const Tape& tape){
-    auto b = begin(tape.tape) + tape.ind_left- mrkvTable.k  + 1 ; // To have k context at the begining    
-    auto e = begin(tape.tape) + tape.ind_right - mrkvTable.k;
+    auto b = begin(tape.tape) + tape.ind_left - this->mrkvTable.k  + 1 ; // To have k context at the begining    
+    auto e = begin(tape.tape) + tape.ind_right - this->mrkvTable.k;
     Metrics metrics;
 
 
@@ -156,9 +156,37 @@ Metrics NormalizedCompressionMarkovTable::update_nc_mk_table(const Tape& tape){
     unsigned int diff_indexes = (tape.ind_right) - (tape.ind_left + 1);
     metrics.amplitude = diff_indexes;
     metrics.normalizedCompression = (value/normalization_base(diff_indexes, this->mrkvTable.alphSz));
-    return  metrics;
-    
+    return  metrics; 
 }
+
+//obtain all values of specific table
+CompressionResultsData NormalizedCompressionMarkovTable::profile_update_nc_mk_table(const Tape& tape){
+    auto b = begin(tape.tape) + tape.ind_left- this->mrkvTable.k  + 1 ; // To have k context at the begining    
+    auto e = begin(tape.tape) + tape.ind_right - this->mrkvTable.k;
+    CompressionResultsData data;
+    unsigned int diff_indexes;
+    double value = 0 ;
+    unsigned int counter=0;
+        for (auto it = b; it != e; ++it) {
+            ++counter;
+            auto indxvalue = this->mrkvTable.at(&*it) + 1;
+            auto subvectorOfMarkovTable = this->mrkvTable.getLine(&*it); 
+            
+            std::transform(subvectorOfMarkovTable.begin(), subvectorOfMarkovTable.end(), subvectorOfMarkovTable.begin(), bind2nd(std::plus<int>(), 1)); 
+            double logaritm = calculateLog(indxvalue    ,   sum_all_elements_vector(subvectorOfMarkovTable));
+            value += logaritm;
+            this->mrkvTable.at(&*it)+=1;
+            diff_indexes = (tape.ind_right) - (tape.ind_left + 1);
+
+            data.amplitude.push_back(counter);
+            data.self_compression.push_back(value);
+            data.normalized_compression.push_back(value/normalization_base(diff_indexes, this->mrkvTable.alphSz));
+    }
+    return  data; 
+}
+
+
+
 
 /**
     Calculates the normalization_base by multiplying the number of elements in the input times the log_2 of the cardinality of the alphabet;

@@ -29,11 +29,19 @@ struct Metrics{
   double normalizedCompression;
 };
 
+struct CompressionResultsData
+{
+  std::vector <unsigned int> amplitude;
+  std::vector <double> normalized_compression;
+  std::vector <double> self_compression;
+};
+
 struct NormalizedCompressionMarkovTable{
     MarkovTable mrkvTable;
     NormalizedCompressionMarkovTable(unsigned int k, unsigned int alphabet_size);
 
     Metrics update_nc_mk_table(const Tape& tape);
+    CompressionResultsData profile_update_nc_mk_table(const Tape& tape);
     double normalization_base(unsigned int length_of_tape, unsigned int cardinality);
     int sum_all_elements_vector(std::vector<unsigned int>& subvector_markovtable);
     double calculateLog(int index_value, int sum_all_line_elem);

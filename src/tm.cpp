@@ -69,6 +69,46 @@ CompressionResultsData tm(
   return data;
 }
 
+        
+
+
+void tmprofile(
+    size_t states,
+    size_t alphabet_size,
+    unsigned int num_iterations,
+    unsigned int k,
+    unsigned long int tm_number)
+    {
+
+  TuringMachine machine(states, alphabet_size);
+  CompressionResultsData data;
+  NormalizedCompressionMarkovTable normalizedCompressionMarkovTable(k , alphabet_size);
+
+  unsigned int counter = 0;
+  do {    
+    counter += 1;
+    if (counter==tm_number){
+      machine.reset_tape_and_state();
+      for (auto i = 0u; i < num_iterations -1 ; ++i){
+        normalizedCompressionMarkovTable.mrkvTable.reset();
+        machine.act(); //importante ser antes
+      }
+      data = normalizedCompressionMarkovTable.profile_update_nc_mk_table(machine.turingTape);
+      std::cout<< "TM \t k value \t iterations \t amplitude \t Self-Compression \t Normalized Compression " << std::endl; 
+      std::cout<< "-------------------------------------------------" <<std::endl;
+      for (auto i = 0u; i < data.amplitude.size(); ++i) {
+      std::cout << (i + 1) << "\t" << data.amplitude[i] << "\t" << std::setprecision(5) <<  data.self_compression[i] 
+                           << "\t" << std::setprecision(5) << data.normalized_compression[i] << "\t" << std::endl;
+      }
+      exit(0);
+
+    }
+  } while (machine.stMatrix.next());
+
+}
+
+
+
 
 void ktm(size_t states,
     size_t alphabet_size){
@@ -108,11 +148,9 @@ void ktm(size_t states,
       float mean_amp = std::accumulate( data.amplitude.begin(), data.amplitude.end(), 0.0)/data.amplitude.size();
       float mean_sc = std::accumulate( data.self_compression.begin(),  data.self_compression.end(), 0.0)/ data.self_compression.size();
       float mean_nc = std::accumulate( data.normalized_compression.begin(), data.normalized_compression.end(), 0.0)/data.normalized_compression.size();
-      
       double sq_amp_sum = std::inner_product(data.amplitude.begin(), data.amplitude.end(), data.amplitude.begin(), 0.0);
       double sq_sc_sum = std::inner_product(data.self_compression.begin(), data.self_compression.end(), data.self_compression.begin(), 0.0);
       double sq_nc_sum = std::inner_product(data.normalized_compression.begin(), data.normalized_compression.end(), data.normalized_compression.begin(), 0.0);
-
       double stdev_amp = std::sqrt(sq_amp_sum / data.amplitude.size() - mean_amp * mean_amp);
       double stdev_sc = std::sqrt(sq_sc_sum / data.self_compression.size() - mean_sc * mean_sc);
       double stdev_nc = std::sqrt(sq_nc_sum / data.normalized_compression.size() - mean_nc * mean_nc);

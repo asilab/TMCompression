@@ -8,6 +8,7 @@ struct Args{
     double threshold = 0.;
     unsigned int numIt = 0;
     unsigned int k = 0;
+    unsigned long int tm = 0;
     TraversalStrategy strategy = TraversalStrategy::SEQUENTIAL;
     bool verbose = false;
 };

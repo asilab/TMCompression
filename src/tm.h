@@ -2,13 +2,8 @@
 #include <vector>
 
 #include "traversal.h"
+#include "markovTable.h"
 
-struct CompressionResultsData
-{
-  std::vector <unsigned int> amplitude;
-  std::vector <double> normalized_compression;
-  std::vector <double> self_compression;
-};
 
 /** Evaluate all relative turing machine programs with the given architecture.
  *
@@ -32,3 +27,10 @@ CompressionResultsData tm(
 
 void ktm(size_t states,
     size_t alphabet_size);
+
+ void tmprofile(
+    size_t states,
+    size_t alphabet_size,
+    unsigned int num_iterations,
+    unsigned int k,
+    unsigned long int tm_number);
