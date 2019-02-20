@@ -8,34 +8,7 @@
 #include <math.h>
 
 #include "markovTable.h"
-
-/**
-    Returns int base raised to the power of an int exponent.
-
-    @param base. int of the base.
-    @param exp. int of the exponent.
-    @return int base raised to the power of an int exponent.
-*/
-size_t ipow(size_t base, size_t exp)
-{
-    if (exp == 0) {
-      return 1;
-    }
-    if (exp == 1) {
-      return base;
-    }
-    int result = 1;
-    for (;;)
-    {
-        if (exp & 1)
-            result *= base;
-        exp >>= 1;
-        if (!exp)
-            break;
-        base *= base;
-    }
-    return result;
-}
+#include "util.h"
 
 /**MarkovTable Struct*/
 

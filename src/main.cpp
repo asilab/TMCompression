@@ -25,16 +25,17 @@ int main (int argc, char **argv){
 
   Args argument = parseArgs(argc,argv);
 
-  auto data = tm(
+  auto data = tm_multicore(
     argument.states,
     argument.alphabet_size,
     argument.numIt,
     argument.k,
     argument.strategy,
+    20,
     0,
-    0,
-    argument.verbose);
-  
+    argument.verbose,
+    argument.jobs);
+
   std::cout<< "TM \t k value \t iterations \t amplitude \t Self-Compression \t Normalized Compression " << std::endl; 
   std::cout<< "-------------------------------------------------" <<std::endl;
 
