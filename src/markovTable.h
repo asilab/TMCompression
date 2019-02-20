@@ -5,8 +5,6 @@
 
 using Char = unsigned int;
 
-size_t ipow(size_t base, size_t exp);
-
 struct MarkovTable{
   std::vector<int> markovVector;
   unsigned int alphSz;
