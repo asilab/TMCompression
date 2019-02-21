@@ -157,9 +157,6 @@ CompressionResultsData NormalizedCompressionMarkovTable::profile_update_nc_mk_ta
     return  data; 
 }
 
-
-
-
 /**
     Calculates the normalization_base by multiplying the number of elements in the input times the log_2 of the cardinality of the alphabet;
        

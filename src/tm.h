@@ -25,9 +25,25 @@ CompressionResultsData tm(
     unsigned long long traversal_offset = 0,
     bool verbose = false);
 
+
+/** Replicate experiment to determine the best k and it for a given number of states and alphabet size.
+ *
+ * @param states
+ * @param alphabet_size
+ */
 void ktm(size_t states,
     size_t alphabet_size);
 
+
+
+/** Evaluates a specific turing machine program.
+ *
+ * @param states
+ * @param alphabet_size
+ * @param num_iterations
+ * @param k
+ * @param tm_number
+ */
  void tmprofile(
     size_t states,
     size_t alphabet_size,

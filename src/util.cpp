@@ -21,10 +21,11 @@ unsigned long long ipow(unsigned long long base, unsigned long long exp) {
 }
 
 /// Calculate the full cardinality of all possible turing machine state matrices
-unsigned long long tm_cardinality(size_t states, size_t alphabet_size) {
-  unsigned long long nstates = states;
-  unsigned long long nalphabet = alphabet_size;
-  auto record_cardinality = nstates * nalphabet * 3;
+  unsigned long long tm_cardinality(size_t states, size_t alphabet_size) {
+    
+    unsigned long long nstates = states;
+    unsigned long long nalphabet = alphabet_size;
+    auto record_cardinality = nstates * nalphabet * 3;
 
-  return ipow(record_cardinality, nstates * nalphabet);
+    return ipow(record_cardinality, nstates * nalphabet);
 }

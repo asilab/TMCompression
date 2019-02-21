@@ -31,11 +31,11 @@ int main (int argc, char **argv){
     argument.numIt,
     argument.k,
     argument.strategy,
-    20,
+    0,
     0,
     argument.verbose,
     argument.jobs);
-
+  
   std::cout<< "TM \t k value \t iterations \t amplitude \t Self-Compression \t Normalized Compression " << std::endl; 
   std::cout<< "-------------------------------------------------" <<std::endl;
 
@@ -61,8 +61,8 @@ int main (int argc, char **argv){
 
   std::cout<< "Number of TM \t Mean Amp+/-std \t Mean sc+/-std \t Mean nc+/-std" << std::endl;
   std::cout << data.amplitude.size() << "\t\t" << mean_amp << "+/-" << stdev_amp 
-                                            << "\t\t" << mean_sc << "+/-" << stdev_sc 
-                                            << "\t" << mean_nc << "+/-" << stdev_nc
-                                            << std::endl;
+                                              << "\t\t" << mean_sc << "+/-" << stdev_sc 
+                                              << "\t" << mean_nc << "+/-" << stdev_nc
+                                              << std::endl;
 }
  
