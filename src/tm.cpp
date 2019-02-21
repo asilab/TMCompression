@@ -46,6 +46,7 @@ CompressionResultsData tm(
     unsigned long long traversal_len,
     unsigned long long traversal_offset,
     bool verbose) {
+      
 
   TuringMachine machine(states, alphabet_size);
   CompressionResultsData data;
@@ -190,13 +191,14 @@ CompressionResultsData multicore_sequential_partition(
       unsigned int threads,
       bool verbose) {
   // split work in partitions
+
   if (threads > traversal_len) {
     threads = traversal_len;
     if (verbose) {
       std::cerr << "Cardinality is low, using " << traversal_len << " threads instead" << std::endl;
     }
   }
-
+  
   auto partition_len = traversal_len / threads;
   auto partition_rest = traversal_len % threads;
 
@@ -208,6 +210,7 @@ CompressionResultsData multicore_sequential_partition(
     if (i == threads - 1) {
       len += partition_rest;
     }
+    
 
     jobs.push_back(std::async([=]() {
       if (verbose) {
@@ -217,6 +220,7 @@ CompressionResultsData multicore_sequential_partition(
       if (verbose) {
         std::cerr << "Worker #" << i << " finished" << std::endl;
       }
+
       return o;
     }));
   }
@@ -233,7 +237,6 @@ CompressionResultsData multicore_sequential_partition(
   }
 
   return total;
-
 }
 
 
@@ -259,8 +262,9 @@ CompressionResultsData tm_multicore(
   auto real_len = traversal_len > 0 ? traversal_len : tm_cardinality(states, alphabet_size);
 
   return multicore_sequential_partition([=](auto len, auto offset) {
+      
       return tm(states, alphabet_size, num_iterations, k, strategy, len, offset, verbose);
-    }, traversal_offset, real_len, threads, verbose);
+    },real_len, traversal_offset,threads, verbose);
 
 }
 
@@ -270,17 +274,17 @@ void ktm_multicore(
     size_t states,
     size_t alphabet_size,
     unsigned int threads) {
+  
 
   TuringMachine machine(states, alphabet_size);
 
   std::vector <unsigned int> range_of_k = {2,3,4,5,6,7,8,9,10};
   std::vector <unsigned int> range_of_it = {100, 1000, 10000};
+  std::cout<< "Number of TM \t k \t number iterations \tMean Amp+/-std \t Mean sc+/-std \t Mean nc+/-std" << std::endl;
   for(auto kval = range_of_k.begin(); kval != range_of_k.end(); ++kval) {
-    
+
     for(auto nb_it_val = range_of_it.begin(); nb_it_val != range_of_it.end(); ++nb_it_val) {
-
       auto data = tm_multicore(states, alphabet_size, *nb_it_val, *kval, TraversalStrategy::SEQUENTIAL, 0, 0, false, threads);
-
       float mean_amp = std::accumulate( data.amplitude.begin(), data.amplitude.end(), 0.0)/data.amplitude.size();
       float mean_sc = std::accumulate( data.self_compression.begin(),  data.self_compression.end(), 0.0)/ data.self_compression.size();
       float mean_nc = std::accumulate( data.normalized_compression.begin(), data.normalized_compression.end(), 0.0)/data.normalized_compression.size();
@@ -291,8 +295,7 @@ void ktm_multicore(
       double stdev_sc = std::sqrt(sq_sc_sum / data.self_compression.size() - mean_sc * mean_sc);
       double stdev_nc = std::sqrt(sq_nc_sum / data.normalized_compression.size() - mean_nc * mean_nc);
 
-      std::cout<< "Number of TM \t k \t number iterations \tMean Amp+/-std \t Mean sc+/-std \t Mean nc+/-std" << std::endl;
-      std::cout << data.amplitude.size() << "\t\t" << *kval 
+      std::cout << "\t" << data.amplitude.size() << "\t\t" << *kval 
                                          << "\t\t" << *nb_it_val 
                                          << "\t\t" << mean_amp << "+/-" << stdev_amp 
                                          << "\t\t" << mean_sc << "+/-" << stdev_sc 

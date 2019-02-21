@@ -257,9 +257,10 @@ Args parseArgs (int argc, char **argv){
     }
     else if ( (argument.numIt==0 || argument.k==0) &&  argument.states!=0 && argument.alphabet_size!=0 && replicate_flag && argument.jobs!=0)
     { 
-        printf ("EU ESTOU AQUI");
-        printf ("replication flag is set, the system will run for alphabet_size = %zu and states = %zu, number of iterations ={100, 1000, 10000} and k=[2,10] \n"
-        ,argument.alphabet_size,argument.states);
+        printf ("replication flag is set, the system will run for alphabet_size = %zu and states = %zu, number of iterations ={100, 1000, 10000} and k=[2,10] using threads=%u\n"
+        ,argument.alphabet_size,argument.states,argument.jobs);
+        printf ("\n");
+
         ktm_multicore(argument.states, argument.alphabet_size,argument.jobs);
         exit(0);
     }
