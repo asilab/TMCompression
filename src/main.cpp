@@ -65,4 +65,3 @@ int main (int argc, char **argv){
                                               << "\t" << mean_nc << "+/-" << stdev_nc
                                               << std::endl;
 }
- 

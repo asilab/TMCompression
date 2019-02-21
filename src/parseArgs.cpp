@@ -96,7 +96,7 @@ Args parseArgs (int argc, char **argv){
             std::cout << "./tm --brief --profile -s 2 -a 2 -i 100 -k 2 -t 5" << std::endl;
             std::cout << "----------------" << std::endl;
             std::cout << "Replicate k and it determination:" << std::endl;
-            std::cout << "./tm --brief --replicate -s 2 -a 2 " << std::endl;
+            std::cout << "./tm --brief --replicate -s 2 -a 2 -j 10" << std::endl;
             exit (0);
 
         case 'v':
@@ -244,23 +244,26 @@ Args parseArgs (int argc, char **argv){
                 argument.tm);
     }
     
+    else if ( (argument.states==0 || argument.alphabet_size==0 || argument.jobs==0 || tm_profile_flag) && replicate_flag ){
+        std::cerr << "Please fill all the required arguments in order to perform a replication" <<std::endl;
+        std::cerr << "Example: ./tm --brief --replicate -s 2 -a 2 -j 10" << std::endl;
+        exit(0);
+    }
 
     else if ( (argument.states==0 || argument.alphabet_size==0 || argument.numIt==0 || argument.k==0) && replicate_flag==false && tm_profile_flag==false) 
     {
-    std::cerr << "Please fill all the required arguments" <<std::endl;
-    exit(0);
+        std::cerr << "Please fill all the required arguments" <<std::endl;
+        exit(0);
     }
-    else if ( (argument.numIt==0 || argument.k==0) &&  argument.states!=0 && argument.alphabet_size!=0 && replicate_flag)
+    else if ( (argument.numIt==0 || argument.k==0) &&  argument.states!=0 && argument.alphabet_size!=0 && replicate_flag && argument.jobs!=0)
     { 
+        printf ("EU ESTOU AQUI");
         printf ("replication flag is set, the system will run for alphabet_size = %zu and states = %zu, number of iterations ={100, 1000, 10000} and k=[2,10] \n"
         ,argument.alphabet_size,argument.states);
-        ktm(argument.states, argument.alphabet_size);
- 
+        ktm_multicore(argument.states, argument.alphabet_size,argument.jobs);
+        exit(0);
     }
     
-
-
-
     printf ("states = %zu, alphabet_size = %zu, number of iterations = %u , k = %d\n",
     argument.states, argument.alphabet_size, argument.numIt, argument.k);
 

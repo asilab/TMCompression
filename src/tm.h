@@ -73,3 +73,15 @@ CompressionResultsData tm_multicore(
     unsigned long long traversal_offset = 0,
     bool verbose = false,
     unsigned int threads = 2);
+
+/** Replicate experiment to determine the best k and it for a given number of states and alphabet size with the given architecture,
+ * using multiple threads.
+ *
+ * @param states
+ * @param alphabet_size
+ * @param threads the number of threads to run in parallel
+ */
+void ktm_multicore(
+    size_t states,
+    size_t alphabet_size,
+    unsigned int threads);
