@@ -16,3 +16,9 @@ unsigned long long ipow(unsigned long long base, unsigned long long exp);
  * @param alphabet_size the alphabet's size
  */
 unsigned long long tm_cardinality(size_t states, size_t alphabet_size);
+
+
+/** Calculate the number of turing machines with the increase in number of states.
+ * @param max_number_states the number of states cardinality
+ */
+void tm_growth_with_cardinality(size_t max_number_states);

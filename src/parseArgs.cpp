@@ -15,6 +15,8 @@ Args parseArgs (int argc, char **argv){
     static int replicate_flag;
     static int tm_verbose_flag;
     static int tm_profile_flag;
+    static int tm_number_growth_flag;
+
     char *end;
     int correctInput;
     while (1)
@@ -25,6 +27,8 @@ Args parseArgs (int argc, char **argv){
             {"brief",     no_argument,      &verbose_flag, 0},
             {"tmverbose",   no_argument,      &tm_verbose_flag, 1},
             {"replicate",      no_argument,      &replicate_flag, 1},
+            {"tmgrowth",      no_argument,      &tm_number_growth_flag, 1},
+
             {"profile", no_argument, &tm_profile_flag,1},
             
             {"help",      no_argument,      0, 'h'},
@@ -65,6 +69,9 @@ Args parseArgs (int argc, char **argv){
             std::cout << "--verbose" << "\t" << "Indicates programs that will receive inputs in a verbose form." << std::endl;
             std::cout << "--brief" << "\t" << "Indicates programs that will receive inputs in a brief form." << std::endl<< std::endl;
             std::cout << "--tmverbose" << "\t" << "Indicates programs that tm output will be send to the user." << std::endl<< std::endl;
+            std::cout << "--tmgrowth" << "\t" 
+            << "Indicates programs that output a list of turing machines with an increase in the number of states and a alphabeth size of 2" 
+            << std::endl<< std::endl;
             std::cout << "--replicate" << "\t" 
             << "Indicates programs that will replicate experiment to determine the best k and it for a given number of states and alphabet size." 
             << std::endl<< std::endl;
@@ -97,6 +104,9 @@ Args parseArgs (int argc, char **argv){
             std::cout << "----------------" << std::endl;
             std::cout << "Replicate k and it determination:" << std::endl;
             std::cout << "./tm --brief --replicate -s 2 -a 2 -j 10" << std::endl;
+            std::cout << "----------------" << std::endl;
+            std::cout << "turing machine growth with alphabet size of 2 and increase in state cardinality:" << std::endl;
+            std::cout << "./tm --tmgrowth" << std::endl;
             exit (0);
 
         case 'v':
@@ -226,7 +236,13 @@ Args parseArgs (int argc, char **argv){
     }
 
     
-    if((argument.states==0 || argument.alphabet_size==0 || argument.numIt==0 || argument.k==0 || argument.tm ==0) && tm_profile_flag && replicate_flag==false ){
+    if (tm_number_growth_flag && argument.states==0 && argument.alphabet_size==0 && argument.numIt==0 && argument.k==0 && argument.tm ==0){
+        std::cerr << "Creating fill all the required arguments" <<std::endl;
+        tm_growth_with_cardinality(100);
+        exit(0);
+    }
+
+    if((argument.states==0 || argument.alphabet_size==0 || argument.numIt==0 || argument.k==0 || argument.tm ==0) && tm_profile_flag && replicate_flag==false && tm_number_growth_flag==false){
         std::cerr << "Please fill all the required arguments" <<std::endl;
         exit(0);
     }
@@ -260,7 +276,6 @@ Args parseArgs (int argc, char **argv){
         printf ("replication flag is set, the system will run for alphabet_size = %zu and states = %zu, number of iterations ={100, 1000, 10000} and k=[2,10] using threads=%u\n"
         ,argument.alphabet_size,argument.states,argument.jobs);
         printf ("\n");
-
         ktm_multicore(argument.states, argument.alphabet_size,argument.jobs);
         exit(0);
     }
