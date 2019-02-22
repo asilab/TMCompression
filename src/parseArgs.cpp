@@ -241,15 +241,21 @@ Args parseArgs (int argc, char **argv){
         tm_growth_with_cardinality(100);
         exit(0);
     }
+    
+    else if ( (argument.states!=0 || argument.alphabet_size!=0 || argument.numIt!=0 || argument.k!=0 || argument.jobs!=0 ) && tm_number_growth_flag ){
+        std::cerr << "Please fill all the required arguments in order to perform the tm growth" <<std::endl;
+        std::cerr << "Example: ./tm --tmgrowth" << std::endl;
+        exit(0);
+    }
 
-    if((argument.states==0 || argument.alphabet_size==0 || argument.numIt==0 || argument.k==0 || argument.tm ==0) && tm_profile_flag && replicate_flag==false && tm_number_growth_flag==false){
+
+    else if((argument.states==0 || argument.alphabet_size==0 || argument.numIt==0 || argument.k==0 || argument.tm ==0) && tm_profile_flag && replicate_flag==false && tm_number_growth_flag==false){
         std::cerr << "Please fill all the required arguments" <<std::endl;
         exit(0);
     }
     else if(argument.tm !=0 && tm_profile_flag==false && replicate_flag==false ){
         std::cerr << "You can only provide tm with the --profile " <<std::endl;
         exit(0);
-
     }
 
     else if ( (argument.states!=0 || argument.alphabet_size!=0 || argument.numIt!=0 || argument.k!=0 || argument.tm !=0) && tm_profile_flag && replicate_flag==false){
