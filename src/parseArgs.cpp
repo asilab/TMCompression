@@ -16,7 +16,7 @@ Args parseArgs (int argc, char **argv){
     static int tm_verbose_flag;
     static int tm_profile_flag;
     static int tm_number_growth_flag;
-
+    static int tm_dynamical_profile_flag;
     char *end;
     int correctInput;
     while (1)
@@ -28,7 +28,7 @@ Args parseArgs (int argc, char **argv){
             {"tmverbose",   no_argument,      &tm_verbose_flag, 1},
             {"replicate",      no_argument,      &replicate_flag, 1},
             {"tmgrowth",      no_argument,      &tm_number_growth_flag, 1},
-
+            {"dynprofile",      no_argument,      &tm_dynamical_profile_flag, 1},
             {"profile", no_argument, &tm_profile_flag,1},
             
             {"help",      no_argument,      0, 'h'},
@@ -253,17 +253,26 @@ Args parseArgs (int argc, char **argv){
         std::cerr << "Please fill all the required arguments" <<std::endl;
         exit(0);
     }
-    else if(argument.tm !=0 && tm_profile_flag==false && replicate_flag==false ){
-        std::cerr << "You can only provide tm with the --profile " <<std::endl;
+    else if(argument.tm !=0 && tm_profile_flag==false && tm_dynamical_profile_flag==false && replicate_flag==false ){
+        std::cerr << "You can only provide tm with the --profile or --dynprofile " <<std::endl;
+        std::cerr << "Example: ./tm --brief --profile -s 2 -a 2 -i 100 -k 2 -t 5" << std::endl;
+        std::cerr << "Example: ./tm --brief --dynprofile -s 2 -a 2 -i 100 -k 2 -t 5" << std::endl;
         exit(0);
     }
 
-    else if ( (argument.states!=0 || argument.alphabet_size!=0 || argument.numIt!=0 || argument.k!=0 || argument.tm !=0) && tm_profile_flag && replicate_flag==false){
-        tmprofile(argument.states,
+    else if ( (argument.states!=0 || argument.alphabet_size!=0 || argument.numIt!=0 || argument.k!=0 || argument.tm !=0) && tm_profile_flag==false && tm_dynamical_profile_flag && replicate_flag==false){
+        tm_dynamical_profile(argument.states,
                 argument.alphabet_size,
                 argument.numIt,
                 argument.k,
-                argument.tm);
+                argument.tm, 5);
+    }
+    else if ( (argument.states!=0 || argument.alphabet_size!=0 || argument.numIt!=0 || argument.k!=0 || argument.tm !=0) && tm_profile_flag && replicate_flag==false && tm_dynamical_profile_flag==false){
+        tm_profile(argument.states,
+                argument.alphabet_size,
+                argument.numIt,
+                argument.k,
+                argument.tm, 5);
     }
     
     else if ( (argument.states==0 || argument.alphabet_size==0 || argument.jobs==0 || tm_profile_flag) && replicate_flag ){

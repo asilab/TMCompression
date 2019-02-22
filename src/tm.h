@@ -34,8 +34,6 @@ CompressionResultsData tm(
 void ktm(size_t states,
     size_t alphabet_size);
 
-
-
 /** Evaluates a specific turing machine program.
  *
  * @param states
@@ -44,12 +42,34 @@ void ktm(size_t states,
  * @param k
  * @param tm_number
  */
- void tmprofile(
+ void tm_profile(
     size_t states,
     size_t alphabet_size,
     unsigned int num_iterations,
     unsigned int k,
-    unsigned long int tm_number);
+    unsigned long int tm_number,
+    unsigned int divison=5);
+
+
+/** Evaluates a specific turing machine program dynamically,analysing the time complexity.
+ * @param states
+ * @param alphabet_size
+ * @param num_iterations
+ * @param k
+ * @param tm_number
+ */
+
+ void tm_dynamical_profile(
+    size_t states,
+    size_t alphabet_size,
+    unsigned int num_iterations,
+    unsigned int k,
+    unsigned long int tm_number,
+    unsigned int divison=5);
+
+
+
+
 
 /** Evaluate all relative turing machine programs with the given architecture,
  * using multiple threads.

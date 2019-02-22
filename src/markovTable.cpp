@@ -115,14 +115,14 @@ Metrics NormalizedCompressionMarkovTable::update_nc_mk_table(const Tape& tape){
 
     double value = 0 ;
 
-        for (auto it = b; it != e; ++it) {
-            auto indxvalue = this->mrkvTable.at(&*it) + 1;
-            auto subvectorOfMarkovTable = this->mrkvTable.getLine(&*it); 
-            
-            std::transform(subvectorOfMarkovTable.begin(), subvectorOfMarkovTable.end(), subvectorOfMarkovTable.begin(), bind2nd(std::plus<int>(), 1)); 
-            double logaritm = calculateLog(indxvalue    ,   sum_all_elements_vector(subvectorOfMarkovTable));
-            value += logaritm;
-            this->mrkvTable.at(&*it)+=1;
+    for (auto it = b; it != e; ++it) {
+        auto indxvalue = this->mrkvTable.at(&*it) + 1;
+        auto subvectorOfMarkovTable = this->mrkvTable.getLine(&*it); 
+        
+        std::transform(subvectorOfMarkovTable.begin(), subvectorOfMarkovTable.end(), subvectorOfMarkovTable.begin(), bind2nd(std::plus<int>(), 1)); 
+        double logaritm = calculateLog(indxvalue    ,   sum_all_elements_vector(subvectorOfMarkovTable));
+        value += logaritm;
+        this->mrkvTable.at(&*it)+=1;
     }
     
     metrics.selfCompression = value;
@@ -133,7 +133,7 @@ Metrics NormalizedCompressionMarkovTable::update_nc_mk_table(const Tape& tape){
 }
 
 //obtain all values of specific table
-CompressionResultsData NormalizedCompressionMarkovTable::profile_update_nc_mk_table(const Tape& tape){
+CompressionResultsData NormalizedCompressionMarkovTable::profile_update_nc_mk_table(const Tape& tape, unsigned int divison){
     auto b = begin(tape.tape) + tape.ind_left- this->mrkvTable.k  + 1 ; // To have k context at the begining    
     auto e = begin(tape.tape) + tape.ind_right - this->mrkvTable.k;
     CompressionResultsData data;
@@ -148,11 +148,12 @@ CompressionResultsData NormalizedCompressionMarkovTable::profile_update_nc_mk_ta
             double logaritm = calculateLog(indxvalue    ,   sum_all_elements_vector(subvectorOfMarkovTable));
 
             this->mrkvTable.at(&*it)+=1;
-            diff_indexes = (tape.ind_right) - (tape.ind_left + 1);
-
-            data.amplitude.push_back(counter);
-            data.self_compression.push_back(logaritm);
-            data.normalized_compression.push_back(logaritm/normalization_base(diff_indexes, this->mrkvTable.alphSz));
+            if(counter%divison==0){
+                diff_indexes = (tape.ind_right) - (tape.ind_left + 1);
+                data.amplitude.push_back(counter);
+                data.self_compression.push_back(logaritm);
+                data.normalized_compression.push_back(logaritm/normalization_base(diff_indexes, this->mrkvTable.alphSz));
+            }
     }
     return  data; 
 }

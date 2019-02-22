@@ -87,16 +87,56 @@ CompressionResultsData tm(
   }
   return data;
 }
-
-        
-
-
-void tmprofile(
+/*UNDER WORK*/
+// Simply put this to work in the temporal domain
+// Fix this to acomodate to position on tm.
+void tm_dynamical_profile(
     size_t states,
     size_t alphabet_size,
     unsigned int num_iterations,
     unsigned int k,
-    unsigned long int tm_number)
+    unsigned long int tm_number,
+    unsigned int divison){
+
+  TuringMachine machine(states, alphabet_size);
+  CompressionResultsData data;
+  NormalizedCompressionMarkovTable normalizedCompressionMarkovTable(k, alphabet_size);
+
+  unsigned int counter = 0;
+  do {    
+    counter += 1;
+    if (counter==tm_number){
+      machine.reset_tape_and_state();
+      for (auto i = 0u; i < num_iterations -1 ; ++i){
+        normalizedCompressionMarkovTable.mrkvTable.reset();
+        machine.act(); //importante ser antes
+        if(i%divison==0){
+          Metrics metrics = normalizedCompressionMarkovTable.update_nc_mk_table(machine.turingTape);
+          data.amplitude.push_back(metrics.amplitude); 
+          data.normalized_compression.push_back(metrics.normalizedCompression);
+          data.self_compression.push_back(metrics.selfCompression);
+        }
+      }
+      std::cout<< "iterations \t amplitude \t Self-Compression \t Normalized Compression " << std::endl; 
+      std::cout<< "-------------------------------------------------" <<std::endl;
+      for (auto i = 0u; i < data.amplitude.size(); ++i) {
+      std::cout << ((i + 1) * divison) << "\t" << data.amplitude[i] << "\t" << std::setprecision(5) <<  data.self_compression[i] 
+                           << "\t" << std::setprecision(5) << data.normalized_compression[i] << "\t" << std::endl;
+      }
+      exit(0);
+    }
+  } while (machine.stMatrix.next());
+}       
+
+/*UNDER WORK*/
+// Fix this to acomodate to position on tm.
+void tm_profile(
+    size_t states,
+    size_t alphabet_size,
+    unsigned int num_iterations,
+    unsigned int k,
+    unsigned long int tm_number,
+    unsigned int divison)
     {
 
   TuringMachine machine(states, alphabet_size);
@@ -112,11 +152,11 @@ void tmprofile(
         normalizedCompressionMarkovTable.mrkvTable.reset();
         machine.act(); //importante ser antes
       }
-      data = normalizedCompressionMarkovTable.profile_update_nc_mk_table(machine.turingTape);
-      std::cout<< "TM \t k value \t iterations \t amplitude \t Self-Compression \t Normalized Compression " << std::endl; 
+      data = normalizedCompressionMarkovTable.profile_update_nc_mk_table(machine.turingTape, divison);
+      std::cout<< "iterations \t amplitude \t Self-Compression \t Normalized Compression " << std::endl; 
       std::cout<< "-------------------------------------------------" <<std::endl;
       for (auto i = 0u; i < data.amplitude.size(); ++i) {
-      std::cout << (i + 1) << "\t" << data.amplitude[i] << "\t" << std::setprecision(5) <<  data.self_compression[i] 
+      std::cout << ((i + 1)*divison) << "\t" << data.amplitude[i] << "\t" << std::setprecision(5) <<  data.self_compression[i] 
                            << "\t" << std::setprecision(5) << data.normalized_compression[i] << "\t" << std::endl;
       }
       exit(0);
@@ -126,6 +166,7 @@ void tmprofile(
 
 }
 
+/*UNDER WORK*/
 
 
 
