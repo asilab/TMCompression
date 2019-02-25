@@ -78,6 +78,10 @@ Args parseArgs (int argc, char **argv){
             std::cout << "--profile" << "\t" 
             << "Indicates programs that will receive through the tm number through the flag tm and will create a profile of that turing" 
             << std::endl<< std::endl;
+            std::cout << "--dynprofile" << "\t" 
+            << "Indicates programs that will receive through the tm number through the flag tm and will create a dynamical temporal profile of that turing" 
+            << std::endl<< std::endl;
+
 
 
             std::cout << "Mandatory  Arguments:" << std::endl;
@@ -101,6 +105,9 @@ Args parseArgs (int argc, char **argv){
             std::cout << "----------------" << std::endl;
             std::cout << "Run specific tm and obtain profile:" << std::endl;
             std::cout << "./tm --brief --profile -s 2 -a 2 -i 100 -k 2 -t 5" << std::endl;
+            std::cout << "----------------" << std::endl;
+            std::cout << "Run specific tm and obtain dynamical temporal profile:" << std::endl;
+            std::cout << "./tm --brief --dynprofile -s 2 -a 2 -i 100 -k 2 -t 5" << std::endl;
             std::cout << "----------------" << std::endl;
             std::cout << "Replicate k and it determination:" << std::endl;
             std::cout << "./tm --brief --replicate -s 2 -a 2 -j 10" << std::endl;
@@ -265,14 +272,18 @@ Args parseArgs (int argc, char **argv){
                 argument.alphabet_size,
                 argument.numIt,
                 argument.k,
-                argument.tm, 5);
+                argument.tm -1 , 5);
+        exit(0);
+
     }
     else if ( (argument.states!=0 || argument.alphabet_size!=0 || argument.numIt!=0 || argument.k!=0 || argument.tm !=0) && tm_profile_flag && replicate_flag==false && tm_dynamical_profile_flag==false){
         tm_profile(argument.states,
                 argument.alphabet_size,
                 argument.numIt,
                 argument.k,
-                argument.tm, 5);
+                argument.tm -1 , 5);
+        exit(0);
+
     }
     
     else if ( (argument.states==0 || argument.alphabet_size==0 || argument.jobs==0 || tm_profile_flag) && replicate_flag ){

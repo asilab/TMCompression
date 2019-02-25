@@ -47,7 +47,7 @@ void ktm(size_t states,
     size_t alphabet_size,
     unsigned int num_iterations,
     unsigned int k,
-    unsigned long int tm_number,
+    unsigned long long tm_number,
     unsigned int divison=5);
 
 
@@ -64,11 +64,8 @@ void ktm(size_t states,
     size_t alphabet_size,
     unsigned int num_iterations,
     unsigned int k,
-    unsigned long int tm_number,
+    unsigned long long tm_number,
     unsigned int divison=5);
-
-
-
 
 
 /** Evaluate all relative turing machine programs with the given architecture,

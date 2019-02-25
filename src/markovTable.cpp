@@ -137,23 +137,28 @@ CompressionResultsData NormalizedCompressionMarkovTable::profile_update_nc_mk_ta
     auto b = begin(tape.tape) + tape.ind_left- this->mrkvTable.k  + 1 ; // To have k context at the begining    
     auto e = begin(tape.tape) + tape.ind_right - this->mrkvTable.k;
     CompressionResultsData data;
-    unsigned int diff_indexes;
+    unsigned int diff_indexes= (tape.ind_right) - (tape.ind_left + 1);
     unsigned int counter=0;
-        for (auto it = b; it != e; ++it) {
-            ++counter;
-            auto indxvalue = this->mrkvTable.at(&*it) + 1;
-            auto subvectorOfMarkovTable = this->mrkvTable.getLine(&*it); 
-            
-            std::transform(subvectorOfMarkovTable.begin(), subvectorOfMarkovTable.end(), subvectorOfMarkovTable.begin(), bind2nd(std::plus<int>(), 1)); 
-            double logaritm = calculateLog(indxvalue    ,   sum_all_elements_vector(subvectorOfMarkovTable));
 
-            this->mrkvTable.at(&*it)+=1;
-            if(counter%divison==0){
-                diff_indexes = (tape.ind_right) - (tape.ind_left + 1);
+    for (auto it = b; it != e; ++it) {
+        ++counter;
+        auto indxvalue = this->mrkvTable.at(&*it) + 1;
+        auto subvectorOfMarkovTable = this->mrkvTable.getLine(&*it); 
+        std::transform(subvectorOfMarkovTable.begin(), subvectorOfMarkovTable.end(), subvectorOfMarkovTable.begin(), bind2nd(std::plus<int>(), 1)); 
+        double logaritm = calculateLog(indxvalue    ,   sum_all_elements_vector(subvectorOfMarkovTable));
+        this->mrkvTable.at(&*it)+=1;
+        if(diff_indexes<=5){       
+            data.amplitude.push_back(counter);
+            data.self_compression.push_back(logaritm);
+            data.normalized_compression.push_back(logaritm/normalization_base(diff_indexes, this->mrkvTable.alphSz));
+        }
+        else if (diff_indexes> 5){
+            if (counter % divison ==0){
                 data.amplitude.push_back(counter);
                 data.self_compression.push_back(logaritm);
                 data.normalized_compression.push_back(logaritm/normalization_base(diff_indexes, this->mrkvTable.alphSz));
             }
+        }
     }
     return  data; 
 }

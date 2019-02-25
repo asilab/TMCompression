@@ -57,7 +57,7 @@ struct Tape {
   TapeMoves moveandSet(Move relativePos, Char value);
   void resetTape();
   size_t getposition();
-
+  void print();
   private:
     void reserve_right(size_t amount);
     void reserve_left(size_t amount);

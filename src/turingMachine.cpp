@@ -188,6 +188,14 @@ void Tape::reserve_left(size_t amount) {
   this->ind_left = this->ind_left + amount;
 }
 
+/* prints written part of the tape.*/
+void Tape::print(){
+  for (auto i = this->tape.begin() + this->ind_left; i != this->tape.begin() + this->ind_right; ++i)
+    std::cout << *i << ' ';
+    
+  std::cout<< std::endl;
+} 
+
 
 std::ostream& operator<<( std::ostream& o, const Tape& t) {
   auto start = std::find_if(t.tape.begin(), t.tape.end(), [](auto c) { return c != 0; });
