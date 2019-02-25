@@ -87,9 +87,7 @@ CompressionResultsData tm(
   }
   return data;
 }
-/*UNDER WORK*/
 
-// Fix this to acomodate to position on tm.
 void tm_dynamical_profile(
     size_t states,
     size_t alphabet_size,
@@ -126,7 +124,6 @@ void tm_dynamical_profile(
     
 }       
 
-// Fix this to acomodate to position on tm.
 void tm_profile(
     size_t states,
     size_t alphabet_size,
