@@ -1,10 +1,10 @@
 <p align="center">
-<img src="icons/logo.png" alt="TMCompression" width="300" border="0" /></p>
+<img src="icons/logo.png" alt="TMCompression" width="600" border="0" /></p>
 <br>
 <p align="center">
 </p>
 
-# Simple Turing Machines, Statistic Complexity vs Algorithmic Complexity
+## Simple Turing Machines, Statistic Complexity vs Algorithmic Complexity
 
 ## INSTALL
 Get TMCompression and make the project, using:
