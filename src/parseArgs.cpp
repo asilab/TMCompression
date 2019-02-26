@@ -99,15 +99,19 @@ Args parseArgs (int argc, char **argv){
             std::cout << "Examples:" << std::endl;
             std::cout << "----------------" << std::endl;
             std::cout << "Run all tms" << std::endl;
-            std::cout << "./tm -s 2 -a 2 -i 10 -k 1 -t .5" << std::endl;
+            std::cout << "./tm -s 2 -a 2 -i 10 -k 1 " << std::endl;
             std::cout << "./tm --brief -s 2 -a 2 -i 10 -k 1" << std::endl;
             std::cout << "./tm --verbose --number_states=2 --alphabet_size=2 --iterations=20 --context=2" << std::endl;
             std::cout << "----------------" << std::endl;
+            std::cout << "Run all tms with multithreads" << std::endl;
+            std::cout << "./tm -s 2 -a 2 -i 10 -k 1 -j 7" << std::endl;
+            std::cout << "./tm --brief -s 2 -a 2 -i 10 -k 1 -j 7" << std::endl;
+            std::cout << "----------------" << std::endl;
             std::cout << "Run specific tm and obtain profile:" << std::endl;
-            std::cout << "./tm --brief --profile -s 2 -a 2 -i 100 -k 2 -t 5" << std::endl;
+            std::cout << "./tm --brief --profile -s 2 -a 2 -i 100 -k 2" << std::endl;
             std::cout << "----------------" << std::endl;
             std::cout << "Run specific tm and obtain dynamical temporal profile:" << std::endl;
-            std::cout << "./tm --brief --dynprofile -s 2 -a 2 -i 100 -k 2 -t 5" << std::endl;
+            std::cout << "./tm --brief --dynprofile -s 2 -a 2 -i 100 -k 2" << std::endl;
             std::cout << "----------------" << std::endl;
             std::cout << "Replicate k and it determination:" << std::endl;
             std::cout << "./tm --brief --replicate -s 2 -a 2 -j 10" << std::endl;
@@ -244,7 +248,7 @@ Args parseArgs (int argc, char **argv){
 
     
     if (tm_number_growth_flag && argument.states==0 && argument.alphabet_size==0 && argument.numIt==0 && argument.k==0 && argument.tm ==0){
-        std::cerr << "Creating fill all the required arguments" <<std::endl;
+        std::cerr << "TM growth for alphabet = 2 and Max number of states = 100" <<std::endl;
         tm_growth_with_cardinality(100);
         exit(0);
     }

@@ -37,3 +37,6 @@
 #Executable
 tm
 
+#Goose
+goose/*
+
