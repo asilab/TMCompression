@@ -1,12 +1,21 @@
 #!/bin/bash
 #
 # ==============================================================================
+#Verify if there are inputs
+# ==============================================================================
+
+if [ $# -eq 0 ]; then
+    echo "No arguments provided"
+    exit 1
+fi
+
+# ==============================================================================
 # Options
 # ==============================================================================
-INSTALL_GOOSE=0;
-CARDINALITY=0;
-STATE2_TMs=1;
-STATE3_TMs=0;
+INSTALL_GOOSE=$1;
+CARDINALITY=$2;
+STATE2_TMs=$3;
+STATE3_TMs=$4;
 # ==============================================================================
 # Install Goose
 # ==============================================================================
@@ -48,7 +57,7 @@ if [[ "$CARDINALITY" -eq "1" ]];
     plot f(x)  ls 1 title "f(x) = (6x)^2^x", 'Cardinality2.txt' using 1:2 linecolor '#4169E1' pointtype 7  pointsize 0.5 lw 0.5 title "Growth in Number of TMs"
 EOF
 rm Cardinality.txt Cardinality2.txt
-mv Cardinality.pdf ./Results
+mv Cardinality.pdf ./results
 fi
 
 
@@ -97,7 +106,7 @@ if [[ "$STATE2_TMs" -eq "1" ]];
     set style fill transparent solid 0.4 noborder
     plot "Amplitude.txt" using 1 with boxes linecolor '#CFB53B' title "Amplitude of Tape", "NormselfC.txt" using 1 with boxes linecolor '#3D9970' title "Self-Compressor", "NC_f.txt" using 1 with boxes linecolor '#4169E1' title "Normalized Compression"
 EOF
-    mv 2sts.pdf ./Results
+    mv 2sts.pdf ./results
     rm  NormselfC selfC Amplitude NormAmplitude Amplitude.txt NC_f.txt NormselfC.txt
 fi
 
@@ -119,7 +128,7 @@ if [[ "$STATE3_TMs" -eq "1" ]];
 
     tail -n +4 3st.txt | head -n -3 | awk '{ print $5;}' > selfC3; 
     maxnum=$(sort -n selfC3 |tail -1);
-    cat selfC | while read i; 
+    cat selfC3 | while read i; 
     do echo "scale = 10; $i/($maxnum * 0.5) " | bc; 
     done > NormselfC3
     cat NormselfC3 | ./goose/bin/goose-filter -w 201 -d 5 -1 -p1 > NormselfC3.txt;
@@ -141,12 +150,12 @@ if [[ "$STATE3_TMs" -eq "1" ]];
     set grid ytics lt -1
     set style fill solid
     set format '%g'
-    set xlabel "2 state Turing Machines 0 to 20736"
+    set xlabel "3 state Turing Machines 0 to 34012224"
     set datafile separator "\t"
     unset xtics
     set style fill transparent solid 0.4 noborder
     plot "Amplitude3.txt" using 1 with boxes linecolor '#CFB53B' title "Amplitude of Tape", "NormselfC3.txt" using 1 with boxes linecolor '#3D9970' title "Self-Compressor", "NC_f3.txt" using 1 with boxes linecolor '#4169E1' title "Normalized Compression"
 EOF
-    mv 2sts.pdf ./Results
+    mv 3sts.pdf ./Results
     rm  NormselfC3 selfC3 Amplitude3 NormAmplitude3 Amplitude3.txt NC_f3.txt NormselfC3.txt
 fi
