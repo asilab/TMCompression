@@ -31,5 +31,5 @@ Please let us know if there is any
 [issues](https://github.com/jorgeMFS/TMCompression/issues).
 
 ## LICENSE
-PANThER is under GPL v3 license. For more information, click
+TMCompression is under GPL v3 license. For more information, click
 [here](http://www.gnu.org/licenses/gpl-3.0.html).
