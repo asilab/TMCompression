@@ -16,6 +16,7 @@ INSTALL_GOOSE=$1;
 CARDINALITY=$2;
 STATE2_TMs=$3;
 STATE3_TMs=$4;
+Profile=1;
 # ==============================================================================
 # Install Goose
 # ==============================================================================
@@ -164,3 +165,4 @@ EOF
     mv 3sts.pdf ./Results
     rm  NormselfC3 selfC3 Amplitude3 NormAmplitude3 
 fi
+
