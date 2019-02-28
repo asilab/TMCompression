@@ -42,12 +42,13 @@ Args parseArgs (int argc, char **argv){
             {"context",  required_argument, 0, 'k'},
             {"tm", optional_argument, 0, 't'},
             {"strategy", optional_argument, 0, 'S'},
+            {"n", optional_argument, 0, 'N'},
             {"jobs", optional_argument, 0, 'j'},
             {NULL, 0, NULL, 0}
         };
         int option_index = 0;
 
-        c = getopt_long (argc, argv, "s:a:i:k:t:S:j:hv",
+        c = getopt_long (argc, argv, "s:a:i:k:t:S:N:j:hv",
                         long_options, &option_index);
 
         if (c == -1)
@@ -98,6 +99,7 @@ Args parseArgs (int argc, char **argv){
 
             std::cout << "Other Optional Arguments:" << std::endl<< std::endl;
             std::cout << "-S" << ", " << "--strategy" << "\t" << "Turing Machine traversal strategy (default: sequential)"<< std::endl << std::endl;
+            std::cout << "-N" << ", " << "\t" << "Number of Turing Machines to traverse" << std::endl << std::endl;
             std::cout << "-v" << ", " << "--version" << "\t" << "Outputs the version of the program." << std::endl <<std::endl;
             std::cout << "-h" << ", " << "--help" << "\t" << "Describes program." <<std::endl<<std::endl;
             std::cout << "-----------------------------------------------------------------------------" << std::endl;
@@ -227,6 +229,16 @@ Args parseArgs (int argc, char **argv){
                 std::cerr << "-S/--strategy must be either `sequential` or `monte_carlo`." << std::endl;
                 exit(0);
             }
+            break;
+        }
+        case 'N':
+        {
+            auto parsed = strtoull(optarg, &end, 10);
+            if (*end != '\0') {
+                std::cerr << "invalid input for -N.\n";
+                exit(0);
+            }
+            argument.n = parsed;
             break;
         }
         case '?':

@@ -10,6 +10,7 @@ struct Args{
     unsigned int k = 0;
     unsigned long long tm = 0;
     TraversalStrategy strategy = TraversalStrategy::SEQUENTIAL;
+    unsigned long long n = 0;
     unsigned int jobs = 1;
     bool verbose = false;
 };

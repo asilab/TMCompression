@@ -31,7 +31,7 @@ int main (int argc, char **argv){
     argument.numIt,
     argument.k,
     argument.strategy,
-    0,
+    argument.n,
     0,
     argument.verbose,
     argument.jobs);

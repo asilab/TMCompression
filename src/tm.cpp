@@ -27,16 +27,22 @@ Metrics run_machine(TuringMachine& machine, NormalizedCompressionMarkovTable& no
   return metrics;
 }
 
+/// The RNG engine for sampling random numbers in Monte Carlo.
+using Rng = std::minstd_rand;
+
 /** Evaluate all relative turing machine programs with the given architecture.
  *
  * @param states
  * @param alphabet_size
  * @param num_iterations
  * @param k
+ * @param strategy the turing machine traversal strategy
+ * @param traversal_len number of different turing machines to run, can be 0 in
+ *        sequential traversal for the full TM domain
+ * @param traversal_offset offset of the partition to travers (only in sequential strategy)
  * @param verbose
  * @return a struct containing the results of evaluation, one per turing machine
  */
-
 CompressionResultsData tm(
     size_t states,
     size_t alphabet_size,
@@ -52,35 +58,58 @@ CompressionResultsData tm(
   CompressionResultsData data;
   NormalizedCompressionMarkovTable normalizedCompressionMarkovTable(k , alphabet_size);
 
-  if (strategy != TraversalStrategy::SEQUENTIAL) {
-    throw std::invalid_argument("Sorry, only sequential traversal is currently implemented");
-  }
+  switch (strategy) {
+    case TraversalStrategy::SEQUENTIAL: {
+      if (traversal_offset > 0) {
+        machine.stMatrix.set_by_index(traversal_offset);
+      }
+      if (traversal_len == 0) {
+        traversal_len = tm_cardinality(states, alphabet_size);
+      }
 
-  if (traversal_offset > 0) {
-    machine.stMatrix.set_by_index(traversal_offset);
-  }
+      unsigned int counter = 0;
+      do {
+        auto metrics = run_machine(machine, normalizedCompressionMarkovTable, num_iterations);
 
-  if (traversal_len == 0) {
-    traversal_len = tm_cardinality(states, alphabet_size);
-  }
+        if (verbose && counter % 4096 == 0) {
+          std::cerr << "TM #" << std::setw(8) << counter << ": amplitude = " << metrics.amplitude 
+          << ": sc = " << std::setprecision(5) <<metrics.selfCompression <<": nc = " << std::setprecision(5) 
+          << metrics.normalizedCompression << "\r";
+        }
 
-  unsigned int counter = 0;
-  do {
-    auto metrics = run_machine(machine, normalizedCompressionMarkovTable, num_iterations);
+        machine.stMatrix.next();
 
-    if (verbose && counter % 4096 == 0) {
-      std::cerr << "TM #" << std::setw(8) << counter << ": amplitude = " << metrics.amplitude 
-      << ": sc = " << std::setprecision(5) <<metrics.selfCompression <<": nc = " << std::setprecision(5) 
-      << metrics.normalizedCompression << "\r";
+        data.amplitude.push_back(metrics.amplitude);
+        data.self_compression.push_back(metrics.selfCompression);
+        data.normalized_compression.push_back(metrics.normalizedCompression);
+        counter += 1;
+      } while (counter < traversal_len);
     }
+    break;
+    case TraversalStrategy::MONTE_CARLO: {
+      // initialize random number generator
+      std::random_device rnd_device;
+      Rng rng{rnd_device()};
 
-    machine.stMatrix.next();
+      for (auto counter = 0ull; counter < traversal_len; counter++) {
+        machine.stMatrix.set_random(rng);
 
-    data.amplitude.push_back(metrics.amplitude);
-    data.self_compression.push_back(metrics.selfCompression);
-    data.normalized_compression.push_back(metrics.normalizedCompression);
-    counter += 1;
-  } while (counter < traversal_len);
+        auto metrics = run_machine(machine, normalizedCompressionMarkovTable, num_iterations);
+
+        if (verbose && counter % 4096 == 0) {
+          std::cerr << "TM #" << std::setw(8) << counter << ": amplitude = " << metrics.amplitude 
+          << ": sc = " << std::setprecision(5) <<metrics.selfCompression <<": nc = " << std::setprecision(5) 
+          << metrics.normalizedCompression << "\r";
+        }
+
+        data.amplitude.push_back(metrics.amplitude);
+        data.self_compression.push_back(metrics.selfCompression);
+        data.normalized_compression.push_back(metrics.normalizedCompression);
+      }
+    }
+    break;
+  }
+
   
   if (verbose) {
     std::cerr << std::endl;
@@ -221,6 +250,61 @@ void ktm(size_t states,
   }
 }
 
+/** Perform tasks in parallel by performing the same operation `n` times over
+ * `threads` workers. Each worker will then make its own random number
+ * generator.
+ */
+template <typename F>
+CompressionResultsData multicore_monte_carlo(
+      F f,
+      size_t n,
+      unsigned int threads,
+      bool verbose) {
+  // split work in partitions
+
+  if (threads > n) {
+    threads = n;
+    if (verbose) {
+      std::cerr << "Number of runs is low, using " << n << " threads instead" << std::endl;
+    }
+  }
+  
+  auto worker_n = n / threads;
+  auto worker_rest = n % threads;
+
+  // spawn  tasks asynchronously
+  std::vector<std::future<CompressionResultsData>> jobs;
+  for (auto i = 0u; i < threads; ++i) {
+    auto len = worker_n;
+    if (i == threads - 1) {
+      len += worker_rest;
+    }
+    jobs.push_back(std::async([=]() {
+      if (verbose) {
+        std::cerr << "Worker #" << i << " started" << std::endl;
+      }
+      auto o = f(len);
+      if (verbose) {
+        std::cerr << "Worker #" << i << " finished" << std::endl;
+      }
+
+      return o;
+    }));
+  }
+
+  // await and merge results together
+
+  CompressionResultsData total;
+
+  for (auto& f: jobs) {
+    auto r = f.get();
+    total.amplitude.insert(end(total.amplitude), begin(r.amplitude), end(r.amplitude));
+    total.normalized_compression.insert(end(total.normalized_compression), begin(r.normalized_compression), end(r.normalized_compression));
+    total.self_compression.insert(end(total.self_compression), begin(r.self_compression), end(r.self_compression));
+  }
+
+  return total;
+}
 
 /** Perform tasks in parallel by sequentially partitioning an
  * interval to `threads` workers.
@@ -252,7 +336,6 @@ CompressionResultsData multicore_sequential_partition(
     if (i == threads - 1) {
       len += partition_rest;
     }
-    
 
     jobs.push_back(std::async([=]() {
       if (verbose) {
@@ -297,17 +380,20 @@ CompressionResultsData tm_multicore(
     return tm(states, alphabet_size, num_iterations, k, strategy, traversal_len, traversal_offset, verbose);
   }
 
-  if (strategy != TraversalStrategy::SEQUENTIAL) {
-    throw std::invalid_argument("Sorry, only sequential traversal is currently implemented");
+  if (strategy == TraversalStrategy::SEQUENTIAL) {
+    auto real_len = traversal_len > 0 ? traversal_len : tm_cardinality(states, alphabet_size);
+
+    return multicore_sequential_partition([=](auto len, auto offset) {
+      return tm(states, alphabet_size, num_iterations, k, strategy, len, offset, verbose);
+        },real_len, traversal_offset,threads, verbose);
+  } else if (strategy == TraversalStrategy::MONTE_CARLO) {
+    
+    return multicore_monte_carlo([=](auto n) -> CompressionResultsData {
+      return tm(states, alphabet_size, num_iterations, k, strategy, n, 0, verbose);
+    }, traversal_len, threads, verbose);
   }
 
-  auto real_len = traversal_len > 0 ? traversal_len : tm_cardinality(states, alphabet_size);
-
-  return multicore_sequential_partition([=](auto len, auto offset) {
-      
-      return tm(states, alphabet_size, num_iterations, k, strategy, len, offset, verbose);
-    },real_len, traversal_offset,threads, verbose);
-
+  throw std::runtime_error("unsupported traversal strategy");
 }
 
 
