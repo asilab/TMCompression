@@ -38,16 +38,15 @@ gnuplot << EOF
     set ylabel "Normalized Compression"
     ntics = 100
     stats 'P2' using 1 name 'x' nooutput
-    set xtics int(x_max/ntics)*5
-    set logscale y 10
+    set xtics int(x_max/ntics)*10
     set datafile separator "\t"
-    set style fill transparent solid 0.4 noborder
     plot "P2" using 2:4 linecolor '#4169E1' pointtype 7 pointsize 0.5 lw 0.5 title "NC Profile of Tape"
 EOF
-mv profile.pdf $PdfName
-mv $PdfName $SavePath
-rm $txtName 
-rm P2
+
+mv profile.pdf $PdfName;
+mv $PdfName $SavePath;
+mv $txtName $SavePath;
+rm P2;
 
 
-#'Cardinality2.txt' using 1:2 linecolor '#4169E1' pointtype 7 pointsize 0.5 lw 0.5 title "Growth in Number of TMs"
+

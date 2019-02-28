@@ -123,6 +123,22 @@ void tm_dynamical_profile(
       
     
 }       
+void tm_print(
+    size_t states,
+    size_t alphabet_size,
+    unsigned int num_iterations,
+    unsigned long long tm_number)
+    {
+    
+    TuringMachine machine(states, alphabet_size);    
+    machine.stMatrix.set_by_index(tm_number); 
+    machine.reset_tape_and_state();
+    for (auto i = 0u; i < num_iterations -1 ; ++i){
+           machine.act(); //importante ser antes
+    }
+    machine.turingTape.print();
+}
+
 
 void tm_profile(
     size_t states,

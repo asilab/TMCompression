@@ -17,6 +17,7 @@ Args parseArgs (int argc, char **argv){
     static int tm_profile_flag;
     static int tm_number_growth_flag;
     static int tm_dynamical_profile_flag;
+    static int tm_print_flag;
     char *end;
     int correctInput;
     while (1)
@@ -30,7 +31,8 @@ Args parseArgs (int argc, char **argv){
             {"tmgrowth",      no_argument,      &tm_number_growth_flag, 1},
             {"dynprofile",      no_argument,      &tm_dynamical_profile_flag, 1},
             {"profile", no_argument, &tm_profile_flag,1},
-            
+            {"printTape", no_argument, &tm_print_flag,1},
+
             {"help",      no_argument,      0, 'h'},
             {"version",      no_argument,      0, 'v'},
 
@@ -64,11 +66,14 @@ Args parseArgs (int argc, char **argv){
             break;
 
         case 'h':
-            std::cout << "Program that creates a relative turing machine." << std::endl<<std::endl;
-            std::cout << "Arguments to set flags:" << std::endl;
-            std::cout << "--verbose" << "\t" << "Indicates programs that will receive inputs in a verbose form." << std::endl;
-            std::cout << "--brief" << "\t" << "Indicates programs that will receive inputs in a brief form." << std::endl<< std::endl;
-            std::cout << "--tmverbose" << "\t" << "Indicates programs that tm output will be send to the user." << std::endl<< std::endl;
+            std::cout << std::endl << "-----------------------------------------------------------------------------" << std::endl;
+            std::cout << "Program that creates Turing machines and Measures its Statistical Complexity." << std::endl;
+            std::cout << "-----------------------------------------------------------------------------" << std::endl<<std::endl;
+
+            std::cout << "Arguments to set flags:" << std::endl<<std::endl;
+            std::cout << "--verbose" << "\t" << "Indicates programs that will receive inputs in a verbose form." << std::endl << std::endl;
+            std::cout << "--brief" << "\t" << "Indicates programs that will receive inputs in a brief form." << std::endl << std::endl;
+            std::cout << "--tmverbose" << "\t" << "Indicates programs that tm output will be send to the user." << std::endl << std::endl;
             std::cout << "--tmgrowth" << "\t" 
             << "Indicates programs that output a list of turing machines with an increase in the number of states and a alphabeth size of 2" 
             << std::endl<< std::endl;
@@ -84,20 +89,20 @@ Args parseArgs (int argc, char **argv){
 
 
 
-            std::cout << "Mandatory  Arguments:" << std::endl;
-            std::cout << "-s" << ", " <<"--number_states" << "\t" << "Number of States the Turing Machine has." << std::endl;
-            std::cout << "-a" << ", " << "--alphabet_size" << "\t" << "Alphabet size the Turing Machine considers." <<std::endl;
-            std::cout << "-i" << ", " << "--iterations" << "\t " << "Number of iterations the Turing Machine makes in the tape."<<std::endl;
+            std::cout << "Mandatory  Arguments:"<< std::endl << std::endl;
+            std::cout << "-s" << ", " <<"--number_states" << "\t" << "Number of States the Turing Machine has."<< std::endl << std::endl;
+            std::cout << "-a" << ", " << "--alphabet_size" << "\t" << "Alphabet size the Turing Machine considers." << std::endl<<std::endl;
+            std::cout << "-i" << ", " << "--iterations" << "\t " << "Number of iterations the Turing Machine makes in the tape."<< std::endl<<std::endl;
             std::cout << "-k" << ", " << "--context" << "\t" << "k indexes to consider as a context to fill the Markov Table." <<std::endl<<std::endl;
             std::cout << "-t" << ", " << "--tm" << "\t" << "Speciffy turing to obtain results, can only be activated with --profile flag." <<std::endl<<std::endl;
 
-            std::cout << "Other Optional Arguments:" << std::endl;
-            std::cout << "-S" << ", " << "--strategy" << "\t" << "Turing Machine traversal strategy (default: sequential)" << std::endl;
-            std::cout << "-v" << ", " << "--version" << "\t" << "Outputs the version of the program." <<std::endl;
+            std::cout << "Other Optional Arguments:" << std::endl<< std::endl;
+            std::cout << "-S" << ", " << "--strategy" << "\t" << "Turing Machine traversal strategy (default: sequential)"<< std::endl << std::endl;
+            std::cout << "-v" << ", " << "--version" << "\t" << "Outputs the version of the program." << std::endl <<std::endl;
             std::cout << "-h" << ", " << "--help" << "\t" << "Describes program." <<std::endl<<std::endl;
-            
+            std::cout << "-----------------------------------------------------------------------------" << std::endl;
             std::cout << "Examples:" << std::endl;
-            std::cout << "----------------" << std::endl;
+            std::cout << "-----------------------------------------------------------------------------" << std::endl;
             std::cout << "Run all tms" << std::endl;
             std::cout << "./tm -s 2 -a 2 -i 10 -k 1 " << std::endl;
             std::cout << "./tm --brief -s 2 -a 2 -i 10 -k 1" << std::endl;
@@ -108,16 +113,19 @@ Args parseArgs (int argc, char **argv){
             std::cout << "./tm --brief -s 2 -a 2 -i 10 -k 1 -j 7" << std::endl;
             std::cout << "----------------" << std::endl;
             std::cout << "Run specific tm and obtain profile:" << std::endl;
-            std::cout << "./tm --brief --profile -s 2 -a 2 -i 100 -k 2" << std::endl;
+            std::cout << "./tm --brief --profile -s 2 -a 2 -i 100 -k 2 -t 5" << std::endl;
             std::cout << "----------------" << std::endl;
             std::cout << "Run specific tm and obtain dynamical temporal profile:" << std::endl;
-            std::cout << "./tm --brief --dynprofile -s 2 -a 2 -i 100 -k 2" << std::endl;
+            std::cout << "./tm --brief --dynprofile -s 2 -a 2 -i 100 -k 2 -t 5 "<< std::endl;
             std::cout << "----------------" << std::endl;
             std::cout << "Replicate k and it determination:" << std::endl;
             std::cout << "./tm --brief --replicate -s 2 -a 2 -j 10" << std::endl;
             std::cout << "----------------" << std::endl;
             std::cout << "turing machine growth with alphabet size of 2 and increase in state cardinality:" << std::endl;
             std::cout << "./tm --tmgrowth" << std::endl;
+            std::cout << "----------------" << std::endl;
+            std::cout <<"Run specific tm and print tape" << std::endl;
+            std::cout << "./tm --brief --printTape -s 2 -a 2 -i 100 -t 1"<< std::endl;
             exit (0);
 
         case 'v':
@@ -228,6 +236,7 @@ Args parseArgs (int argc, char **argv){
             abort ();
         }
     }
+    printf("bool result =%d\n", (argument.states!=0 && argument.alphabet_size!=0 && argument.numIt!=0 && argument.k==0 && argument.tm !=0) );
 
     if (verbose_flag) {
         std::cerr << "verbose flag is set" << std::endl;
@@ -252,6 +261,15 @@ Args parseArgs (int argc, char **argv){
         tm_growth_with_cardinality(100);
         exit(0);
     }
+    else if(tm_print_flag && (argument.states!=0 && argument.alphabet_size!=0 && argument.numIt!=0 && argument.k==0 && argument.tm !=0) && tm_profile_flag==false && replicate_flag==false && tm_number_growth_flag==false){
+            printf("k = %d\n", argument.k);
+            tm_print(argument.states,
+                     argument.alphabet_size,
+                     argument.numIt,
+                     argument.tm - 1);
+            exit(0);
+
+    }
     
     else if ( (argument.states!=0 || argument.alphabet_size!=0 || argument.numIt!=0 || argument.k!=0 || argument.jobs!=0 ) && tm_number_growth_flag ){
         std::cerr << "Please fill all the required arguments in order to perform the tm growth" <<std::endl;
@@ -264,7 +282,7 @@ Args parseArgs (int argc, char **argv){
         std::cerr << "Please fill all the required arguments" <<std::endl;
         exit(0);
     }
-    else if(argument.tm !=0 && tm_profile_flag==false && tm_dynamical_profile_flag==false && replicate_flag==false ){
+    else if(argument.tm !=0 && tm_profile_flag==false && tm_dynamical_profile_flag==false && tm_print_flag==false && replicate_flag==false ){
         std::cerr << "You can only provide tm with the --profile or --dynprofile " <<std::endl;
         std::cerr << "Example: ./tm --brief --profile -s 2 -a 2 -i 100 -k 2 -t 5" << std::endl;
         std::cerr << "Example: ./tm --brief --dynprofile -s 2 -a 2 -i 100 -k 2 -t 5" << std::endl;
