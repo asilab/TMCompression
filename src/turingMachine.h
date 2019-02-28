@@ -3,8 +3,10 @@
 #include <vector>
 #include <iostream>
 #include <algorithm>
-
+#include <random>
 #include "traversal.h"
+
+using std::uniform_int_distribution;
 
 using State = unsigned int;
 using Char = unsigned int;
@@ -36,6 +38,19 @@ struct StateMatrix{
   StateMatrix(size_t number_of_states, size_t alphabet_size);
 
   void set_by_index(unsigned long long id);
+
+  /// Reset the state matrix into a uniformly random position.
+  template<typename R>
+  void set_random(R& rng) {
+    auto write_dist = uniform_int_distribution<Char>(0, this->alphSz - 1);
+    auto state_dist = uniform_int_distribution<State>(0, this->nbStates - 1);
+    auto move_dist = uniform_int_distribution<Move>{0, 2};
+    for (auto& st: this->v) {
+      st.write = write_dist(rng);
+      st.move = move_dist(rng);
+      st.state = state_dist(rng);
+    }
+  }
 
   TuringRecord& at(Char alph, State state);
   const TuringRecord& at(Char alph, State state) const;
