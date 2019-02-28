@@ -26,7 +26,7 @@ fi
 if [[ "$TEST_CMP" -eq "1" ]];
     then
 
-    tail -n +4 $txtName | head -n -3 | sort -k 6,6 |awk '$4 < 100 { next } { print }' | tail -n 50 | awk ' { print $1}' > InterestingMachines.txt;
+    tail -n +4 3st.txt | head -n -3 | sort -k 6,6 |awk '$4 < 100 { next } { print }' | tail -n 50 | awk ' { print $1}' > InterestingMachines.txt;
 
 
     while read p; do
@@ -47,7 +47,7 @@ if [[ "$TEST_CMP" -eq "1" ]];
             set key outside horiz center top
             set tics nomirror out scale 0.75
             set xrange [0:]
-            set yrange [:]
+            set yrange [0:0.5]
             set border 3 front ls 101
             set grid ytics lt -1
             set style fill solid
