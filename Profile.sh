@@ -28,7 +28,7 @@ gnuplot << EOF
     set key outside horiz center top
     set tics nomirror out scale 0.75
     set xrange [0:]
-    set yrange [:]
+    set yrange [0:0.5]
     set border 3 front ls 101
     set grid ytics lt -1
     set style fill solid
@@ -36,11 +36,8 @@ gnuplot << EOF
     set xtics font ", 4"
     set xlabel "Amplitude of Tape"
     set ylabel "Normalized Compression"
-    ntics = 100
-    stats 'P2' using 1 name 'x' nooutput
-    set xtics int(x_max/ntics)*10
     set datafile separator "\t"
-    plot "P2" using 2:4 linecolor '#4169E1' pointtype 7 pointsize 0.5 lw 0.5 title "NC Profile of Tape"
+    plot "profile.txt" using 1 linecolor '#4169E1' pointtype 7 pointsize 0.5 lw 0.5 title "NC Profile of Tape"
 EOF
 
 mv profile.pdf $PdfName;

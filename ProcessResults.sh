@@ -68,23 +68,15 @@ fi
 
 if [[ "$STATE2_TMs" -eq "1" ]];
     then
-    tail -n +4 2st.txt | head -n -3 | awk '{ print $4;}'> Amplitude 
-    
-    maxnum=$(sort -n Amplitude |tail -1);
-    cat Amplitude | while read i; 
-    do echo "scale = 10; $i/($maxnum) " | bc; 
-    done > NormAmplitude
-    cat NormAmplitude | ./goose/bin/goose-filter -w 201 -d 5 -1 > Amplitude.txt; 
+    var="2st.txt";
+    tail -n +4 $var | head -n -3 | ./ioNormalize $var >  2stResults.txt
+    #Amplitude
+    awk '{ print $4;}' 2stResults.txt | ./goose/bin/goose-filter -w 201 -d 5 -1 > Amplitude.txt; 
+    #nmvc
+    awk '{ print $5;}' 2stResults.txt | ./goose/bin/goose-filter -w 201 -d 5 -1 > nmvc.txt;
+    #nc
+    awk '{ print $6;}' 2stResults.txt | ./goose/bin/goose-filter -w 201 -d 5 -1 > NC_f.txt;
 
-    tail -n +4 2st.txt | head -n -3 | awk '{ print $5;}' > selfC; 
-    maxnum=$(sort -n selfC |tail -1);
-    cat selfC | while read i; 
-    do echo "scale = 10; $i/($maxnum * 0.5) " | bc; 
-    done > NormselfC
-    cat NormselfC | ./goose/bin/goose-filter -w 201 -d 5 -1 > NormselfC.txt;
-    
-    tail -n +4 2st.txt | head -n -3 | awk '{ print $6;}'| ./goose/bin/goose-filter -w 201 -d 5 -1 > NC_f.txt;
-    
 gnuplot << EOF
     reset
     set terminal pdfcairo enhanced color font 'Verdana,8'
@@ -106,11 +98,11 @@ gnuplot << EOF
     ntics = 100
     stats 'Amplitude.txt' using 1 name 'x' nooutput
     set xtics int(x_max/ntics)*5
-    set style fill transparent solid 0.4 noborder
-    plot "Amplitude.txt" using 1:2 with boxes linecolor '#CFB53B' title "Amplitude of Tape", "NormselfC.txt" using 1:2 with boxes linecolor '#3D9970' title "NMVC", "NC_f.txt" using 1:2  with boxes linecolor '#4169E1' title "Normalized Compression"
+    set style fill transparent solid 0.6 noborder
+    plot "Amplitude.txt" using 1:2 with boxes linecolor '#CFB53B' title "Amplitude of Tape", "nmvc.txt" using 1:2 with boxes linecolor '#3D9970' title "NMVC", "NC_f.txt" using 1:2  with boxes linecolor '#4169E1' title "Normalized Compression"
 EOF
     mv 2sts.pdf ./results
-    rm  NormselfC selfC Amplitude NormAmplitude 
+    rm Amplitude.txt nmvc.txt NC_f.txt 2stResults.txt
 fi
 
 
@@ -120,49 +112,43 @@ fi
 
 if [[ "$STATE3_TMs" -eq "1" ]];
     then
-    tail -n +4 3st.txt | head -n -3 | awk '{ print $4;}'> Amplitude3 
-    
-    maxnum=$(sort -n Amplitude3 | tail -1);
-    cat Amplitude3 | while read i; 
-    do echo "scale = 10; $i/($maxnum) " | bc; 
-    done > NormAmplitude3
-    cat NormAmplitude3 | ./goose/bin/goose-filter -w 201 -d 20 -1  > Amplitude3.txt; 
-    
 
-    tail -n +4 3st.txt | head -n -3 | awk '{ print $5;}' > selfC3; 
-    maxnum=$(sort -n selfC3 |tail -1);
-    cat selfC3 | while read i; 
-    do echo "scale = 10; $i/($maxnum * 0.5) " | bc; 
-    done > NormselfC3
-    cat NormselfC3 | ./goose/bin/goose-filter -w 201 -d 20 -1  > NormselfC3.txt;
+
+    var="3st";
+    text=$var".txt"
+    tail -n +4 $text | head -n -3 | ./ioNormalize $text >  $var"Results.txt"
+    #Amplitude
+    awk '{ print $4;}' $var"Results.txt" | ./goose/bin/goose-filter -w 201 -d 1000 -1 > Amplitude3.txt; 
+    #nmvc
+    awk '{ print $5;}' $var"Results.txt" | ./goose/bin/goose-filter -w 201 -d 1000 -1 > nmvc3.txt;
+    #nc
+    awk '{ print $6;}' $var"Results.txt" | ./goose/bin/goose-filter -w 201 -d 1000 -1 > NC_f3.txt;
     
-    tail -n +4 3st.txt | head -n -3 | awk '{ print $6;}'| ./goose/bin/goose-filter -w 201 -d 20 -1 > NC_f3.txt;
-    
- gnuplot << EOF
+gnuplot << EOF
     reset
     set terminal pdfcairo enhanced color font 'Verdana,8'
-    set output "2sts.pdf"
+    set output "3sts.pdf"
     set boxwidth 0.5
     set size ratio 0.6
     set style line 101 lc rgb '#000000' lt 1 lw 3
     set key outside horiz center top
     set tics nomirror out scale 0.75
-    set xrange [0:20736]
+    set xrange [0:34012224]
     set yrange [:]
     set border 3 front ls 101
     set grid ytics lt -1
     set style fill solid
     set format '%g'
     set xtics font ", 6"
-    set xlabel "2 state Turing Machines 0 to 20736"
+    set xlabel "3 state Turing Machines 0 to 34012224"10000000
     set datafile separator "\t"
-    ntics = 100
-    stats 'Amplitude.txt' using 1 name 'x' nooutput
-    set xtics int(x_max/ntics)*5
+    ntics = 10000000
+    stats 'Amplitude3.txt' using 1 name 'x' nooutput
+    set xtics int(x_max/ntics)
     set style fill transparent solid 0.4 noborder
-    plot "Amplitude3.txt" using 1:2 with boxes linecolor '#CFB53B' title "Amplitude of Tape", "NormselfC3.txt" using 1:2 with boxes linecolor '#3D9970' title "NMVC", "NC_f3.txt" using 1:2  with boxes linecolor '#4169E1' title "Normalized Compression"
+    plot "Amplitude3.txt" using 1:2 with boxes linecolor '#CFB53B' title "Amplitude of Tape", "nmvc3.txt" using 1:2 with boxes linecolor '#3D9970' title "NMVC", "NC_f3.txt" using 1:2  with boxes linecolor '#4169E1' title "Normalized Compression"
 EOF
-    mv 3sts.pdf ./Results
-    rm  NormselfC3 selfC3 Amplitude3 NormAmplitude3 
+    mv 3sts.pdf ./results
+    #rm  Amplitude3.txt nmvc3.txt NC_f3.txt 3stResults.txt
 fi
 
