@@ -236,7 +236,6 @@ Args parseArgs (int argc, char **argv){
             abort ();
         }
     }
-    printf("bool result =%d\n", (argument.states!=0 && argument.alphabet_size!=0 && argument.numIt!=0 && argument.k==0 && argument.tm !=0) );
 
     if (verbose_flag) {
         std::cerr << "verbose flag is set" << std::endl;
@@ -262,7 +261,6 @@ Args parseArgs (int argc, char **argv){
         exit(0);
     }
     else if(tm_print_flag && (argument.states!=0 && argument.alphabet_size!=0 && argument.numIt!=0 && argument.k==0 && argument.tm !=0) && tm_profile_flag==false && replicate_flag==false && tm_number_growth_flag==false){
-            printf("k = %d\n", argument.k);
             tm_print(argument.states,
                      argument.alphabet_size,
                      argument.numIt,
