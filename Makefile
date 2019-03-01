@@ -36,5 +36,6 @@ src/turingMachine.o: src/turingMachine.cpp src/turingMachine.h src/traversal.h
 
 src/util.o: src/util.cpp src/util.h
 
-ioNormalize: src/ioNormalize.cpp
-	 g++ -std=c++14 -o ioNormalize src/ioNormalize.cpp
+ioStNormalize: src/ioStNormalize.cpp
+	 g++ -std=c++14 -o ioStNormalize src/ioStNormalize.cpp
+

@@ -41,7 +41,7 @@ int main (int argc, char **argv){
   if (argument.strategy == TraversalStrategy::SEQUENTIAL){
     for (auto i = 0u; i < data.amplitude.size(); ++i) {
       std::cout << (i + 1) << "\t" << argument.k << "\t" << argument.numIt << "\t" << data.amplitude[i] << "\t" 
-      << std::setprecision(5) <<  data.self_compression[i] << "\t" << std::setprecision(5) << data.normalized_compression[i] << "\t" << std::endl;
+      << std::setprecision(5) << std::showpoint <<  data.self_compression[i] << "\t" << std::setprecision(5) << std::showpoint << data.normalized_compression[i] << "\t" << std::endl;
     }
   }
   else if (argument.strategy != TraversalStrategy::SEQUENTIAL){
@@ -49,7 +49,7 @@ int main (int argc, char **argv){
     std::cerr <<"under work" <<std::endl;
     // change (i+1) to data.tmNumber[i];
     std::cout << (i + 1) << "\t" << argument.k << "\t" << argument.numIt << "\t" << data.amplitude[i] << "\t" 
-    << std::setprecision(5) <<  data.self_compression[i] << "\t" << std::setprecision(5) << data.normalized_compression[i] << "\t" << std::endl;
+    << std::setprecision(5)  << std::showpoint <<  data.self_compression[i] << "\t" << std::setprecision(5) << std::showpoint << data.normalized_compression[i] << "\t" << std::endl;
     }
   }
 

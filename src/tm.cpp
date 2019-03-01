@@ -73,7 +73,7 @@ CompressionResultsData tm(
 
         if (verbose && counter % 4096 == 0) {
           std::cerr << "TM #" << std::setw(8) << counter << ": amplitude = " << metrics.amplitude 
-          << ": sc = " << std::setprecision(5) <<metrics.selfCompression <<": nc = " << std::setprecision(5) 
+          << ": sc = " << std::setprecision(5) << std::showpoint <<metrics.selfCompression <<": nc = " << std::setprecision(5) << std::showpoint 
           << metrics.normalizedCompression << "\r";
         }
 
@@ -98,7 +98,7 @@ CompressionResultsData tm(
 
         if (verbose && counter % 4096 == 0) {
           std::cerr << "TM #" << std::setw(8) << counter << ": amplitude = " << metrics.amplitude 
-          << ": sc = " << std::setprecision(5) <<metrics.selfCompression <<": nc = " << std::setprecision(5) 
+          << ": sc = " << std::setprecision(5) << std::showpoint <<metrics.selfCompression <<": nc = " << std::setprecision(5) << std::showpoint
           << metrics.normalizedCompression << "\r";
         }
 
@@ -146,8 +146,8 @@ void tm_dynamical_profile(
   std::cout<< "iterations \t amplitude \t Self-Compression \t Normalized Compression " << std::endl; 
   std::cout<< "-------------------------------------------------" <<std::endl;
   for (auto i = 0u; i < data.amplitude.size(); ++i) {
-  std::cout << ((i + 1) * divison) << "\t" << data.amplitude[i] << "\t" << std::setprecision(5) <<  data.self_compression[i] 
-                        << "\t" << std::setprecision(5) << data.normalized_compression[i] << "\t" << std::endl;
+  std::cout << ((i + 1) * divison) << "\t" << data.amplitude[i] << "\t" << std::setprecision(5) << std::showpoint <<  data.self_compression[i] 
+                        << "\t" << std::setprecision(5) << std::showpoint << data.normalized_compression[i] << "\t" << std::endl;
   }
       
     
@@ -194,8 +194,8 @@ void tm_profile(
     std::cout<< "-------------------------------------------------" <<std::endl;
     
     for (auto i = 0u; i < data.amplitude.size(); ++i) {
-      std::cout << ((i + 1)*divison) << "\t" << data.amplitude[i] << "\t" << std::setprecision(5) <<  data.self_compression[i] 
-                          << "\t" << std::setprecision(5) << data.normalized_compression[i] << "\t" << std::endl;
+      std::cout << ((i + 1)*divison) << "\t" << data.amplitude[i] << "\t" << std::setprecision(5)  << std::showpoint <<  data.self_compression[i] 
+                          << "\t" << std::setprecision(5) << std::showpoint << data.normalized_compression[i] << "\t" << std::endl;
     }
   }
 

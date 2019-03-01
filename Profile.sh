@@ -8,8 +8,9 @@ fi
 # ==============================================================================
 Machine=$1;
 txtName="Profile"$1".txt";
-PdfName="Profile"$1".pdf";
-SavePath="./Profiles/"$2"/"
+pdfName="Profile"$1".pdf";
+
+#SavePath="./Profiles/"$2"/"
 
 # ==============================================================================
 # Pofile curves Results of 3 state Turing Machines
@@ -17,7 +18,10 @@ SavePath="./Profiles/"$2"/"
 
 
 ./tm --brief --profile -s 2 -a 2 -i 50000 -k 2 -t $1 > $txtName;
-tail -n +3 $txtName > P2;
+tail -n +3 $txtName | awk '{ print $4;}' | ./goose/bin/goose-filter -w 5 -d 5 -1 > nc_profile.txt;
+tail -n +3 $txtName | awk '{ print $2;}' | ./goose/bin/goose-filter -w 1 -d 5 -1 > amp_profile.txt;
+paste amp_profile.txt nc_profile.txt > profile.txt
+exit;
 gnuplot << EOF
     reset
     set terminal pdfcairo enhanced color font 'Verdana,8'
@@ -37,13 +41,13 @@ gnuplot << EOF
     set xlabel "Amplitude of Tape"
     set ylabel "Normalized Compression"
     set datafile separator "\t"
-    plot "profile.txt" using 1 linecolor '#4169E1' pointtype 7 pointsize 0.5 lw 0.5 title "NC Profile of Tape"
+    plot "nc_profile.txt" using 1:2 linecolor '#4169E1' pointtype 7 pointsize 0.5 lw 0.5 title "NC Profile of Tape"
 EOF
 
-mv profile.pdf $PdfName;
-mv $PdfName $SavePath;
-mv $txtName $SavePath;
-rm P2;
+mv profile.pdf $pdfName;
+#mv $pdfName $SavePath;
+#mv $txtName $SavePath;
+#rm P2;
 
 
 

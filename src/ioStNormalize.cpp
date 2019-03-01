@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
 
 
     for(auto& v : nmvcVector){ 
-        nmvcVector2.push_back(v*2/(*nmvcit));
+        nmvcVector2.push_back(v/(*nmvcit));
     } 
     for(auto& v : ampVector){ 
         ampVector2.push_back( static_cast<double>(v)/( *ampit ));
