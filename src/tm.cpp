@@ -113,7 +113,7 @@ CompressionResultsData tm(
           << ": sc = " << std::setprecision(5) << std::showpoint <<metrics.selfCompression <<": nc = " << std::setprecision(5) << std::showpoint
           << metrics.normalizedCompression << "\r";
         }
-
+        data.tmNumber.push_back(a);
         data.amplitude.push_back(metrics.amplitude);
         data.self_compression.push_back(metrics.selfCompression);
         data.normalized_compression.push_back(metrics.normalizedCompression);
@@ -128,7 +128,21 @@ CompressionResultsData tm(
   }
   return data;
 }
-
+void tm_print(
+    size_t states,
+    size_t alphabet_size,
+    unsigned int num_iterations,
+    TmId tm_number)
+    {
+    
+    TuringMachine machine(states, alphabet_size);    
+    machine.stMatrix.set_by_index(tm_number); 
+    machine.reset_tape_and_state();
+    for (auto i = 0u; i < num_iterations -1 ; ++i){
+           machine.act(); //importante ser antes
+    }
+    machine.turingTape.print();
+}
 void tm_dynamical_profile(
     size_t states,
     size_t alphabet_size,
@@ -161,26 +175,7 @@ void tm_dynamical_profile(
   std::cout << ((i + 1) * divison) << "\t" << data.amplitude[i] << "\t" << std::setprecision(5) << std::showpoint <<  data.self_compression[i] 
                         << "\t" << std::setprecision(5) << std::showpoint << data.normalized_compression[i] << "\t" << std::endl;
   }
-      
-    
 }       
-void tm_print(
-    size_t states,
-    size_t alphabet_size,
-    unsigned int num_iterations,
-    TmId tm_number)
-    {
-    
-    TuringMachine machine(states, alphabet_size);    
-    machine.stMatrix.set_by_index(tm_number); 
-    machine.reset_tape_and_state();
-    for (auto i = 0u; i < num_iterations -1 ; ++i){
-           machine.act(); //importante ser antes
-    }
-    machine.turingTape.print();
-}
-
-
 void tm_profile(
     size_t states,
     size_t alphabet_size,
@@ -424,13 +419,11 @@ CompressionResultsData tm_multicore(
 }
 
 
-
 void ktm_multicore(
     size_t states,
     size_t alphabet_size,
     unsigned int threads) {
   
-
   TuringMachine machine(states, alphabet_size);
 
   std::vector <unsigned int> range_of_k = {2,3,4,5,6,7,8,9,10};

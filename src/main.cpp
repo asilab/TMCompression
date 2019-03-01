@@ -44,12 +44,13 @@ int main (int argc, char **argv){
       << std::setprecision(5) << std::showpoint <<  data.self_compression[i] << "\t" << std::setprecision(5) << std::showpoint << data.normalized_compression[i] << "\t" << std::endl;
     }
   }
-  else if (argument.strategy != TraversalStrategy::SEQUENTIAL){
+  else if (argument.strategy == TraversalStrategy::MONTE_CARLO){
+    std::cout <<data.tmNumber.size()<<std::endl;
+
     for (auto i = 0u; i < data.amplitude.size(); ++i) {
-    std::cerr <<"under work" <<std::endl;
-    // change (i+1) to data.tmNumber[i];
     std::cout << (i + 1) << "\t" << argument.k << "\t" << argument.numIt << "\t" << data.amplitude[i] << "\t" 
-    << std::setprecision(5)  << std::showpoint <<  data.self_compression[i] << "\t" << std::setprecision(5) << std::showpoint << data.normalized_compression[i] << "\t" << std::endl;
+    << std::setprecision(5)  << std::showpoint <<  data.self_compression[i] << "\t" << std::setprecision(5) 
+    << std::showpoint << data.normalized_compression[i] << "\t" << std::endl;
     }
   }
 

@@ -16,3 +16,4 @@ struct Args{
 };
 
 Args parseArgs (int argc, char **argv);
+void printArgs(Args);

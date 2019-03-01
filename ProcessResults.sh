@@ -119,11 +119,11 @@ if [[ "$STATE3_TMs" -eq "1" ]];
     text=$var".txt"
     tail -n +4 $text | head -n -3 | ./ioStNormalize $text >  $var"Results.txt"
     #Amplitude
-    awk '{ print $4;}' $var"Results.txt" | ./goose/bin/goose-filter -w 50001 -d 5000 -1 > Amplitude3.txt; 
+    awk '{ print $4;}' $var"Results.txt" | ./goose/bin/goose-filter -w 80001 -d 10000 -1 > Amplitude3.txt; 
     #nmvc
     #awk '{ print $5;}' $var"Results.txt" | ./goose/bin/goose-filter -w 1001 -d 5000 -1 > nmvc3.txt;
     #nc
-    awk '{ print $6;}' $var"Results.txt" | ./goose/bin/goose-filter -w 50001 -d 10000 -1 > NC_f3.txt;
+    awk '{ print $6;}' $var"Results.txt" | ./goose/bin/goose-filter -w 80001 -d 10000 -1 > NC_f3.txt;
     
 gnuplot << EOF
     reset

@@ -114,6 +114,13 @@ Args parseArgs (int argc, char **argv){
             std::cout << "./tm -s 2 -a 2 -i 10 -k 1 -j 7" << std::endl;
             std::cout << "./tm --brief -s 2 -a 2 -i 10 -k 1 -j 7" << std::endl;
             std::cout << "----------------" << std::endl;
+            std::cout << "Strategies of running TM Machines" << std::endl;
+            std::cout <<"By default strategy is Sequential:"<< std::endl;
+            std::cout << "./tm --brief -s 2 -a 2 -i 10 -k 1 -j 7" << std::endl;
+            std::cout << "./tm --brief -s 2 -a 2 -i 10 -k 1 -N 10 -j 4 -S sequential" << std::endl;
+            std::cout <<"Monte Carlo:"<< std::endl;
+            std::cout << "./tm --brief -s 2 -a 2 -i 10 -k 1 -N 10 -j 4 -S monte_carlo" << std::endl;
+            std::cout << "----------------" << std::endl;
             std::cout << "Run specific tm and obtain profile:" << std::endl;
             std::cout << "./tm --brief --profile -s 2 -a 2 -i 100 -k 2 -t 5" << std::endl;
             std::cout << "----------------" << std::endl;
@@ -349,4 +356,22 @@ Args parseArgs (int argc, char **argv){
     }
 
     return argument;
+}
+
+void printArgs(Args arguments){
+    std::cout<<"states = " << arguments.states << std::endl;
+    std::cout<<"alphabet_size = " << arguments.alphabet_size<< std::endl;
+    std::cout<<"threshold = " << arguments.threshold << std::endl;
+    std::cout<<"numIt = " << arguments.numIt << std::endl;
+    std::cout<<"k = " << arguments.k << std::endl;
+    std::cout<<"tm = " << arguments.tm << std::endl;
+    if(arguments.strategy == TraversalStrategy::SEQUENTIAL){
+        std::cout << "strategy = " << "Sequential"  << std::endl; //might require twirks
+    }
+    else if(arguments.strategy == TraversalStrategy::MONTE_CARLO){
+        std::cout << "strategy = " << "Monte Carlo"  << std::endl;
+    }
+    std::cout<<"n = " << arguments.n << std::endl;
+    std::cout<<"jobs = " << arguments.jobs << std::endl;
+    std::cout<<"verbose = " << arguments.verbose << std::endl;
 }

@@ -31,10 +31,7 @@ CompressionResultsData tm(
  * @param states
  * @param alphabet_size
  */
-void ktm(size_t states,
-    size_t alphabet_size);
-
-
+void ktm(size_t states, size_t alphabet_size);
 
 /** Prints a specific turing machine tape after a given number of iterations.
  *
