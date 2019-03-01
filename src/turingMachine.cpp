@@ -8,7 +8,7 @@
 
 #include "turingMachine.h"
 
-bool TuringRecord::next(size_t number_of_states, size_t alphabet_size) {
+bool TuringRecord::next(unsigned int number_of_states, unsigned int alphabet_size) {
   if (write < alphabet_size - 1) {
     write += 1;
     return true;
@@ -34,10 +34,10 @@ std::ostream& operator<<( std::ostream& o, const TuringRecord& r) {
   return o;
 }
 
-TuringRecord TuringRecord::by_index(unsigned long long id, size_t number_of_states, size_t alphabet_size) {
+TuringRecord TuringRecord::by_index(RecordId id, unsigned int number_of_states, unsigned int alphabet_size) {
   // order of significance (least to most): character_write -> tape_move -> state
-  unsigned long long nstates = number_of_states;
-  unsigned long long nalphabet = alphabet_size;
+  RecordId nstates = number_of_states;
+  RecordId nalphabet = alphabet_size;
   auto rest = id;
   auto write = static_cast<Char>(rest % nalphabet);
   rest /= nalphabet;
@@ -47,10 +47,10 @@ TuringRecord TuringRecord::by_index(unsigned long long id, size_t number_of_stat
   return TuringRecord { write, move, state };
 }
 
-StateMatrix::StateMatrix(size_t number_of_states, size_t alphabet_size):
+StateMatrix::StateMatrix(unsigned int number_of_states, unsigned int alphabet_size):
   v(alphabet_size * number_of_states, TuringRecord{0, 0, 0}), nbStates(number_of_states), alphSz(alphabet_size){}
 
-void StateMatrix::set_by_index(unsigned long long id) {
+void StateMatrix::set_by_index(TmId id) {
   auto rest = id;
   auto record_cardinality = this->nbStates * this->alphSz * 3;
   for (auto& st: this->v) {
@@ -59,6 +59,17 @@ void StateMatrix::set_by_index(unsigned long long id) {
     rest /= record_cardinality;
     if (rest == 0) break;
   }
+}
+
+TmId StateMatrix::calculate_index() const {
+  auto record_cardinality = this->nbStates * this->alphSz * 3;
+  TmId id(0);
+  for (auto it = rbegin(this->v); it != rend(this->v); ++it) {
+    auto& st = *it;
+    TmId st_index = st.write + (st.move + st.state * 3) * this->alphSz;
+    id = id * record_cardinality + st_index;
+  }
+  return id;
 }
 
 TuringRecord& StateMatrix::at(Char alph, State state){
@@ -210,7 +221,7 @@ std::ostream& operator<<( std::ostream& o, const Tape& t) {
 }
 
 
-TuringMachine::TuringMachine(size_t number_of_states, size_t alphabet_size):
+TuringMachine::TuringMachine(unsigned int number_of_states, unsigned int alphabet_size):
   state(0), turingTape(), stMatrix(number_of_states,alphabet_size){}
 
 TapeMoves TuringMachine::act(){

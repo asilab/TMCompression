@@ -30,6 +30,18 @@ Metrics run_machine(TuringMachine& machine, NormalizedCompressionMarkovTable& no
 /// The RNG engine for sampling random numbers in Monte Carlo.
 using Rng = std::minstd_rand;
 
+/** Calculate the full cardinality of all possible turing machine state matrices.
+ * @param states the state cardinality
+ * @param alphabet_size the alphabet's size
+ */
+TmId tm_cardinality(unsigned int states, unsigned int alphabet_size) {
+    TmId nstates = states;
+    TmId nalphabet = alphabet_size;
+    auto record_cardinality = nstates * nalphabet * 3;
+
+    return ipow(record_cardinality, nstates * nalphabet);
+}
+
 /** Evaluate all relative turing machine programs with the given architecture.
  *
  * @param states
@@ -122,7 +134,7 @@ void tm_dynamical_profile(
     size_t alphabet_size,
     unsigned int num_iterations,
     unsigned int k,
-    unsigned long long tm_number,
+    TmId tm_number,
     unsigned int divison)
   {
 
@@ -156,7 +168,7 @@ void tm_print(
     size_t states,
     size_t alphabet_size,
     unsigned int num_iterations,
-    unsigned long long tm_number)
+    TmId tm_number)
     {
     
     TuringMachine machine(states, alphabet_size);    
@@ -174,7 +186,7 @@ void tm_profile(
     size_t alphabet_size,
     unsigned int num_iterations,
     unsigned int k,
-    unsigned long long tm_number,
+    TmId tm_number,
     unsigned int divison)
     {
 

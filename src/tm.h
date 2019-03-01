@@ -47,7 +47,7 @@ void tm_print(
     size_t states,
     size_t alphabet_size,
     unsigned int num_iterations,
-    unsigned long long tm_number);
+    TmId tm_number);
 
 
 
@@ -64,7 +64,7 @@ void tm_print(
     size_t alphabet_size,
     unsigned int num_iterations,
     unsigned int k,
-    unsigned long long tm_number,
+    TmId tm_number,
     unsigned int divison=5);
 
 
@@ -81,7 +81,7 @@ void tm_print(
     size_t alphabet_size,
     unsigned int num_iterations,
     unsigned int k,
-    unsigned long long tm_number,
+    TmId tm_number,
     unsigned int divison=5);
 
 
