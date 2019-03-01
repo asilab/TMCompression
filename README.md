@@ -12,6 +12,7 @@ Get TMCompression and make the project, using:
 git https://github.com/jorgeMFS/TMCompression.git
 cd TMCompression
 make
+make ioNormalize
 ```
 ## RUN
 

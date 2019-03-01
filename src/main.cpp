@@ -38,11 +38,20 @@ int main (int argc, char **argv){
   
   std::cout<< "TM \t k value \t iterations \t amplitude \t Self-Compression \t Normalized Compression " << std::endl; 
   std::cout<< "-------------------------------------------------" <<std::endl;
-
-  for (auto i = 0u; i < data.amplitude.size(); ++i) {
-    std::cout << (i + 1) << "\t" << argument.k << "\t" << argument.numIt << "\t" << data.amplitude[i] << "\t" 
-    << std::setprecision(5) <<  data.self_compression[i] << "\t" << std::setprecision(5) << data.normalized_compression[i] << "\t" << std::endl;
-  }
+    if (argument.strategy == TraversalStrategy::SEQUENTIAL){
+      for (auto i = 0u; i < data.amplitude.size(); ++i) {
+        std::cout << (i + 1) << "\t" << argument.k << "\t" << argument.numIt << "\t" << data.amplitude[i] << "\t" 
+        << std::setprecision(5) <<  data.self_compression[i] << "\t" << std::setprecision(5) << data.normalized_compression[i] << "\t" << std::endl;
+      }
+    }
+    else if (argument.strategy != TraversalStrategy::SEQUENTIAL){
+      for (auto i = 0u; i < data.amplitude.size(); ++i) {
+      std::cerr <<"under work" <<std::endl;
+      // change (i+1) to data.tmNumber[i];
+      std::cout << (i + 1) << "\t" << argument.k << "\t" << argument.numIt << "\t" << data.amplitude[i] << "\t" 
+      << std::setprecision(5) <<  data.self_compression[i] << "\t" << std::setprecision(5) << data.normalized_compression[i] << "\t" << std::endl;
+      }
+    }
 
   std::cout<< "-------------------------------------------------" <<std::endl;
   float mean_amp = std::accumulate( data.amplitude.begin(), data.amplitude.end(), 0.0)/data.amplitude.size();

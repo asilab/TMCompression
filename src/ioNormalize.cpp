@@ -53,11 +53,10 @@ int main(int argc, char *argv[])
     }
     auto nmvcit = std::max_element(std::begin(nmvcVector), std::end(nmvcVector));
     auto ampit = std::max_element(std::begin(ampVector), std::end(ampVector));
-    //std::cout << "max nmvc value = " << *nmvcit << std::endl;
-    //std::cout << "max amp value = " << *ampit << std::endl;
+
 
     for(auto& v : nmvcVector){ 
-        nmvcVector2.push_back(v/((*nmvcit) * 0.5));
+        nmvcVector2.push_back(v*2/(*nmvcit));
     } 
     for(auto& v : ampVector){ 
         ampVector2.push_back( static_cast<double>(v)/( *ampit ));

@@ -93,7 +93,7 @@ CompressionResultsData tm(
 
       for (auto counter = 0ull; counter < traversal_len; counter++) {
         machine.stMatrix.set_random(rng);
-
+        // get turing machine index
         auto metrics = run_machine(machine, normalizedCompressionMarkovTable, num_iterations);
 
         if (verbose && counter % 4096 == 0) {
@@ -260,8 +260,8 @@ CompressionResultsData multicore_monte_carlo(
       size_t n,
       unsigned int threads,
       bool verbose) {
-  // split work in partitions
 
+  // split work in partitions
   if (threads > n) {
     threads = n;
     if (verbose) {
@@ -365,6 +365,20 @@ CompressionResultsData multicore_sequential_partition(
 }
 
 
+/*
+tm_multicore(
+    argument.states,
+    argument.alphabet_size,
+    argument.numIt,
+    argument.k,
+    argument.strategy,
+    argument.n,
+    0,
+    argument.verbose,
+    argument.jobs);
+  
+*/
+
 CompressionResultsData tm_multicore(
     size_t states,
     size_t alphabet_size,
@@ -386,8 +400,9 @@ CompressionResultsData tm_multicore(
     return multicore_sequential_partition([=](auto len, auto offset) {
       return tm(states, alphabet_size, num_iterations, k, strategy, len, offset, verbose);
         },real_len, traversal_offset,threads, verbose);
-  } else if (strategy == TraversalStrategy::MONTE_CARLO) {
-    
+  } 
+  else if (strategy == TraversalStrategy::MONTE_CARLO) {
+  
     return multicore_monte_carlo([=](auto n) -> CompressionResultsData {
       return tm(states, alphabet_size, num_iterations, k, strategy, n, 0, verbose);
     }, traversal_len, threads, verbose);

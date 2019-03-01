@@ -36,8 +36,9 @@
 
 #Executable
 tm
+AC
+ioNormalize
 
-#Goose
+#Other Dependencies installed
 goose/*
 ac/*
-AC

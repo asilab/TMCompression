@@ -29,6 +29,8 @@ struct Metrics{
 
 struct CompressionResultsData
 {
+  // Integer
+  std::vector <unsigned long long> tmNumber;
   std::vector <unsigned int> amplitude;
   std::vector <double> normalized_compression;
   std::vector <double> self_compression;
