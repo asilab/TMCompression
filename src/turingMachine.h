@@ -8,6 +8,8 @@
 
 using std::uniform_int_distribution;
 
+using TmId = unsigned long long;
+using RecordId = unsigned int;
 using State = unsigned int;
 using Char = unsigned int;
 using Move = unsigned int;
@@ -23,21 +25,23 @@ struct TuringRecord{
   Move move;
   State state;
 
-  bool next(size_t number_of_states, size_t alphabet_size);
+  bool next(unsigned int number_of_states, unsigned int alphabet_size);
 
-  static TuringRecord by_index(unsigned long long id, size_t number_of_states, size_t alphabet_size);
+  static TuringRecord by_index(RecordId id, unsigned int number_of_states, unsigned int alphabet_size);
 };
 
 std::ostream& operator<<( std::ostream& o, const TuringRecord& r);
 
 struct StateMatrix{
   std::vector<TuringRecord> v;
-  size_t nbStates;
-  size_t alphSz;
+  unsigned int nbStates;
+  unsigned int alphSz;
 
-  StateMatrix(size_t number_of_states, size_t alphabet_size);
+  StateMatrix(unsigned int number_of_states, unsigned int alphabet_size);
 
-  void set_by_index(unsigned long long id);
+  void set_by_index(TmId id);
+
+  TmId calculate_index() const;
 
   /// Reset the state matrix into a uniformly random position.
   template<typename R>
@@ -85,7 +89,7 @@ struct TuringMachine {
   Tape turingTape;
   StateMatrix stMatrix;
 
-  TuringMachine(size_t number_of_states, size_t alphabet_size);
+  TuringMachine(unsigned int number_of_states, unsigned int alphabet_size);
   void reset_tape_and_state();
   TapeMoves act();
 };

@@ -341,7 +341,7 @@ Args parseArgs (int argc, char **argv){
     printf ("states = %zu, alphabet_size = %zu, number of iterations = %u , k = %d\n",
     argument.states, argument.alphabet_size, argument.numIt, argument.k);
 
-    if(ipow(argument.alphabet_size,argument.k) >= ipow(2,28))
+    if(ipow<unsigned long long>(argument.alphabet_size, argument.k) >= ipow<unsigned long long>(2,28))
     {
         fprintf (stderr, "k/context (%d) and Alphabet size/a (%zu) is too large..\n", argument.k, argument.alphabet_size);
         fprintf (stderr, " please consider a size of a^k (%zu^%d) smaller than 2^28..\n", argument.alphabet_size,argument.k);
