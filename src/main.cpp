@@ -45,7 +45,7 @@ int main (int argc, char **argv){
     }
   }
   else if (argument.strategy == TraversalStrategy::MONTE_CARLO){
-    std::cout <<data.tmNumber.size()<<std::endl;
+    //std::cout <<data.tmNumber.size()<<std::endl;
 
     for (auto i = 0u; i < data.amplitude.size(); ++i) {
     std::cout << (i + 1) << "\t" << argument.k << "\t" << argument.numIt << "\t" << data.amplitude[i] << "\t" 
