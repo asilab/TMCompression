@@ -118,11 +118,11 @@ if [[ "$STATE3_TMs" -eq "1" ]];
     text=$var".txt"
     tail -n +4 $text | head -n -3 | ./ioNormalize $text >  $var"Results.txt"
     #Amplitude
-    awk '{ print $4;}' $var"Results.txt" | ./goose/bin/goose-filter -w 201 -d 10000 -1 > Amplitude3.txt; 
+    awk '{ print $4;}' $var"Results.txt" | ./goose/bin/goose-filter -w 1001 -d 1000 -1 > Amplitude3.txt; 
     #nmvc
-    awk '{ print $5;}' $var"Results.txt" | ./goose/bin/goose-filter -w 201 -d 10000 -1 > nmvc3.txt;
+    awk '{ print $5;}' $var"Results.txt" | ./goose/bin/goose-filter -w 1001 -d 1000 -1 > nmvc3.txt;
     #nc
-    awk '{ print $6;}' $var"Results.txt" | ./goose/bin/goose-filter -w 201 -d 10000 -1 > NC_f3.txt;
+    awk '{ print $6;}' $var"Results.txt" | ./goose/bin/goose-filter -w 1001 -d 1000 -1 > NC_f3.txt;
     
 gnuplot << EOF
     reset
@@ -148,7 +148,7 @@ gnuplot << EOF
     set style fill transparent solid 0.4 noborder
     plot "Amplitude3.txt" using 1:2 with boxes linecolor '#CFB53B' title "Amplitude of Tape", "NC_f3.txt" using 1:2  with boxes linecolor '#4169E1' title "Normalized Compression"
 EOF
-    #"nmvc3.txt" using 1:2 with boxes linecolor '#3D9970' title "NMVC"
+    #, "nmvc3.txt" using 1:2 with boxes linecolor '#3D9970' title "NMVC"
     mv 3sts.pdf ./results
     rm  Amplitude3.txt nmvc3.txt NC_f3.txt 3stResults.txt
 fi
