@@ -90,7 +90,6 @@ CompressionResultsData tm(
         }
 
         machine.stMatrix.next();
-
         data.amplitude.push_back(metrics.amplitude);
         data.self_compression.push_back(metrics.selfCompression);
         data.normalized_compression.push_back(metrics.normalizedCompression);
@@ -113,7 +112,7 @@ CompressionResultsData tm(
           << ": sc = " << std::setprecision(5) << std::showpoint <<metrics.selfCompression <<": nc = " << std::setprecision(5) << std::showpoint
           << metrics.normalizedCompression << "\r";
         }
-        data.tmNumber.push_back(machine.stMatrix. calculate_index());
+        data.tmNumber.push_back(machine.stMatrix.calculate_index());
         data.amplitude.push_back(metrics.amplitude);
         data.self_compression.push_back(metrics.selfCompression);
         data.normalized_compression.push_back(metrics.normalizedCompression);
@@ -121,7 +120,6 @@ CompressionResultsData tm(
     }
     break;
   }
-
   
   if (verbose) {
     std::cerr << std::endl;
