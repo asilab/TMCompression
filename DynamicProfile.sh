@@ -2,7 +2,7 @@
 #
 if [ $# -ne 5 ]; then
     echo "Not enough arguments arguments provided, you need to provide 5 arguments:";
-    echo "All args are numbers required for the creation of the TM dynamical profile";
+    echo "All args are numbers required for the creation of the TM profile";
     echo "";
     echo "Arg[1]: TM index Number";
     echo "Arg[2]: TM #States";
@@ -11,13 +11,12 @@ if [ $# -ne 5 ]; then
     echo "Arg[4]: TM k Number";
     exit 1;
 fi
-
 # ==============================================================================
 # Variables
 # ==============================================================================
 Machine=$1;
-txtName="Profile"$1".txt";
-pdfName="Profile"$1".pdf";
+txtName="DynProfile"$1".txt";
+pdfName="DynProfile"$1".pdf";
 SavePath="./Profiles/";
 STATE=$2;
 ALPHABET=$3;
@@ -29,27 +28,26 @@ Folder=$STATE"St"$ALPHABET"AlphTM/";
 DIRECTORY=${SavePath}${Folder};
 
 if [ -d "$DIRECTORY" ]; then
-    echo "this folder exists";
+    echo "this folder already exists";
 else
     cd $SavePath
     mkdir $Folder
     cd ..
 fi
 
-
 # ==============================================================================
 # Pofile curves Results of 3 state Turing Machines
 # ==============================================================================
+./tm --brief --dynprofile -s $STATE -a $ALPHABET -i $NUMBERITERATION -k $K -t $1 > $txtName;
 
-./tm --brief --profile -s $STATE -a $ALPHABET -i $NUMBERITERATION -k $K -t $1 > $txtName;
-tail -n +3 $txtName | awk '{ print $4;}'  > nc_profile.txt;
-tail -n +3 $txtName | awk '{ print $2;}'> amp_profile.txt;
-paste amp_profile.txt nc_profile.txt > profile.txt
+tail -n +3 $txtName | awk '{ print $4;}'  > nc_dynProfile.txt;
+tail -n +3 $txtName | awk '{ print $2;}'> amp_dynProfile.txt;
+paste amp_dynProfile.txt nc_dynProfile.txt > dynProfile.txt
 
 gnuplot << EOF
     reset
     set terminal pdfcairo enhanced color font 'Verdana,8'
-    set output "profile.pdf"
+    set output "dynProfile.pdf"
     set boxwidth 0.5
     set size ratio 0.6
     set style line 101 lc rgb '#000000' lt 1 lw 3
@@ -65,9 +63,9 @@ gnuplot << EOF
     set xlabel "Amplitude of Tape"
     set ylabel "Normalized Compression"
     set datafile separator "\t"
-    plot "profile.txt" using 1:2 linecolor '#4169E1' pointtype 7 pointsize 0.3 lw 0.5 title "NC Profile of Tape"
+    plot "dynProfile.txt" using 1:2 linecolor '#4169E1' pointtype 7 pointsize 0.3 lw 0.5 title "NC Profile of Tape"
 EOF
 
-mv profile.pdf $pdfName;
+mv dynProfile.pdf $pdfName;
 mv $pdfName $DIRECTORY;
-rm nc_profile.txt amp_profile.txt profile.txt $txtName;
+rm nc_dynProfile.txt amp_dynProfile.txt dynProfile.txt $txtName;
