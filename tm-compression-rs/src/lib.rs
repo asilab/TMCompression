@@ -25,8 +25,10 @@ impl TuringRecord {
         TuringRecord { write, mov, state }
     }
 
-    pub fn calculate_id(&self) -> RecordId {
-        unimplemented!("not needed")
+    #[inline]
+    pub fn calculate_id(&self, alphabet_size: u32) -> RecordId {
+        let alphsz = alphabet_size as RecordId;
+        self.write as RecordId + (self.mov as RecordId + self.state as RecordId * 3) * alphsz
     }
 
     pub fn next(&mut self, number_of_states: u32, alphabet_size: u32) -> bool {
@@ -100,7 +102,7 @@ impl StateMatrix {
         let record_cardinality = (self.nb_states * self.alph_sz * 3) as u64;
         let mut id = 0;
         for st in self.v.iter().rev() {
-            let st_index = st.write + (st.mov + st.state * 3) * self.alph_sz;
+            let st_index = st.calculate_id(self.alph_sz);
             id = id * record_cardinality + u64::from(st_index);
         }
         id
@@ -119,7 +121,34 @@ mod tests {
                 mov: 0,
                 state: 0,
             }
-        )
+        );
+
+        assert_eq!(
+            TuringRecord::from_id(1, 2, 2),
+            TuringRecord {
+                write: 1,
+                mov: 0,
+                state: 0,
+            }
+        );
+
+        assert_eq!(
+            TuringRecord::from_id(2, 2, 2),
+            TuringRecord {
+                write: 0,
+                mov: 1,
+                state: 0,
+            }
+        );
+
+        assert_eq!(
+            TuringRecord::from_id(11, 2, 2),
+            TuringRecord {
+                write: 1,
+                mov: 2,
+                state: 1,
+            }
+        );
     }
 
     #[test]
@@ -136,7 +165,7 @@ mod tests {
     fn test_state_matrix_2_3() {
         let mut sm = StateMatrix::new(2, 3);
 
-        for id in 0..34012224 {
+        for id in 0..200000 {
             assert_eq!(sm.calculate_id(), id);
             sm.next();
         }
