@@ -64,10 +64,7 @@ TmId StateMatrix::calculate_index() const {
 
   //Problem when jobs>1 ;
   auto record_cardinality = this->nbStates * this->alphSz * 3;
-  std::cout <<"record_cardinality:: " << record_cardinality << std::endl;
-  std::cout <<"record_cardinality::type:: " << typeid(record_cardinality).name() << std::endl;
   TmId id(0);
-  std::cout <<"id(0):: " <<  id << std::endl;
   for (auto it = rbegin(this->v); it != rend(this->v); ++it) {
     auto& st = *it;
     TmId st_index = st.write + (st.move + st.state * 3) * this->alphSz;

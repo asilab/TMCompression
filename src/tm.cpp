@@ -104,6 +104,7 @@ CompressionResultsData tm(
 
       for (auto counter = 0ull; counter < traversal_len; counter++) {
         machine.stMatrix.set_random(rng);
+        auto index = machine.stMatrix.calculate_index();
         auto metrics = run_machine(machine, normalizedCompressionMarkovTable, num_iterations);
 
         if (verbose && counter % 4096 == 0) {
@@ -113,11 +114,7 @@ CompressionResultsData tm(
         }
         
         // get turing machine index
-        data.tmNumber.push_back(machine.stMatrix.calculate_index());
-        std::cout<<"----------------------------------------------"<<std::endl;
-        std::cout<<"size::"<< data.tmNumber.size() <<std::endl;
-        std::cout<<"----------------------------------------------"<<std::endl;
-
+        data.tmNumber.push_back(index);
         data.amplitude.push_back(metrics.amplitude);
         data.self_compression.push_back(metrics.selfCompression);
         data.normalized_compression.push_back(metrics.normalizedCompression);
@@ -132,19 +129,19 @@ CompressionResultsData tm(
   return data;
 }
 void tm_print(
-    size_t states,
-    size_t alphabet_size,
-    unsigned int num_iterations,
-    TmId tm_number)
-    {
-    
-    TuringMachine machine(states, alphabet_size);    
-    machine.stMatrix.set_by_index(tm_number); 
-    machine.reset_tape_and_state();
-    for (auto i = 0u; i < num_iterations -1 ; ++i){
-           machine.act(); //importante ser antes
-    }
-    machine.turingTape.print();
+  size_t states,
+  size_t alphabet_size,
+  unsigned int num_iterations,
+  TmId tm_number)
+  {
+  
+  TuringMachine machine(states, alphabet_size);    
+  machine.stMatrix.set_by_index(tm_number); 
+  machine.reset_tape_and_state();
+  for (auto i = 0u; i < num_iterations -1 ; ++i){
+          machine.act(); //importante ser antes
+  }
+  machine.turingTape.print();
 }
 void tm_dynamical_profile(
     size_t states,
@@ -180,34 +177,34 @@ void tm_dynamical_profile(
   }
 }       
 void tm_profile(
-    size_t states,
-    size_t alphabet_size,
-    unsigned int num_iterations,
-    unsigned int k,
-    TmId tm_number,
-    unsigned int divison)
-    {
+  size_t states,
+  size_t alphabet_size,
+  unsigned int num_iterations,
+  unsigned int k,
+  TmId tm_number,
+  unsigned int divison)
+  {
 
-    TuringMachine machine(states, alphabet_size);
-    CompressionResultsData data;
-    NormalizedCompressionMarkovTable normalizedCompressionMarkovTable(k , alphabet_size);
-    
-    machine.stMatrix.set_by_index(tm_number); 
-    machine.reset_tape_and_state();
-    for (auto i = 0u; i < num_iterations -1 ; ++i){
-      normalizedCompressionMarkovTable.mrkvTable.reset();
-      machine.act(); //importante ser antes
-    }
-    data = normalizedCompressionMarkovTable.profile_update_nc_mk_table(machine.turingTape, divison);
- 
-    std::cout<< "iterations \t amplitude \t Self-Compression \t Normalized Compression " << std::endl; 
-    std::cout<< "-------------------------------------------------" <<std::endl;
-    
-    for (auto i = 0u; i < data.amplitude.size(); ++i) {
-      std::cout << ((i + 1)*divison) << "\t" << data.amplitude[i] << "\t" << std::setprecision(5)  << std::showpoint <<  data.self_compression[i] 
-                          << "\t" << std::setprecision(5) << std::showpoint << data.normalized_compression[i] << "\t" << std::endl;
-    }
+  TuringMachine machine(states, alphabet_size);
+  CompressionResultsData data;
+  NormalizedCompressionMarkovTable normalizedCompressionMarkovTable(k , alphabet_size);
+  
+  machine.stMatrix.set_by_index(tm_number); 
+  machine.reset_tape_and_state();
+  for (auto i = 0u; i < num_iterations -1 ; ++i){
+    normalizedCompressionMarkovTable.mrkvTable.reset();
+    machine.act(); //importante ser antes
   }
+  data = normalizedCompressionMarkovTable.profile_update_nc_mk_table(machine.turingTape, divison);
+
+  std::cout<< "iterations \t amplitude \t Self-Compression \t Normalized Compression " << std::endl; 
+  std::cout<< "-------------------------------------------------" <<std::endl;
+  
+  for (auto i = 0u; i < data.amplitude.size(); ++i) {
+    std::cout << ((i + 1)*divison) << "\t" << data.amplitude[i] << "\t" << std::setprecision(5)  << std::showpoint <<  data.self_compression[i] 
+                        << "\t" << std::setprecision(5) << std::showpoint << data.normalized_compression[i] << "\t" << std::endl;
+  }
+}
 
 
 void ktm(size_t states,
@@ -308,6 +305,7 @@ CompressionResultsData multicore_monte_carlo(
 
   for (auto& f: jobs) {
     auto r = f.get();
+    total.tmNumber.insert(end(total.tmNumber),begin(r.tmNumber),end(r.tmNumber));
     total.amplitude.insert(end(total.amplitude), begin(r.amplitude), end(r.amplitude));
     total.normalized_compression.insert(end(total.normalized_compression), begin(r.normalized_compression), end(r.normalized_compression));
     total.self_compression.insert(end(total.self_compression), begin(r.self_compression), end(r.self_compression));
@@ -366,6 +364,7 @@ CompressionResultsData multicore_sequential_partition(
 
   for (auto& f: jobs) {
     auto r = f.get();
+    total.tmNumber.insert(end(total.tmNumber),begin(r.tmNumber),end(r.tmNumber));
     total.amplitude.insert(end(total.amplitude), begin(r.amplitude), end(r.amplitude));
     total.normalized_compression.insert(end(total.normalized_compression), begin(r.normalized_compression), end(r.normalized_compression));
     total.self_compression.insert(end(total.self_compression), begin(r.self_compression), end(r.self_compression));
