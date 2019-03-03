@@ -1,0 +1,8 @@
+[package]
+name = "tm-compression-rs"
+version = "0.1.0"
+authors = ["enet4 <enet4mikeenet@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+rand = "0.6.5"
