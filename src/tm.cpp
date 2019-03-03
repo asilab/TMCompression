@@ -104,7 +104,6 @@ CompressionResultsData tm(
 
       for (auto counter = 0ull; counter < traversal_len; counter++) {
         machine.stMatrix.set_random(rng);
-        // get turing machine index
         auto metrics = run_machine(machine, normalizedCompressionMarkovTable, num_iterations);
 
         if (verbose && counter % 4096 == 0) {
@@ -112,7 +111,13 @@ CompressionResultsData tm(
           << ": sc = " << std::setprecision(5) << std::showpoint <<metrics.selfCompression <<": nc = " << std::setprecision(5) << std::showpoint
           << metrics.normalizedCompression << "\r";
         }
+        
+        // get turing machine index
         data.tmNumber.push_back(machine.stMatrix.calculate_index());
+        std::cout<<"----------------------------------------------"<<std::endl;
+        std::cout<<"size::"<< data.tmNumber.size() <<std::endl;
+        std::cout<<"----------------------------------------------"<<std::endl;
+
         data.amplitude.push_back(metrics.amplitude);
         data.self_compression.push_back(metrics.selfCompression);
         data.normalized_compression.push_back(metrics.normalizedCompression);

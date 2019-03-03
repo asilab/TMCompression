@@ -48,7 +48,7 @@ int main (int argc, char **argv){
     //std::cout <<data.tmNumber.size()<<std::endl;
 
     for (auto i = 0u; i < data.amplitude.size(); ++i) {
-    std::cout << (i + 1) << "\t" << argument.k << "\t" << argument.numIt << "\t" << data.amplitude[i] << "\t" 
+    std::cout << data.tmNumber[i] << "\t" << argument.k << "\t" << argument.numIt << "\t" << data.amplitude[i] << "\t" 
     << std::setprecision(5)  << std::showpoint <<  data.self_compression[i] << "\t" << std::setprecision(5) 
     << std::showpoint << data.normalized_compression[i] << "\t" << std::endl;
     }
