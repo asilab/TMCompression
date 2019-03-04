@@ -215,7 +215,6 @@ void ktm(size_t states,
   std::vector <unsigned int> range_of_k = {2,3,4,5,6,7,8,9,10};
   std::vector <unsigned int> range_of_it = {100, 1000, 10000};
   CompressionResultsData data;
-  unsigned int counter;
   for(auto kval = range_of_k.begin(); kval != range_of_k.end(); ++kval) {
     
     NormalizedCompressionMarkovTable normalizedCompressionMarkovTable(*kval, alphabet_size);

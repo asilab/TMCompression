@@ -278,7 +278,7 @@ Args parseArgs (int argc, char **argv){
         tm_growth_with_cardinality(100);
         exit(0);
     }
-    else if(tm_print_flag && (argument.states!=0 && argument.alphabet_size!=0 && argument.numIt!=0 && argument.k==0 && argument.tm !=0) && tm_profile_flag==false && replicate_flag==false && tm_number_growth_flag==false){
+    else if((argument.states!=0 && argument.alphabet_size!=0 && argument.numIt!=0 && argument.k==0 && argument.tm !=0) && tm_print_flag==1 && tm_profile_flag==0 && replicate_flag==0 && tm_number_growth_flag==0){
             tm_print(argument.states,
                      argument.alphabet_size,
                      argument.numIt,
@@ -294,18 +294,18 @@ Args parseArgs (int argc, char **argv){
     }
 
 
-    else if((argument.states==0 || argument.alphabet_size==0 || argument.numIt==0 || argument.k==0 || argument.tm ==0) && tm_profile_flag && replicate_flag==false && tm_number_growth_flag==false){
+    else if((argument.states==0 || argument.alphabet_size==0 || argument.numIt==0 || argument.k==0 || argument.tm ==0) && tm_profile_flag==1 && replicate_flag==0 && tm_number_growth_flag==0){
         std::cerr << "Please fill all the required arguments" <<std::endl;
         exit(0);
     }
-    else if(argument.tm !=0 && tm_profile_flag==false && tm_dynamical_profile_flag==false && tm_print_flag==false && replicate_flag==false ){
+    else if(argument.tm !=0 && tm_profile_flag==0 && tm_dynamical_profile_flag==0 && tm_print_flag==0 && replicate_flag==0 ){
         std::cerr << "You can only provide tm with the --profile or --dynprofile " <<std::endl;
         std::cerr << "Example: ./tm --brief --profile -s 2 -a 2 -i 100 -k 2 -t 5" << std::endl;
         std::cerr << "Example: ./tm --brief --dynprofile -s 2 -a 2 -i 100 -k 2 -t 5" << std::endl;
         exit(0);
     }
 
-    else if ( (argument.states!=0 || argument.alphabet_size!=0 || argument.numIt!=0 || argument.k!=0 || argument.tm !=0) && tm_profile_flag==false && tm_dynamical_profile_flag && replicate_flag==false){
+    else if ( (argument.states!=0 || argument.alphabet_size!=0 || argument.numIt!=0 || argument.k!=0 || argument.tm !=0) && tm_profile_flag==0 && tm_dynamical_profile_flag==1 && replicate_flag==0){
         tm_dynamical_profile(argument.states,
                 argument.alphabet_size,
                 argument.numIt,
@@ -314,7 +314,7 @@ Args parseArgs (int argc, char **argv){
         exit(0);
 
     }
-    else if ( (argument.states!=0 || argument.alphabet_size!=0 || argument.numIt!=0 || argument.k!=0 || argument.tm !=0) && tm_profile_flag && replicate_flag==false && tm_dynamical_profile_flag==false){
+    else if ( (argument.states!=0 || argument.alphabet_size!=0 || argument.numIt!=0 || argument.k!=0 || argument.tm !=0) && tm_profile_flag==1 && replicate_flag==0 && tm_dynamical_profile_flag==0){
         tm_profile(argument.states,
                 argument.alphabet_size,
                 argument.numIt,
@@ -330,7 +330,7 @@ Args parseArgs (int argc, char **argv){
         exit(0);
     }
 
-    else if ( (argument.states==0 || argument.alphabet_size==0 || argument.numIt==0 || argument.k==0) && replicate_flag==false && tm_profile_flag==false) 
+    else if ( (argument.states==0 || argument.alphabet_size==0 || argument.numIt==0 || argument.k==0) && replicate_flag==0 && tm_profile_flag==0) 
     {
         std::cerr << "Please fill all the required arguments" <<std::endl;
         exit(0);
@@ -344,13 +344,13 @@ Args parseArgs (int argc, char **argv){
         exit(0);
     }
     
-    printf ("states = %zu, alphabet_size = %zu, number of iterations = %u , k = %d\n",
+    printf ("states = %zu, alphabet_size = %zu, number of iterations = %u , k = %u\n",
     argument.states, argument.alphabet_size, argument.numIt, argument.k);
 
     if(ipow<unsigned long long>(argument.alphabet_size, argument.k) >= ipow<unsigned long long>(2,28))
     {
-        fprintf (stderr, "k/context (%d) and Alphabet size/a (%zu) is too large..\n", argument.k, argument.alphabet_size);
-        fprintf (stderr, " please consider a size of a^k (%zu^%d) smaller than 2^28..\n", argument.alphabet_size,argument.k);
+        fprintf (stderr, "k/context (%u) and Alphabet size/a (%zu) is too large..\n", argument.k, argument.alphabet_size);
+        fprintf (stderr, " please consider a size of a^k (%zu^%u) smaller than 2^28..\n", argument.alphabet_size,argument.k);
         exit(0);
     }
 
