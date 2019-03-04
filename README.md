@@ -20,13 +20,15 @@ make ioStNormalize
 
 ```bash
 chmod +x *.sh
-bash ProcessResults.sh 1 0 0 0
+bash ProcessResults.sh 1 0 0 0 0
 ```
 
 ## CITE
 Please cite the followings, if you use TMCompression:
-    - Processing...
 
+```
+- Processing...
+```
 ## ISSUES
 Please let us know if there is any
 [issues](https://github.com/jorgeMFS/TMCompression/issues).
