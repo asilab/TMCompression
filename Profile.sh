@@ -16,16 +16,19 @@ fi
 # Variables
 # ==============================================================================
 Machine=$1;
-txtName="Profile"$1".txt";
-pdfName="Profile"$1".pdf";
+txtName=Profile${1}.txt;
+pdfName=Profile${1}.pdf;
 SavePath="./Profiles/";
 STATE=$2;
 ALPHABET=$3;
 NUMBERITERATION=$4;
 K=$5;
 
+# ==============================================================================
+# Create Folder
+# ==============================================================================
 
-Folder=$STATE"St"$ALPHABET"AlphTM/";
+Folder=${STATE}St${ALPHABET}AlphTM/;
 DIRECTORY=${SavePath}${Folder};
 
 if [ -d "$DIRECTORY" ]; then
@@ -38,10 +41,10 @@ fi
 
 
 # ==============================================================================
-# Pofile curves Results of 3 state Turing Machines
+# Pofile curves Turing Machines
 # ==============================================================================
 
-./tm --brief --profile -s $STATE -a $ALPHABET -i $NUMBERITERATION -k $K -t $1 > $txtName;
+./tm --brief --profile -s $STATE -a $ALPHABET -i $NUMBERITERATION -k $K -t $Machine > $txtName;
 tail -n +3 $txtName | awk '{ print $4;}'  > nc_profile.txt;
 tail -n +3 $txtName | awk '{ print $2;}'> amp_profile.txt;
 paste amp_profile.txt nc_profile.txt > profile.txt

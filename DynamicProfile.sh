@@ -23,6 +23,9 @@ ALPHABET=$3;
 NUMBERITERATION=$4;
 K=$5;
 
+# ==============================================================================
+# Create Folder
+# ==============================================================================
 
 Folder=${STATE}St${ALPHABET}AlphTM/;
 DIRECTORY=${SavePath}${Folder};
@@ -36,9 +39,10 @@ else
 fi
 
 # ==============================================================================
-# Pofile curves Results of 3 state Turing Machines
+# Dynamic Pofile curves Turing Machines
 # ==============================================================================
-./tm --brief --dynprofile -s $STATE -a $ALPHABET -i $NUMBERITERATION -k $K -t $1 > $txtName;
+
+./tm --brief --dynprofile -s $STATE -a $ALPHABET -i $NUMBERITERATION -k $K -t $Machine > $txtName;
 
 tail -n +3 $txtName | awk '{ print $4;}'  > nc_dynProfile.txt;
 tail -n +3 $txtName | awk '{ print $2;}'> amp_dynProfile.txt;
