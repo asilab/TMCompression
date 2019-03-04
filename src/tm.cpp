@@ -221,7 +221,7 @@ void ktm(size_t states,
     NormalizedCompressionMarkovTable normalizedCompressionMarkovTable(*kval, alphabet_size);
     
     for(auto nb_it_val = range_of_it.begin(); nb_it_val != range_of_it.end(); ++nb_it_val) {
-      counter = 0;
+
       data.amplitude.clear();
       data.self_compression.clear();
       data.normalized_compression.clear();
@@ -233,7 +233,6 @@ void ktm(size_t states,
         data.self_compression.push_back(metrics.selfCompression);
         data.normalized_compression.push_back(metrics.normalizedCompression);
 
-        ++counter;
       } while (machine.stMatrix.next());
 
       float mean_amp = std::accumulate( data.amplitude.begin(), data.amplitude.end(), 0.0)/data.amplitude.size();

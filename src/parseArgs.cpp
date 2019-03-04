@@ -8,7 +8,6 @@
 
 Args parseArgs (int argc, char **argv){
     Args argument {};    
-    int c;
     opterr = 0;
 
     static int verbose_flag;
@@ -48,7 +47,7 @@ Args parseArgs (int argc, char **argv){
         };
         int option_index = 0;
 
-        c = getopt_long (argc, argv, "s:a:i:k:t:S:N:j:hv",
+        int c = getopt_long (argc, argv, "s:a:i:k:t:S:N:j:hv",
                         long_options, &option_index);
 
         if (c == -1)

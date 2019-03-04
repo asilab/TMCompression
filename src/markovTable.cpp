@@ -152,12 +152,10 @@ CompressionResultsData NormalizedCompressionMarkovTable::profile_update_nc_mk_ta
             data.self_compression.push_back(logaritm);
             data.normalized_compression.push_back(logaritm/normalization_base(diff_indexes, this->mrkvTable.alphSz));
         }
-        else if (diff_indexes> 5){
-            if (counter % divison ==0){
-                data.amplitude.push_back(counter);
-                data.self_compression.push_back(logaritm);
-                data.normalized_compression.push_back(logaritm/normalization_base(diff_indexes, this->mrkvTable.alphSz));
-            }
+        else if (counter % divison ==0){
+            data.amplitude.push_back(counter);
+            data.self_compression.push_back(logaritm);
+            data.normalized_compression.push_back(logaritm/normalization_base(diff_indexes, this->mrkvTable.alphSz));
         }
     }
     return  data; 

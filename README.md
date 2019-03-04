@@ -23,10 +23,8 @@ chmod +x *.sh
 bash ProcessResults.sh 1 0 0 0
 ```
 
-
 ## CITE
 Please cite the followings, if you use TMCompression:
-
     - Processing...
 
 ## ISSUES
