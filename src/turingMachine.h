@@ -40,7 +40,6 @@ struct StateMatrix{
   StateMatrix(unsigned int number_of_states, unsigned int alphabet_size);
 
   void set_by_index(TmId id);
-
   TmId calculate_index() const;
 
   /// Reset the state matrix into a uniformly random position.

@@ -17,6 +17,7 @@ Args parseArgs (int argc, char **argv){
     static int tm_number_growth_flag;
     static int tm_dynamical_profile_flag;
     static int tm_print_flag;
+    static int busy_beaver_flag;
     char *end;
     int correctInput;
     while (1)
@@ -31,7 +32,7 @@ Args parseArgs (int argc, char **argv){
             {"dynprofile",      no_argument,      &tm_dynamical_profile_flag, 1},
             {"profile", no_argument, &tm_profile_flag,1},
             {"printTape", no_argument, &tm_print_flag,1},
-
+            {"busyBeaver", no_argument, &busy_beaver_flag,1},
             {"help",      no_argument,      0, 'h'},
             {"version",      no_argument,      0, 'v'},
 
@@ -86,7 +87,9 @@ Args parseArgs (int argc, char **argv){
             std::cout << "--dynprofile" << "\t" 
             << "Indicates programs that will receive through the tm number through the flag tm and will create a dynamical temporal profile of that turing" 
             << std::endl<< std::endl;
-
+            std::cout << "--busyBeaver" << "\t" 
+            << "Indicates programs to print the tape of the busy beaver for #states=2, #alphabet=3 for validation purposes of the TMs" 
+            << std::endl<< std::endl;
 
 
             std::cout << "Mandatory  Arguments:"<< std::endl << std::endl;
@@ -134,6 +137,8 @@ Args parseArgs (int argc, char **argv){
             std::cout << "----------------" << std::endl;
             std::cout <<"Run specific tm and print tape" << std::endl;
             std::cout << "./tm --brief --printTape -s 2 -a 2 -i 100 -t 1"<< std::endl;
+            std::cout <<"Run Busy Beaver tm and print tape" << std::endl;
+            std::cout << "./tm --brief --busyBeaver -s 2 -a 3 -i 100 -k 2 "<< std::endl;
             exit (0);
 
         case 'v':
@@ -314,6 +319,11 @@ Args parseArgs (int argc, char **argv){
         exit(0);
 
     }
+    else if ( (argument.states!=0 || argument.alphabet_size!=0 || argument.numIt!=0 || argument.k!=0 || argument.tm ==0) && tm_profile_flag==0 && replicate_flag==0 && tm_dynamical_profile_flag==0 && busy_beaver_flag==1){
+        tm_busy_beaver_test(argument.states, argument.alphabet_size,
+                argument.numIt, argument.k);
+        exit(0);
+    }
     else if ( (argument.states!=0 || argument.alphabet_size!=0 || argument.numIt!=0 || argument.k!=0 || argument.tm !=0) && tm_profile_flag==1 && replicate_flag==0 && tm_dynamical_profile_flag==0){
         tm_profile(argument.states,
                 argument.alphabet_size,
@@ -321,7 +331,6 @@ Args parseArgs (int argc, char **argv){
                 argument.k,
                 argument.tm -1 , 5);
         exit(0);
-
     }
     
     else if ( (argument.states==0 || argument.alphabet_size==0 || argument.jobs==0 || tm_profile_flag) && replicate_flag ){

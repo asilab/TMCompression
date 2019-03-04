@@ -46,6 +46,26 @@ void tm_print(
     unsigned int num_iterations,
     TmId tm_number);
 
+/**
+Busy beaver test: #states=2 #alphabet=3;
+ 	  A       B
+0 	1,R,B 	2,L,A
+1 	2,L,A 	2,R,B
+2 	1,L,A 	0,R,A
+
+ 	    0       1
+0 	1,2,1 	2,0,0
+1 	2,0,0 	2,2,1
+2 	1,0,0 	0,2,0
+(w,m,s)
+Index of busybeaver = 11542228
+*/
+
+void tm_busy_beaver_test(
+  size_t states,
+  size_t alphabet_size,
+  unsigned int num_iterations,
+  unsigned int k);
 
 
 /** Evaluates a specific turing machine program.

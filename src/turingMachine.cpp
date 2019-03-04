@@ -60,9 +60,8 @@ void StateMatrix::set_by_index(TmId id) {
     if (rest == 0) break;
   }
 }
-TmId StateMatrix::calculate_index() const {
 
-  //Problem when jobs>1 ;
+TmId StateMatrix::calculate_index() const {
   auto record_cardinality = this->nbStates * this->alphSz * 3;
   TmId id(0);
   for (auto it = rbegin(this->v); it != rend(this->v); ++it) {
@@ -120,7 +119,7 @@ void StateMatrix::print() const{
     std::cout << std::endl << "Lines --> Alphabet Letter "<< std::endl << "Columns --> TM State "<< std::endl;
     std::cout << "(w,m,s) --> (write,move,state)" << std::endl;
 
-  }
+}
 
 const TuringRecord* StateMatrix::chr_line(Char c) const {
   return this->v.data() + c * this->nbStates;
@@ -134,7 +133,7 @@ Char Tape::getvalue() {
 }
 
 size_t Tape::getposition() {
-return this->position;
+  return this->position;
 }
 
 /**
@@ -185,8 +184,8 @@ void Tape::resetTape() {
 }
 
 void Tape::reserve_right(size_t amount) {
-    this->max_size += amount;
-    this->tape.resize(this->max_size);
+  this->max_size += amount;
+  this->tape.resize(this->max_size);
 }
 
 void Tape::reserve_left(size_t amount) {
@@ -204,11 +203,9 @@ void Tape::reserve_left(size_t amount) {
 void Tape::print(){
   for (auto i = this->tape.begin() + this->ind_left + 1; i != this->tape.begin() + this->ind_right; ++i)
     std::cout << *i << ' ';
-    
+
   std::cout<< std::endl;
 } 
-
-
 std::ostream& operator<<( std::ostream& o, const Tape& t) {
   auto start = std::find_if(t.tape.begin(), t.tape.end(), [](auto c) { return c != 0; });
   auto end = std::find_if(t.tape.rbegin(), t.tape.rend(), [](auto c) { return c != 0; }).base() + 1;
@@ -226,14 +223,13 @@ TuringMachine::TuringMachine(unsigned int number_of_states, unsigned int alphabe
   state(0), turingTape(), stMatrix(number_of_states,alphabet_size){}
 
 TapeMoves TuringMachine::act(){
-    TapeMoves tpMove;
-    Char alphValue = turingTape.getvalue();
-    auto tr = stMatrix.at(alphValue, this->state);
-    tpMove = turingTape.moveandSet(tr.move, tr.write);
-    this->state = tr.state;
-    return tpMove;
+  TapeMoves tpMove;
+  Char alphValue = turingTape.getvalue();
+  auto tr = stMatrix.at(alphValue, this->state);
+  tpMove = turingTape.moveandSet(tr.move, tr.write);
+  this->state = tr.state;
+  return tpMove;
 }
-
 void TuringMachine::reset_tape_and_state(){
  this->turingTape.resetTape();
  this->state=0;
