@@ -11,33 +11,34 @@ int main(int argc, char *argv[])
 {   
     const std::string& input= argv[1];
 
-    //std::cout << "executable= " << input << std::endl;
     std::ifstream in;
     in.open(input);
     std::string line;
     
-    int tm;
-    int k;
-    int iterations;
-    int amplitude;
-    double nmvc;
-    double nc;
+    
 
-    std::vector <int> tmVector;
-    std::vector <int> kVector;
-    std::vector <int> itVector;
-    std::vector <int> ampVector;
+    std::vector <unsigned long long> tmVector;
+    std::vector <unsigned int> kVector;
+    std::vector <unsigned int> itVector;
+    std::vector <unsigned int> ampVector;
     std::vector <double> ampVector2;
     std::vector <double> nmvcVector;
     std::vector <double> nmvcVector2;
     std::vector <double> ncVector;
 
-
-
     if(in.is_open())
     {
+
+
         while(std::getline(in, line)) //get 1 row as a string
         {
+            unsigned long long tm;
+            unsigned int k;
+            unsigned int iterations;
+            unsigned int amplitude;
+            double nmvc;
+            double nc;
+
             std::istringstream iss(line); //put line into stringstream
             std::string word;
             while(iss >> tm >> k >> iterations >> amplitude >> nmvc >> nc) //read word by word

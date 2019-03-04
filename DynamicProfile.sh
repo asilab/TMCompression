@@ -15,8 +15,8 @@ fi
 # Variables
 # ==============================================================================
 Machine=$1;
-txtName="DynProfile"$1".txt";
-pdfName="DynProfile"$1".pdf";
+txtName=DynProfile${1}.txt;
+pdfName=DynProfile${1}.pdf;
 SavePath="./Profiles/";
 STATE=$2;
 ALPHABET=$3;
@@ -24,7 +24,7 @@ NUMBERITERATION=$4;
 K=$5;
 
 
-Folder=$STATE"St"$ALPHABET"AlphTM/";
+Folder=${STATE}St${ALPHABET}AlphTM/;
 DIRECTORY=${SavePath}${Folder};
 
 if [ -d "$DIRECTORY" ]; then
