@@ -206,6 +206,7 @@ void tm_busy_beaver_test(
   CompressionResultsData data;
   NormalizedCompressionMarkovTable normalizedCompressionMarkovTable(k , alphabet_size);
   tm_print(states,alphabet_size,num_iterations,index);
+
 }
 
 void tm_profile(

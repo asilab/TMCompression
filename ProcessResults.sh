@@ -124,50 +124,6 @@ EOF
     mv 2sts.pdf ./results;
     rm Amplitude.txt NC_f.txt $var"Results.txt";
 fi
-# ==============================================================================
-# Process Results of 2 state Turing Machines and 3 alphabet letters 
-# ==============================================================================
-
-if [[ "$STATE2_ALPH_TMs" -eq "1" ]];
-    then
-    echo "Creating plot of of all TM with #Alphabet=3, #States=2... ";
-    var="busy2st3alph";
-    text=$var".txt"
-    tail -n +4 $text | head -n -3 | ./ioStNormalize $text >  $var"Results.txt"
-    
-    #Amplitude
-    awk '{ print $4;}' $var"Results.txt" | ./goose/bin/goose-filter -w 80001 -d 10000 -1 > AmplitudeSt2Alp3.txt; 
-    #nc
-    awk '{ print $6;}' $var"Results.txt" | ./goose/bin/goose-filter -w 80001 -d 10000 -1 > NC_f3St2Alp3.txt;
-    
-gnuplot << EOF
-    reset
-    set terminal pdfcairo enhanced color font 'Verdana,8'
-    set output "2stsAlp3.pdf"
-    set boxwidth 0.5
-    set size ratio 0.6
-    set style line 101 lc rgb '#000000' lt 1 lw 3
-    set key outside horiz center top
-    set tics nomirror out scale 0.75
-    set xrange [0:34012224]
-    set yrange [0:1]
-    set border 3 front ls 101
-    set grid ytics lt -1
-    set style fill solid
-    set format '%g'
-    set xtics font ", 6"
-    set xlabel "2 State, 3 Alphabet Turing Machines 0 to 34012224"
-    set datafile separator "\t"
-    ntics = 20
-    stats 'AmplitudeSt2Alp3.txt' using 1 name 'x' nooutput
-    set xtics int(x_max/ntics)
-    set style fill transparent solid 0.4 noborder
-    plot "AmplitudeSt2Alp3.txt" using 1:2 with boxes linecolor '#CFB53B' title "Amplitude of Tape", "NC_f3St2Alp3.txt" using 1:2  with boxes linecolor '#4169E1' title "Normalized Compression"
-EOF
-    mv 2stsAlp3.pdf ./results;
-    rm  AmplitudeSt2Alp3.txt NC_f3St2Alp3.txt;
-    rm  $var"Results.txt";
-fi
 
 # ==============================================================================
 # Process Results of 3 state Turing Machines
@@ -177,12 +133,13 @@ if [[ "$STATE3_TMs" -eq "1" ]];
     then
     echo " Creating plot of of all TM with #Alphabet=2, #States=3 ... ";
     var="3st";
-    text=$var".txt";
-    tail -n +4 $text | head -n -3 | ./ioStNormalize $text >  $var"Results.txt";
+    text=${var}.txt;
+    results=${var}Results.txt;
+    tail -n +4 $text | head -n -3 | ./ioStNormalize $text >  $results;
     #Amplitude
-    awk '{ print $4;}' $var"Results.txt" | ./goose/bin/goose-filter -w 80001 -d 10000 -1 > Amplitude3.txt; 
+    awk '{ print $4;}' $results | ./goose/bin/goose-filter -w 80001 -d 10000 -1 > Amplitude3.txt; 
     #nc
-    awk '{ print $6;}' $var"Results.txt" | ./goose/bin/goose-filter -w 80001 -d 10000 -1 > NC_f3.txt;
+    awk '{ print $6;}' $results | ./goose/bin/goose-filter -w 80001 -d 10000 -1 > NC_f3.txt;
     
 gnuplot << EOF
     reset
@@ -210,6 +167,99 @@ gnuplot << EOF
 EOF
     mv 3sts.pdf ./results;
     rm Amplitude3.txt NC_f3.txt; 
-    rm  $var"Results.txt";
+    rm  $results;
+fi
+
+
+# ==============================================================================
+# Process Results of 2 state Turing Machines and 3 alphabet letters k = 2
+# ==============================================================================
+
+if [[ "$STATE2_ALPH_TMs" -eq "1" ]];
+    then
+    echo "Creating plot of of all TM with #Alphabet=3, #States=2... ";
+    var="busy2st3alph";
+    text=${var}.txt;
+    results=${var}Results.txt;
+    
+    tail -n +4 $text | head -n -3 | ./ioStNormalize $text >  $results
+    
+    #Amplitude
+    awk '{ print $4;}' $results | ./goose/bin/goose-filter -w 80001 -d 10000 -1 > AmplitudeSt2Alp3.txt; 
+    #nc
+    awk '{ print $6;}' $results | ./goose/bin/goose-filter -w 80001 -d 10000 -1 > NC_f3St2Alp3.txt;
+    
+gnuplot << EOF
+    reset
+    set terminal pdfcairo enhanced color font 'Verdana,8'
+    set output "2stsAlp3_k2.pdf"
+    set boxwidth 0.5
+    set size ratio 0.6
+    set style line 101 lc rgb '#000000' lt 1 lw 3
+    set key outside horiz center top
+    set tics nomirror out scale 0.75
+    set xrange [0:34012224]
+    set yrange [0:1]
+    set border 3 front ls 101
+    set grid ytics lt -1
+    set style fill solid
+    set format '%g'
+    set xtics font ", 6"
+    set xlabel "2 State, 3 Alphabet Turing Machines 0 to 34012224"
+    set datafile separator "\t"
+    ntics = 20
+    stats 'AmplitudeSt2Alp3.txt' using 1 name 'x' nooutput
+    set xtics int(x_max/ntics)
+    set style fill transparent solid 0.4 noborder
+    plot "AmplitudeSt2Alp3.txt" using 1:2 with boxes linecolor '#CFB53B' title "Amplitude of Tape", "NC_f3St2Alp3.txt" using 1:2  with boxes linecolor '#4169E1' title "Normalized Compression"
+EOF
+    mv 2stsAlp3_k2.pdf ./results;
+    rm  AmplitudeSt2Alp3.txt NC_f3St2Alp3.txt;
+    rm  $results;
+fi
+# ==============================================================================
+# Process Results of 2 state Turing Machines and 3 alphabet letters k = 5
+# ==============================================================================
+
+if [[ "$STATE2_ALPH_TMs" -eq "1" ]];
+    then
+    echo "Creating plot of of all TM with #Alphabet=3, #States=2... ";
+    var="busy2st3alphk5";
+    text=${var}.txt
+    results=${var}Results.txt;
+    tail -n +4 $text | head -n -3 | ./ioStNormalize $text >  $results;
+    
+    #Amplitude
+    awk '{ print $4;}' $results | ./goose/bin/goose-filter -w 80001 -d 10000 -1 > AmplitudeSt2Alp3k5.txt; 
+    #nc
+    awk '{ print $6;}' $results | ./goose/bin/goose-filter -w 80001 -d 10000 -1 > NC_f3St2Alp3k5.txt;
+    
+gnuplot << EOF
+    reset
+    set terminal pdfcairo enhanced color font 'Verdana,8'
+    set output "2stsAlp3_k5.pdf"
+    set boxwidth 0.5
+    set size ratio 0.6
+    set style line 101 lc rgb '#000000' lt 1 lw 3
+    set key outside horiz center top
+    set tics nomirror out scale 0.75
+    set xrange [0:34012224]
+    set yrange [0:1]
+    set border 3 front ls 101
+    set grid ytics lt -1
+    set style fill solid
+    set format '%g'
+    set xtics font ", 6"
+    set xlabel "2 State, 3 Alphabet Turing Machines 0 to 34012224"
+    set datafile separator "\t"
+    ntics = 20
+    stats 'AmplitudeSt2Alp3k5.txt' using 1 name 'x' nooutput
+    set xtics int(x_max/ntics)
+    set style fill transparent solid 0.4 noborder
+    plot "AmplitudeSt2Alp3k5.txt" using 1:2 with boxes linecolor '#CFB53B' title "Amplitude of Tape", "NC_f3St2Alp3k5.txt" using 1:2  with boxes linecolor '#4169E1' title "Normalized Compression"
+EOF
+    mv 2stsAlp3_k5.pdf ./results;
+    rm  AmplitudeSt2Alp3k5.txt NC_f3St2Alp3k5.txt;
+    rm  $results;
 fi
 

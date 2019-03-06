@@ -1,19 +1,24 @@
 #!/bin/bash
 #
 if [ $# -ne 3 ]; then
-    echo "No arguments provided";
+    echo "Not enough arguments arguments provided, you need to provide 3 arguments:";
+    echo "All args are boolean (0 or 1)";
+    echo "";
+    echo "If 1st Argument == 1: Filters are the results of a given file and provide the 50 most statistically complex machines";
+    echo "bash ProcessResults.sh 1 0 0";
+    echo "";
+    echo "If 2nd Argument == 1:Requests the file and make the profile with the turing machines present in the file in the form of its indexes";
+    echo "bash ProcessResults.sh 0 1 0";
+    echo "";
+    echo "If 3rd Argument == 1:Requests the file and make the dynamical profile with the turing machines present in the file in the form of its indexes";
+    echo "bash ProcessResults.sh 0 0 1";
+    echo "";
     exit 1;
 fi
 
 # ==============================================================================
 # Variables
 # ==============================================================================
-
-# O que fazer aqui:
-# 1 Filtra so os resultados de um dado ficheiro
-# 2 Pede o ficheiro e faz o prefil com os membros do ficheiro
-# 3 Pede o ficheiro e faz o prefil dynamico com os membros do ficheiro
-
 FILTER=$1;
 PROFILE=$2;
 DYNAMICPROFILE=$3;
@@ -29,11 +34,13 @@ if [[ "$FILTER" -eq "1" ]];
     echo "Please insert a specific file to be filtered ex: 2st.txt"
     read FILENAME;
     
-    if [[ $FILENAME == *.txt ]]
+    if [[ $FILENAME == *.txt ]];
       then
-        if [ -f $FILENAME ]; then
+        if [ -f $FILENAME ]; 
+        then
 
-            tail -n +4 $FILENAME | head -n -3 | sort -k 6,6 |awk '$4 < 100 { next } { print }' | tail -n 50 | awk ' { print $1}' > "InterestingTM"$FILENAME;
+            tail -n +4 $FILENAME | head -n -3 | sort -k 6,6 |awk '$4 < 100 { next } { print }' | tail -n 100 > "InterestingTM"$FILENAME;
+            tail -n +4 $FILENAME | head -n -3 | sort -k 6,6 |awk '$4 < 100 { next } { print }' | tail -n 100 | awk ' { print $1}' > "InterestingTMindex"$FILENAME;
 
         else
             echo "File $FILENAME does not exist.";
@@ -42,6 +49,10 @@ if [[ "$FILTER" -eq "1" ]];
         echo "Please select .txt file";
     fi
 fi
+
+# ==============================================================================
+# Profile of TM inprovided file
+# ==============================================================================
 
 if [[ "$PROFILE" -eq "1" ]];
 then
