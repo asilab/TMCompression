@@ -138,8 +138,9 @@ size_t Tape::getposition() {
 
 /**
     Given a relative position and a value this function:
-    - changes the position on the tape;
     - writes new value on the tape on the new position.
+    - changes the position on the tape;
+    
     
     It also:
     - Alocates space to the left or the right of the tape if the max_size is exceeded;
@@ -149,10 +150,12 @@ size_t Tape::getposition() {
     @param value. Value that the Tm must write on the Tape.
     @return TapeMoves. Structure TapeMoves(previousValue,moveRight,moveLeft)
 */
-TapeMoves Tape::moveandSet(Move relativePos, Char value) {
+TapeMoves Tape::setandmove(Move relativePos, Char value) {
 
   TapeMoves tapeMove{0,false,false};
+  this->tape[this->position] = value;
   int replace_pos = relativePos - 1;
+  
   this->position += replace_pos;
   
   if (this->position >= this->ind_right){
@@ -172,7 +175,7 @@ TapeMoves Tape::moveandSet(Move relativePos, Char value) {
     this->reserve_left(this->max_size);
   }
   tapeMove.previousValue = this->tape[this->position];
-  this->tape[this->position] = value;
+  
   return tapeMove;
 }
 
@@ -226,7 +229,7 @@ TapeMoves TuringMachine::act(){
   TapeMoves tpMove;
   Char alphValue = turingTape.getvalue();
   auto tr = stMatrix.at(alphValue, this->state);
-  tpMove = turingTape.moveandSet(tr.move, tr.write);
+  tpMove = turingTape.setandmove(tr.move, tr.write);
   this->state = tr.state;
   return tpMove;
 }

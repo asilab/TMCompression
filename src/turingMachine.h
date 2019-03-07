@@ -72,7 +72,7 @@ struct Tape {
   Tape();
 
   Char getvalue();
-  TapeMoves moveandSet(Move relativePos, Char value);
+  TapeMoves setandmove(Move relativePos, Char value);
   void resetTape();
   size_t getposition();
   void print();
