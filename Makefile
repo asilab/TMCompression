@@ -39,3 +39,5 @@ src/util.o: src/util.cpp src/util.h
 ioStNormalize: src/ioStNormalize.cpp
 	 g++ -std=c++14 -o ioStNormalize src/ioStNormalize.cpp
 
+TMsimulator: val/TMsimulator.c 
+	g++ -o TMsimulator val/TMsimulator.c -lgmpxx -lgmp
