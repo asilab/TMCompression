@@ -1,11 +1,22 @@
 #!/bin/bash
 #
+
+if [ $# -ne 3 ]; then
+    echo "Not enough arguments arguments provided, you need to provide 3 arguments:";
+    echo "All args are boolean (0 or 1)";
+    echo "";
+    echo "Arg[0]: Install AC";
+    echo "Arg[2]: Validate TM Tapes";
+    echo "Arg[3]: Validate Profile with Compression AC";
+    exit 1;
+fi
+
 # ==============================================================================
 # Options
 # ==============================================================================
-INSTALL_AC=0;
-TEST_CMP=0;
-VAL_TAPES=1;
+INSTALL_AC=$1;
+VAL_TAPES=$2;
+TEST_CMP=$3;
 ITERATION=50000;
 # ==============================================================================
 # Install AC
