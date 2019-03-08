@@ -1,7 +1,10 @@
+
 #pragma once
 #include <vector>
 #include <iostream>
+
 #include "turingMachine.h"
+#include "metrics.h"
 
 using Char = unsigned int;
 
@@ -21,20 +24,6 @@ struct MarkovTable{
     size_t str_to_index(const Char* x);
 };
 
-struct Metrics{
-  unsigned int amplitude;
-  double selfCompression;
-  double normalizedCompression;
-};
-
-struct CompressionResultsData
-{
-  // Integer
-  std::vector <TmId> tmNumber;
-  std::vector <unsigned int> amplitude;
-  std::vector <double> normalized_compression;
-  std::vector <double> self_compression;
-};
 
 struct NormalizedCompressionMarkovTable{
     MarkovTable mrkvTable;

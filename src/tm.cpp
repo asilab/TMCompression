@@ -81,6 +81,7 @@ CompressionResultsData tm(
 
       unsigned int counter = 0;
       do {
+        
         auto metrics = run_machine(machine, normalizedCompressionMarkovTable, num_iterations);
 
         if (verbose && counter % 4096 == 0) {
@@ -399,20 +400,6 @@ CompressionResultsData multicore_sequential_partition(
 }
 
 
-/*
-tm_multicore(
-    argument.states,
-    argument.alphabet_size,
-    argument.numIt,
-    argument.k,
-    argument.strategy,
-    argument.n,
-    0,
-    argument.verbose,
-    argument.jobs);
-  
-*/
-
 CompressionResultsData tm_multicore(
     size_t states,
     size_t alphabet_size,
@@ -422,29 +409,27 @@ CompressionResultsData tm_multicore(
     unsigned long long traversal_len,
     unsigned long long traversal_offset,
     bool verbose,
-    unsigned int threads)
-{
-  if (threads < 2) {
-    return tm(states, alphabet_size, num_iterations, k, strategy, traversal_len, traversal_offset, verbose);
-  }
+    unsigned int threads){
+    if (threads < 2) {
+      return tm(states, alphabet_size, num_iterations, k, strategy, traversal_len, traversal_offset, verbose);
+    }
 
-  if (strategy == TraversalStrategy::SEQUENTIAL) {
-    auto real_len = traversal_len > 0 ? traversal_len : tm_cardinality(states, alphabet_size);
+    if (strategy == TraversalStrategy::SEQUENTIAL) {
+      auto real_len = traversal_len > 0 ? traversal_len : tm_cardinality(states, alphabet_size);
 
-    return multicore_sequential_partition([=](auto len, auto offset) {
-      return tm(states, alphabet_size, num_iterations, k, strategy, len, offset, verbose);
-        },real_len, traversal_offset,threads, verbose);
-  } 
-  else if (strategy == TraversalStrategy::MONTE_CARLO) {
-  
-    return multicore_monte_carlo([=](auto n) -> CompressionResultsData {
-      return tm(states, alphabet_size, num_iterations, k, strategy, n, 0, verbose);
-    }, traversal_len, threads, verbose);
-  }
+      return multicore_sequential_partition([=](auto len, auto offset) {
+        return tm(states, alphabet_size, num_iterations, k, strategy, len, offset, verbose);
+          },real_len, traversal_offset,threads, verbose);
+    } 
+    else if (strategy == TraversalStrategy::MONTE_CARLO) {
+    
+      return multicore_monte_carlo([=](auto n) -> CompressionResultsData {
+        return tm(states, alphabet_size, num_iterations, k, strategy, n, 0, verbose);
+      }, traversal_len, threads, verbose);
+    }
 
   throw std::runtime_error("unsupported traversal strategy");
 }
-
 
 void ktm_multicore(
     size_t states,
