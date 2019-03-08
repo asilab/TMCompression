@@ -17,7 +17,7 @@ Args parseArgs (int argc, char **argv){
     static int tm_number_growth_flag;
     static int tm_dynamical_profile_flag;
     static int tm_print_flag;
-    static int busy_beaver_flag;
+    static int StMatrix_flag;
     char *end;
     int correctInput;
     while (1)
@@ -32,7 +32,7 @@ Args parseArgs (int argc, char **argv){
             {"dynprofile",      no_argument,      &tm_dynamical_profile_flag, 1},
             {"profile", no_argument, &tm_profile_flag,1},
             {"printTape", no_argument, &tm_print_flag,1},
-            {"busyBeaver", no_argument, &busy_beaver_flag,1},
+            {"StMatrix", no_argument, &StMatrix_flag,1},
             {"help",      no_argument,      0, 'h'},
             {"version",      no_argument,      0, 'v'},
 
@@ -87,8 +87,8 @@ Args parseArgs (int argc, char **argv){
             std::cout << "--dynprofile" << "\t" 
             << "Indicates programs that will receive through the tm number through the flag tm and will create a dynamical temporal profile of that turing" 
             << std::endl<< std::endl;
-            std::cout << "--busyBeaver" << "\t" 
-            << "Indicates programs to print the tape of the busy beaver for #states=2, #alphabet=3 for validation purposes of the TMs" 
+            std::cout << "--StMatrix" << "\t" 
+            << "Indicates programs to print the StateMatrix of a given TMs" 
             << std::endl<< std::endl;
 
 
@@ -137,8 +137,8 @@ Args parseArgs (int argc, char **argv){
             std::cout << "----------------" << std::endl;
             std::cout <<"Run specific tm and print tape" << std::endl;
             std::cout << "./tm --brief --printTape -s 2 -a 2 -i 100 -t 1"<< std::endl;
-            std::cout <<"Run Busy Beaver tm and print tape" << std::endl;
-            std::cout << "./tm --brief --busyBeaver -s 2 -a 3 -i 100 -k 2 "<< std::endl;
+            std::cout <<"Run StMatrix of the tm" << std::endl;
+            std::cout << "./tm --brief --StMatrix -s 2 -a 2 -i 100 -t 1"<< std::endl;
             exit (0);
 
         case 'v':
@@ -209,11 +209,15 @@ Args parseArgs (int argc, char **argv){
             std::cerr << "invalid input for -t/--tm.\n";
             exit(0);
             }
-            else if (correctInput<=0){
+            else if (correctInput<0){
             fprintf (stderr, "-t/--tm value was set to %d, must be an int larger than 0.\n",correctInput); 
             exit(0);
             }
-            else argument.tm = correctInput;
+            else{
+                argument.tm.first = correctInput;
+                argument.tm.second = true;
+            } 
+
             break;
         }
         case 'j':
@@ -278,16 +282,16 @@ Args parseArgs (int argc, char **argv){
     }
 
     
-    if (tm_number_growth_flag && argument.states==0 && argument.alphabet_size==0 && argument.numIt==0 && argument.k==0 && argument.tm ==0){
+    if (tm_number_growth_flag && argument.states==0 && argument.alphabet_size==0 && argument.numIt==0 && argument.k==0 && argument.tm.second==false){
         std::cerr << "TM growth for alphabet = 2 and Max number of states = 100" <<std::endl;
         tm_growth_with_cardinality(100);
         exit(0);
     }
-    else if((argument.states!=0 && argument.alphabet_size!=0 && argument.numIt!=0 && argument.k==0 && argument.tm !=0) && tm_print_flag==1 && tm_profile_flag==0 && replicate_flag==0 && tm_number_growth_flag==0){
-            tm_print(argument.states,
+    else if((argument.states!=0 && argument.alphabet_size!=0 && argument.numIt!=0 && argument.k==0 && argument.tm.second) && tm_print_flag==1 && tm_profile_flag==0 && replicate_flag==0 && tm_number_growth_flag==0){
+            tm_print_tape(argument.states,
                      argument.alphabet_size,
                      argument.numIt,
-                     argument.tm - 1);
+                     argument.tm.first);
             exit(0);
 
     }
@@ -299,37 +303,39 @@ Args parseArgs (int argc, char **argv){
     }
 
 
-    else if((argument.states==0 || argument.alphabet_size==0 || argument.numIt==0 || argument.k==0 || argument.tm ==0) && tm_profile_flag==1 && replicate_flag==0 && tm_number_growth_flag==0){
+    else if((argument.states==0 || argument.alphabet_size==0 || argument.numIt==0 || argument.k==0 || argument.tm.second==false ) && tm_profile_flag==1 && replicate_flag==0 && tm_number_growth_flag==0){
         std::cerr << "Please fill all the required arguments" <<std::endl;
         exit(0);
     }
-    else if(argument.tm !=0 && tm_profile_flag==0 && tm_dynamical_profile_flag==0 && tm_print_flag==0 && replicate_flag==0 ){
+    else if(argument.tm.second && tm_profile_flag==0 && tm_dynamical_profile_flag==0 && StMatrix_flag==0 && tm_print_flag==0 && replicate_flag==0 ){
         std::cerr << "You can only provide tm with the --profile or --dynprofile " <<std::endl;
         std::cerr << "Example: ./tm --brief --profile -s 2 -a 2 -i 100 -k 2 -t 5" << std::endl;
         std::cerr << "Example: ./tm --brief --dynprofile -s 2 -a 2 -i 100 -k 2 -t 5" << std::endl;
         exit(0);
     }
 
-    else if ( (argument.states!=0 || argument.alphabet_size!=0 || argument.numIt!=0 || argument.k!=0 || argument.tm !=0) && tm_profile_flag==0 && tm_dynamical_profile_flag==1 && replicate_flag==0){
+    else if ( (argument.states!=0 && argument.alphabet_size!=0 && argument.numIt!=0 && argument.k==0 && argument.tm.second) && tm_profile_flag==0 && tm_dynamical_profile_flag==1 && replicate_flag==0){
         tm_dynamical_profile(argument.states,
                 argument.alphabet_size,
                 argument.numIt,
                 argument.k,
-                argument.tm -1 , 5);
+                argument.tm.first , 5);
         exit(0);
 
     }
-    else if ( (argument.states!=0 || argument.alphabet_size!=0 || argument.numIt!=0 || argument.k!=0 || argument.tm ==0) && tm_profile_flag==0 && replicate_flag==0 && tm_dynamical_profile_flag==0 && busy_beaver_flag==1){
-        tm_busy_beaver_test(argument.states, argument.alphabet_size,
-                argument.numIt, argument.k);
+    else if ( (argument.states!=0 || argument.alphabet_size!=0 || argument.numIt!=0 || argument.k!=0 || argument.tm.second) && tm_profile_flag==0 && replicate_flag==0 && tm_dynamical_profile_flag==0 && StMatrix_flag==1){
+        tm_print_state_matrix(argument.states,
+                     argument.alphabet_size,
+                     argument.tm.first);
         exit(0);
+
     }
-    else if ( (argument.states!=0 || argument.alphabet_size!=0 || argument.numIt!=0 || argument.k!=0 || argument.tm !=0) && tm_profile_flag==1 && replicate_flag==0 && tm_dynamical_profile_flag==0){
+    else if ( (argument.states!=0 || argument.alphabet_size!=0 || argument.numIt!=0 || argument.k!=0 || argument.tm.second ) && tm_profile_flag==1 && replicate_flag==0 && tm_dynamical_profile_flag==0){
         tm_profile(argument.states,
                 argument.alphabet_size,
                 argument.numIt,
                 argument.k,
-                argument.tm -1 , 5);
+                argument.tm.first, 5);
         exit(0);
     }
     
@@ -372,7 +378,7 @@ void printArgs(Args arguments){
     std::cout<<"threshold = " << arguments.threshold << std::endl;
     std::cout<<"numIt = " << arguments.numIt << std::endl;
     std::cout<<"k = " << arguments.k << std::endl;
-    std::cout<<"tm = " << arguments.tm << std::endl;
+    std::cout<<"tm = " << arguments.tm.first << std::endl;
     if(arguments.strategy == TraversalStrategy::SEQUENTIAL){
         std::cout << "strategy = " << "Sequential"  << std::endl; //might require twirks
     }

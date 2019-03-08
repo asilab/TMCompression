@@ -40,32 +40,23 @@ void ktm(size_t states, size_t alphabet_size);
  * @param num_iterations
  * @param tm_number
  */
-void tm_print(
+void tm_print_tape(
     size_t states,
     size_t alphabet_size,
     unsigned int num_iterations,
     TmId tm_number);
 
-/**
-Busy beaver test: #states=2 #alphabet=3;
- 	  A       B
-0 	1,R,B 	2,L,A
-1 	2,L,A 	2,R,B
-2 	1,L,A 	0,R,A
+/**Print State matrix of a Turing machine
+ * 
+ * @param states
+ * @param alphabet_size
+ * @param tm_number
+ */
 
- 	    0       1
-0 	1,2,1 	2,0,0
-1 	2,0,0 	2,2,1
-2 	1,0,0 	0,2,0
-(w,m,s)
-Index of busybeaver = 11542228
-*/
-
-void tm_busy_beaver_test(
+void tm_print_state_matrix(
   size_t states,
   size_t alphabet_size,
-  unsigned int num_iterations,
-  unsigned int k);
+  TmId tm_number);
 
 
 /** Evaluates a specific turing machine program.

@@ -129,7 +129,14 @@ CompressionResultsData tm(
   return data;
 }
 
-void tm_print(
+/**Tape of a Turing machine after n interations
+ * 
+ * @param states
+ * @param alphabet_size
+ * @param num_iterations
+ * @param tm_number
+ */
+void tm_print_tape(
   size_t states,
   size_t alphabet_size,
   unsigned int num_iterations,
@@ -144,6 +151,23 @@ void tm_print(
   }
   machine.turingTape.print();
 }
+
+/**Print State matrix of a Turing machine
+ * 
+ * @param states
+ * @param alphabet_size
+ * @param tm_number
+ */
+void tm_print_state_matrix(
+  size_t states,
+  size_t alphabet_size,
+  TmId tm_number){
+
+  TuringMachine machine(states, alphabet_size);    
+  machine.stMatrix.set_by_index(tm_number); 
+  machine.stMatrix.print();
+}
+
 
 void tm_dynamical_profile(
   size_t states,
@@ -178,36 +202,6 @@ void tm_dynamical_profile(
                         << "\t" << std::setprecision(5) << std::showpoint << data.normalized_compression[i] << "\t" << std::endl;
   }
 }  
-
-/**
-Busy beaver test: #states=2 #alphabet=3;
- 	  A       B
-0 	1,R,B 	2,L,A
-1 	2,L,A 	2,R,B
-2 	1,L,A 	0,R,A
-
- 	    0       1
-0 	1,2,1 	2,0,0
-1 	2,0,0 	2,2,1
-2 	1,0,0 	0,2,0
-(w,m,s)
-Index of busybeaver = 11542228
-*/
-void tm_busy_beaver_test(
-  size_t states,
-  size_t alphabet_size,
-  unsigned int num_iterations,
-  unsigned int k){
-  if (alphabet_size!=3 || states!=2)
-    exit(0);
-  
-  TmId index = 11542228;
-  TuringMachine machine(states, alphabet_size);
-  CompressionResultsData data;
-  NormalizedCompressionMarkovTable normalizedCompressionMarkovTable(k , alphabet_size);
-  tm_print(states,alphabet_size,num_iterations,index);
-
-}
 
 void tm_profile(
   size_t states,
