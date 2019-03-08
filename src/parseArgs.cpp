@@ -281,7 +281,6 @@ Args parseArgs (int argc, char **argv){
         putchar ('\n');
     }
 
-    
     if (tm_number_growth_flag && argument.states==0 && argument.alphabet_size==0 && argument.numIt==0 && argument.k==0 && argument.tm.second==false){
         std::cerr << "TM growth for alphabet = 2 and Max number of states = 100" <<std::endl;
         tm_growth_with_cardinality(100);
@@ -314,7 +313,7 @@ Args parseArgs (int argc, char **argv){
         exit(0);
     }
 
-    else if ( (argument.states!=0 && argument.alphabet_size!=0 && argument.numIt!=0 && argument.k==0 && argument.tm.second) && tm_profile_flag==0 && tm_dynamical_profile_flag==1 && replicate_flag==0){
+    else if ( (argument.states!=0 && argument.alphabet_size!=0 && argument.numIt!=0 && argument.k!=0 && argument.tm.second) && tm_profile_flag==0 && tm_dynamical_profile_flag==1 && replicate_flag==0){
         tm_dynamical_profile(argument.states,
                 argument.alphabet_size,
                 argument.numIt,
