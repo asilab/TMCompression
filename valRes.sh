@@ -60,7 +60,6 @@ if [[ "$VAL_TAPES" -eq "1" ]];
     sed -i 's/[^0-9]*//g' Tape1val.txt;
     cmp Tape1.txt Tape1val.txt
 
-    
 fi
 
 
