@@ -1,10 +1,3 @@
-/**
-    TMsimulator.c
-    Purpose: Run Program
-    Code taken from: https://www.algorithmicdynamics.net/uploads/4/3/8/0/43802527/tm1d.zip
-    @author Dr. Fernando Soler-Toscano @ University of Seville.
-*/
-
 #include <stdlib.h>  // general-purpose library
 #include <stdio.h>   // read-write functionality
 #include <string>  // string manipulation library
@@ -84,16 +77,15 @@ void show_data(turing_machine *m){
   printf("       New symbol: %d\n",m->transition_table[m->state.control_state][sym].write_symbol);
   printf("       Movement: %d\n",m->transition_table[m->state.control_state][sym].dir);
   
-  
 }
 
+ 
 /*****************************************************************************
    Executes a step in the given TM
 *****************************************************************************/
 int run_step(turing_machine *m){
 
     //show_data(m);
-
 
     int cell = m->state.head_position;      // current cell
     
@@ -267,17 +259,19 @@ turing_machine init_turing_machine(int states, int colors, int blank, mpz_t numb
 
   mpz_clear(gr);
   mpz_clear(gc);
+  
+    // shows the transition table (with Hector's notation)  
+  std::cout << std::endl << "Turing Machine State Matrix" << std::endl<< std::endl<< "   ";;
 
-  // shows the transition table (with Hector's notation)  
-  std::cout<<"\t";
-  for (auto jj=0u;jj < states ; jj++){
-      std::cout<<"  "<< jj << "  ";
-    }
-
-   std::cout << std::endl<< "   ";
-     for (auto jj=0u;jj< states ; jj++){
-      std::cout<<"----------";
-    }
+  for (auto jj=0u;jj< states ; jj++){
+    std::cout<<"    "<< jj << "     ";
+  }
+  std::cout << std::endl<< "   ";
+  
+  for (auto jj=0u;jj< states ; jj++){
+    std::cout<<"----------";
+  }
+  
   std::cout<< std::endl;
 
   for(j=0;j<colors; j++){
@@ -289,7 +283,22 @@ turing_machine init_turing_machine(int states, int colors, int blank, mpz_t numb
     }
     std::cout <<std::endl;
   }
-  std::cout <<std::endl;
+  std::cout << std::endl << "Lines --> Alphabet Letter "<< std::endl << "Columns --> TM State "<< std::endl;
+  std::cout << "(w,m,s) --> (write,move,state)" << std::endl;
+
+
+
+  // shows the transition table (with Hector's notation)  
+  /*   for (i=0; i<states; i++) { 
+    for(j=colors-1;j>=0; j--){
+      printf("{%i, %i} -> {%i, %i, %i}\n",
+	     i+1,j,
+	     1+(m.transition_table[i][j].control_state),
+	     m.transition_table[i][j].write_symbol,
+	     (m.transition_table[i][j].dir)-1);
+    }
+    }*/ 
+  
 
   // Returns the constructed TM
   return m;
@@ -359,8 +368,7 @@ int main(int argn, char* argv[]) {
     machine = init_turing_machine(s,k,0,acc);
     for(i=0; i<runtime && run_step(&machine); i++){};
     show_data(&machine);
-    out = outputTM(&machine);
-    //std::cout << out <<std::endl;
+    out = outputTM(&machine);  
     ++results[out];
     delete_state(&machine);
     mpz_add_ui(TM,TM,1);    

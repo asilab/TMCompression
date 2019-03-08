@@ -24,18 +24,41 @@ fi
 # ==============================================================================
 if [[ "$VAL_TAPES" -eq "1" ]];
     then
+    ./tm --brief --StMatrix -s 2 -a 3 -t 15571925
+    ./tm --brief --printTape -s 2 -a 3 -i 101 -t 15571925 > Tape1.txt;
+    sed -i 's/[^0-9]*//g' Tape1.txt;
 
+    ./TMsimulator 2 3 100 12542675 12542675 | head -n +12;
+    ./TMsimulator 2 3 100 12542675 12542675| grep "tape">Tape1val.txt;
+    sed -i 's/[^0-9]*//g' Tape1val.txt;
+    cmp Tape1.txt Tape1val.txt;
+    #==============
+    ./tm --brief --StMatrix -s 2 -a 3 -t 15571907
+    ./tm --brief --printTape -s 2 -a 3 -i 101 -t 15571907 > Tape1.txt;
+    sed -i 's/[^0-9]*//g' Tape1.txt;
+
+    ./TMsimulator 2 3 100 12542674 12542674 | head -n +12;
+    ./TMsimulator 2 3 100 12542674 12542674 | grep "tape" >Tape1val.txt;
+    sed -i 's/[^0-9]*//g' Tape1val.txt;
+    cmp Tape1.txt Tape1val.txt;
+   #===============
+    ./tm --brief --StMatrix -s 2 -a 3 -t 32438743
+    ./tm --brief --printTape -s 2 -a 3 -i 101 -t 32438743 > Tape1.txt;
+    sed -i 's/[^0-9]*//g' Tape1.txt;
+
+    ./TMsimulator 2 3 100 16078 16078 | head -n +12;
+    ./TMsimulator 2 3 100 16078 16078 | grep "tape" >Tape1val.txt;
+    sed -i 's/[^0-9]*//g' Tape1val.txt;
+    cmp Tape1.txt Tape1val.txt;
+    #===============
     ./tm --brief --StMatrix -s 2 -a 3 -t 19311563
     ./tm --brief --printTape -s 2 -a 3 -i 101 -t 19311563 > Tape1.txt;
     sed -i 's/[^0-9]*//g' Tape1.txt;
-
-    ./TMsimulator 2 3 100 11542228 11542228 | head -n +5;
+    
+    ./TMsimulator 2 3 100 11542228 11542228 | head -n +12;
     ./TMsimulator 2 3 100 11542228 11542228 | grep "tape" >Tape1val.txt;
     sed -i 's/[^0-9]*//g' Tape1val.txt;
-
     cmp Tape1.txt Tape1val.txt
-
-
 
     
 fi
