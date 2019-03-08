@@ -322,7 +322,7 @@ Args parseArgs (int argc, char **argv){
         exit(0);
 
     }
-    else if ( (argument.states!=0 || argument.alphabet_size!=0 || argument.numIt!=0 || argument.k!=0 || argument.tm.second) && tm_profile_flag==0 && replicate_flag==0 && tm_dynamical_profile_flag==0 && StMatrix_flag==1){    
+    else if ( (argument.states!=0 || argument.alphabet_size!=0|| argument.tm.second) && tm_profile_flag==0 && replicate_flag==0 && tm_dynamical_profile_flag==0 && StMatrix_flag==1){    
         tm_print_state_matrix(argument.states,
                      argument.alphabet_size,
                      argument.tm.first);
