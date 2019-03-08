@@ -138,7 +138,7 @@ Args parseArgs (int argc, char **argv){
             std::cout <<"Run specific tm and print tape" << std::endl;
             std::cout << "./tm --brief --printTape -s 2 -a 2 -i 100 -t 1"<< std::endl;
             std::cout <<"Run StMatrix of the tm" << std::endl;
-            std::cout << "./tm --brief --StMatrix -s 2 -a 2 -i 100 -t 1"<< std::endl;
+            std::cout << "./tm --brief --StMatrix -s 2 -a 2 -t 1"<< std::endl;
             exit (0);
 
         case 'v':

@@ -4,7 +4,8 @@
 # Options
 # ==============================================================================
 INSTALL_AC=0;
-TEST_CMP=1;
+TEST_CMP=0;
+VAL_TAPES=1;
 ITERATION=50000;
 # ==============================================================================
 # Install AC
@@ -19,6 +20,28 @@ if [[ "$INSTALL_AC" -eq "1" ]];
     cd ../../
 fi
 # ==============================================================================
+# Validate TM Tapes
+# ==============================================================================
+if [[ "$VAL_TAPES" -eq "1" ]];
+    then
+
+    ./tm --brief --StMatrix -s 2 -a 3 -t 19311563
+    ./tm --brief --printTape -s 2 -a 3 -i 101 -t 19311563 > Tape1.txt;
+    sed -i 's/[^0-9]*//g' Tape1.txt;
+
+    ./TMsimulator 2 3 100 11542228 11542228 | head -n +5;
+    ./TMsimulator 2 3 100 11542228 11542228 | grep "tape" >Tape1val.txt;
+    sed -i 's/[^0-9]*//g' Tape1val.txt;
+
+    cmp Tape1.txt Tape1val.txt
+
+
+
+    
+fi
+
+
+# ==============================================================================
 # Validate Profile Compression AC
 # ==============================================================================
 #
@@ -28,15 +51,14 @@ if [[ "$TEST_CMP" -eq "1" ]];
 
     tail -n +4 3st.txt | head -n -3 | sort -k 6,6 |awk '$4 < 100 { next } { print }' | tail -n 50 | awk ' { print $1}' > InterestingMachines.txt;
 
-
     while read p; do
         txtName=ACProfile${p}.txt;
         PdfName=ACProfile${p}.pdf;
-        SavePath="./Profiles/3st/AC/"
-        ./tm --brief --printTape -s 3 -a 2 -i $ITERATION -t $p > tape.txt
-        tr -d -c "01" < tape.txt > tape_clean.txt
-        ./AC -v -e -tm 3:1:0.9/0:0:0 tape_clean.txt
-        mv tape_clean.txt.iae profile.txt
+        SavePath="./Profiles/3st/AC/";
+        ./tm --brief --printTape -s 3 -a 2 -i $ITERATION -t $p > tape.txt;
+        tr -d -c "01" < tape.txt > tape_clean.txt;
+        ./AC -v -e -tm 3:1:0.9/0:0:0 tape_clean.txt;
+        mv tape_clean.txt.iae profile.txt;
         gnuplot << EOF
             reset
             set terminal pdfcairo enhanced color font 'Verdana,8'
