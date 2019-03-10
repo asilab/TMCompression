@@ -24,6 +24,12 @@ struct CompressionResultsData
   std::vector <double> normalized_compression;
   std::vector <double> self_compression;
 
-  void append(TmId tmNumber,unsigned int amplitudes,double normalized_compression, double self_compression);
+  void append(TmId tmNumber,
+  unsigned int amplitudes,
+  double self_compression,
+  double normalized_compression);
+  
+  void clear_data();
+  void avg();
 
 };
