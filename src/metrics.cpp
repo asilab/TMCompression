@@ -63,6 +63,18 @@ AvgMetrics CompressionResultsData::avg(){
     
     
 }
+void CompressionResultsData::print_data(unsigned int divison){
+
+    std::cout<< "iterations \t amplitude \t Self-Compression \t Normalized Compression " << std::endl; 
+    std::cout<< "-------------------------------------------------" <<std::endl;
+    for (auto i = 0u; i < this->amplitude.size(); ++i) {
+        std::cout << ((i + 1) * divison) << "\t" << this->amplitude[i] << "\t" << std::setprecision(5) << std::showpoint <<  this->self_compression[i] 
+                  << "\t" << std::setprecision(5) << std::showpoint << this->normalized_compression[i] << "\t" << std::endl;
+  }
+}
+
+
+
 void CompressionResultsData::print_data(unsigned int k, unsigned int numIt){
     std::cout<< "TM \t k value \t iterations \t amplitude \t Self-Compression \t Normalized Compression " << std::endl; 
     std::cout<< "-------------------------------------------------" <<std::endl;

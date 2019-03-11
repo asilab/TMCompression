@@ -50,11 +50,12 @@ IndexAndMetrics run_machine(TuringMachine& machine, NormalizedCompressionMarkovT
 
     machine.reset_tape_and_state();
     for (auto i = 0u; i < num_iterations -1 ; ++i){
-      normalizedCompressionMarkovTable.mrkvTable.reset();
+      normalizedCompressionMarkovTable.reset();
       machine.act(); // grave esti antaŭe
     }
-    indMetrics.metrics = normalizedCompressionMarkovTable.update_nc_mk_table(machine.turingTape);
-    normalizedCompressionMarkovTable.mrkvTable.reset();
+
+    indMetrics.metrics = normalizedCompressionMarkovTable.update(machine.turingTape);
+    normalizedCompressionMarkovTable.reset();
     indMetrics.tmNumber = machine.stMatrix.calculate_index();
   return indMetrics;
 }
@@ -287,6 +288,13 @@ CompressionResultsData tm_multicore(
   throw std::runtime_error("unsupported traversal strategy");
 }
 
+/** Evaluates a specific Turing machine program dynamically,analysing the time complexity.
+ * @param states
+ * @param alphabet_size
+ * @param num_iterations
+ * @param k
+ * @param tm_number
+ */
 
 void tm_dynamical_profile(
   size_t states,
@@ -296,32 +304,34 @@ void tm_dynamical_profile(
   TmId tm_number,
   unsigned int divison)
   {
-
+  IndexAndMetrics indxMetrics;
+  indxMetrics.tmNumber=tm_number;
   TuringMachine machine(states, alphabet_size);
   CompressionResultsData data;
   NormalizedCompressionMarkovTable normalizedCompressionMarkovTable(k, alphabet_size);
   
   machine.stMatrix.set_by_index(tm_number);    
   machine.reset_tape_and_state();
-
+  
   for (auto i = 0u; i < num_iterations -1 ; ++i){
     normalizedCompressionMarkovTable.mrkvTable.reset();
     machine.act(); //importante ser antes
     if(i%divison==0){
-      Metrics metrics = normalizedCompressionMarkovTable.update_nc_mk_table(machine.turingTape);
-      data.amplitude.push_back(metrics.amplitude); 
-      data.normalized_compression.push_back(metrics.normalizedCompression);
-      data.self_compression.push_back(metrics.selfCompression);
+      indxMetrics.metrics = normalizedCompressionMarkovTable.update(machine.turingTape);
+      data.append_metrics(indxMetrics);
     }
   }
-  std::cout<< "iterations \t amplitude \t Self-Compression \t Normalized Compression " << std::endl; 
-  std::cout<< "-------------------------------------------------" <<std::endl;
-  for (auto i = 0u; i < data.amplitude.size(); ++i) {
-  std::cout << ((i + 1) * divison) << "\t" << data.amplitude[i] << "\t" << std::setprecision(5) << std::showpoint <<  data.self_compression[i] 
-                        << "\t" << std::setprecision(5) << std::showpoint << data.normalized_compression[i] << "\t" << std::endl;
-  }
+  data.print_data(divison);
 }  
 
+/** Evaluates a specific Turing machine Profile.
+ *
+ * @param states
+ * @param alphabet_size
+ * @param num_iterations
+ * @param k
+ * @param tm_number
+ */
 void tm_profile(
   size_t states,
   size_t alphabet_size,
@@ -342,17 +352,14 @@ void tm_profile(
     machine.act(); //importante ser antes
   }
   data = normalizedCompressionMarkovTable.profile_update_nc_mk_table(machine.turingTape, divison);
-
-  std::cout<< "iterations \t amplitude \t Self-Compression \t Normalized Compression " << std::endl; 
-  std::cout<< "-------------------------------------------------" <<std::endl;
-  
-  for (auto i = 0u; i < data.amplitude.size(); ++i) {
-    std::cout << ((i + 1)*divison) << "\t" << data.amplitude[i] << "\t" << std::setprecision(5)  << std::showpoint <<  data.self_compression[i] 
-                        << "\t" << std::setprecision(5) << std::showpoint << data.normalized_compression[i] << "\t" << std::endl;
-  }
+  data.print_data(divison);
 }
 
-
+/** Replicate experiment to determine the best k and it for a given number of states and alphabet size.
+ *
+ * @param states
+ * @param alphabet_size
+ */
 void ktm(size_t states,
     size_t alphabet_size){
 
@@ -389,6 +396,13 @@ void ktm(size_t states,
   }
 }
 
+/** Replicate experiment to determine the best k and it for a given number of states and alphabet size with the given architecture,
+ * using multiple threads.
+ *
+ * @param states
+ * @param alphabet_size
+ * @param threads the number of threads to run in parallel
+ */
 void ktm_multicore(
     size_t states,
     size_t alphabet_size,
@@ -414,8 +428,6 @@ void ktm_multicore(
     } 
   }
 }
-
-
 
 /**Tape of a Turing machine after n iterations
  * 

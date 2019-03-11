@@ -58,7 +58,6 @@ std::vector<unsigned int> MarkovTable::getLine(const Char* characters){
 
 
 
-
 /**
     Resets Markov Table.
 
@@ -108,7 +107,7 @@ void MarkovTable::print() const{
 NormalizedCompressionMarkovTable::NormalizedCompressionMarkovTable(unsigned int k, unsigned int alphabet_size):
 mrkvTable(k, alphabet_size) {}
 
-Metrics NormalizedCompressionMarkovTable::update_nc_mk_table(const Tape& tape){
+Metrics NormalizedCompressionMarkovTable::update(const Tape& tape){
     auto b = begin(tape.tape) + tape.ind_left - this->mrkvTable.k  + 1 ; // To have k context at the begining    
     auto e = begin(tape.tape) + tape.ind_right - this->mrkvTable.k;
     Metrics metrics;
@@ -202,4 +201,8 @@ double NormalizedCompressionMarkovTable::calculateLog(int index_value, int sum_a
     double value = static_cast<double>(index_value)/ static_cast<double>(sum_all_line_elem);
     //std::cout << "value div = " << value << std::endl ;
     return (- log2(value));
+}
+
+void NormalizedCompressionMarkovTable::reset(){
+    this->mrkvTable.reset();
 }

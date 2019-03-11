@@ -37,9 +37,19 @@ struct NormalizedCompressionMarkovTable{
     MarkovTable mrkvTable;
     NormalizedCompressionMarkovTable(unsigned int k, unsigned int alphabet_size);
 
-    Metrics update_nc_mk_table(const Tape& tape);
+    Metrics update(const Tape& tape);
     CompressionResultsData profile_update_nc_mk_table(const Tape& tape, unsigned int divison);
     double normalization_base(unsigned int length_of_tape, unsigned int cardinality);
     int sum_all_elements_vector(std::vector<unsigned int>& subvector_markovtable);
     double calculateLog(int index_value, int sum_all_line_elem);
+    void reset();
 };
+
+// // Create vector of MarkovTables?
+// struct BestKMarkovTables<M>{
+//     std::vector<MarkovTable> markovTableVectors;
+    
+//     void fill_vector_markov_tables(std::vector<>)
+
+
+// }

@@ -72,7 +72,7 @@ void tm_print_state_matrix(
   TmId tm_number);
 
 
-/** Evaluates a specific Turing machine program.
+/** Evaluates a specific Turing machine Profile.
  *
  * @param states
  * @param alphabet_size
