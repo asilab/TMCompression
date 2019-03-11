@@ -16,15 +16,18 @@
 /** Run the given turing machine for a certain number of iterations.
  * Currently a private function.
  */
-Metrics run_machine(TuringMachine& machine, NormalizedCompressionMarkovTable& normalizedCompressionMarkovTable, unsigned int num_iterations) {
+IndexAndMetrics run_machine(TuringMachine& machine, NormalizedCompressionMarkovTable& normalizedCompressionMarkovTable, unsigned int num_iterations) {
+    IndexAndMetrics indMetrics;
+
     machine.reset_tape_and_state();
     for (auto i = 0u; i < num_iterations -1 ; ++i){
       normalizedCompressionMarkovTable.mrkvTable.reset();
       machine.act(); // grave esti antaŭe
     }
-    Metrics metrics = normalizedCompressionMarkovTable.update_nc_mk_table(machine.turingTape);
+    indMetrics.metrics = normalizedCompressionMarkovTable.update_nc_mk_table(machine.turingTape);
     normalizedCompressionMarkovTable.mrkvTable.reset();
-  return metrics;
+    indMetrics.tmNumber = machine.stMatrix.calculate_index();
+  return indMetrics;
 }
 
 /// The RNG engine for sampling random numbers in Monte Carlo.
@@ -68,6 +71,7 @@ CompressionResultsData tm(
 
   TuringMachine machine(states, alphabet_size);
   CompressionResultsData data;
+  data.clear_data();
   NormalizedCompressionMarkovTable normalizedCompressionMarkovTable(k , alphabet_size);
 
   switch (strategy) {
@@ -82,18 +86,16 @@ CompressionResultsData tm(
       unsigned int counter = 0;
       do {
         
-        auto metrics = run_machine(machine, normalizedCompressionMarkovTable, num_iterations);
-
+        auto indAndmetrics = run_machine(machine, normalizedCompressionMarkovTable, num_iterations);
         if (verbose && counter % 4096 == 0) {
-          std::cerr << "TM #" << std::setw(8) << counter << ": amplitude = " << metrics.amplitude 
-          << ": sc = " << std::setprecision(5) << std::showpoint <<metrics.selfCompression <<": nc = " << std::setprecision(5) << std::showpoint 
-          << metrics.normalizedCompression << "\r";
+          std::cerr << "TM #" << std::setw(8) << indAndmetrics.tmNumber << ": amplitude = " << indAndmetrics.metrics.amplitude 
+          << ": sc = " << std::setprecision(5) << std::showpoint <<indAndmetrics.metrics.selfCompression <<": nc = " << std::setprecision(5) << std::showpoint 
+          << indAndmetrics.metrics.normalizedCompression << "\r";
         }
 
+        
+        data.append_metrics(indAndmetrics);
         machine.stMatrix.next();
-        data.amplitude.push_back(metrics.amplitude);
-        data.self_compression.push_back(metrics.selfCompression);
-        data.normalized_compression.push_back(metrics.normalizedCompression);
         counter += 1;
       } while (counter < traversal_len);
     }
@@ -105,20 +107,16 @@ CompressionResultsData tm(
 
       for (auto counter = 0ull; counter < traversal_len; counter++) {
         machine.stMatrix.set_random(rng);
-        auto index = machine.stMatrix.calculate_index();
-        auto metrics = run_machine(machine, normalizedCompressionMarkovTable, num_iterations);
+        auto indAndmetrics = run_machine(machine, normalizedCompressionMarkovTable, num_iterations);
 
         if (verbose && counter % 4096 == 0) {
-          std::cerr << "TM #" << std::setw(8) << counter << ": amplitude = " << metrics.amplitude 
-          << ": sc = " << std::setprecision(5) << std::showpoint <<metrics.selfCompression <<": nc = " << std::setprecision(5) << std::showpoint
-          << metrics.normalizedCompression << "\r";
+          std::cerr << "TM #" << std::setw(8) << indAndmetrics.tmNumber << ": amplitude = " << indAndmetrics.metrics.amplitude 
+          << ": sc = " << std::setprecision(5) << std::showpoint <<indAndmetrics.metrics.selfCompression <<": nc = " << std::setprecision(5) << std::showpoint
+          << indAndmetrics.metrics.normalizedCompression << "\r";
         }
         
         // get turing machine index
-        data.tmNumber.push_back(index);
-        data.amplitude.push_back(metrics.amplitude);
-        data.self_compression.push_back(metrics.selfCompression);
-        data.normalized_compression.push_back(metrics.normalizedCompression);
+        data.append_metrics(indAndmetrics);
       }
     }
     break;
@@ -249,35 +247,23 @@ void ktm(size_t states,
     
     for(auto nb_it_val = range_of_it.begin(); nb_it_val != range_of_it.end(); ++nb_it_val) {
 
-      data.amplitude.clear();
-      data.self_compression.clear();
-      data.normalized_compression.clear();
-
+      data.clear_data();
+      
       do {
-        auto metrics = run_machine(machine, normalizedCompressionMarkovTable, *nb_it_val);
+        auto indAndmetrics = run_machine(machine, normalizedCompressionMarkovTable, *nb_it_val);
 
-        data.amplitude.push_back(metrics.amplitude);
-        data.self_compression.push_back(metrics.selfCompression);
-        data.normalized_compression.push_back(metrics.normalizedCompression);
+        data.append_metrics(indAndmetrics);
 
       } while (machine.stMatrix.next());
 
-      float mean_amp = std::accumulate( data.amplitude.begin(), data.amplitude.end(), 0.0)/data.amplitude.size();
-      float mean_sc = std::accumulate( data.self_compression.begin(),  data.self_compression.end(), 0.0)/ data.self_compression.size();
-      float mean_nc = std::accumulate( data.normalized_compression.begin(), data.normalized_compression.end(), 0.0)/data.normalized_compression.size();
-      double sq_amp_sum = std::inner_product(data.amplitude.begin(), data.amplitude.end(), data.amplitude.begin(), 0.0);
-      double sq_sc_sum = std::inner_product(data.self_compression.begin(), data.self_compression.end(), data.self_compression.begin(), 0.0);
-      double sq_nc_sum = std::inner_product(data.normalized_compression.begin(), data.normalized_compression.end(), data.normalized_compression.begin(), 0.0);
-      double stdev_amp = std::sqrt(sq_amp_sum / data.amplitude.size() - mean_amp * mean_amp);
-      double stdev_sc = std::sqrt(sq_sc_sum / data.self_compression.size() - mean_sc * mean_sc);
-      double stdev_nc = std::sqrt(sq_nc_sum / data.normalized_compression.size() - mean_nc * mean_nc);
+      auto avg_metrics = data.avg();
 
       std::cout<< "Number of TM \t k \t number iterations \tMean Amp+/-std \t Mean sc+/-std \t Mean nc+/-std" << std::endl;
       std::cout << data.amplitude.size() << "\t\t" << *kval 
                                          << "\t\t" << *nb_it_val 
-                                         << "\t\t" << mean_amp << "+/-" << stdev_amp 
-                                         << "\t\t" << mean_sc << "+/-" << stdev_sc 
-                                         << "\t" << mean_nc << "+/-" << stdev_nc
+                                         << "\t\t" << avg_metrics.amp.first << "+/-" << avg_metrics.amp.second 
+                                         << "\t\t" << avg_metrics.sc.first << "+/-" << avg_metrics.sc.second 
+                                         << "\t" << avg_metrics.nc.first << "+/-" << avg_metrics.nc.second
                                          << std::endl;
     } 
   }
@@ -331,10 +317,12 @@ CompressionResultsData multicore_monte_carlo(
 
   for (auto& f: jobs) {
     auto r = f.get();
-    total.tmNumber.insert(end(total.tmNumber),begin(r.tmNumber),end(r.tmNumber));
-    total.amplitude.insert(end(total.amplitude), begin(r.amplitude), end(r.amplitude));
-    total.normalized_compression.insert(end(total.normalized_compression), begin(r.normalized_compression), end(r.normalized_compression));
-    total.self_compression.insert(end(total.self_compression), begin(r.self_compression), end(r.self_compression));
+    
+    total.merge(std::move(r));    
+    // total.tmNumber.insert(end(total.tmNumber),begin(r.tmNumber),end(r.tmNumber));
+    // total.amplitude.insert(end(total.amplitude), begin(r.amplitude), end(r.amplitude));
+    // total.normalized_compression.insert(end(total.normalized_compression), begin(r.normalized_compression), end(r.normalized_compression));
+    // total.self_compression.insert(end(total.self_compression), begin(r.self_compression), end(r.self_compression));
   }
 
   return total;
@@ -390,10 +378,11 @@ CompressionResultsData multicore_sequential_partition(
 
   for (auto& f: jobs) {
     auto r = f.get();
-    total.tmNumber.insert(end(total.tmNumber),begin(r.tmNumber),end(r.tmNumber));
-    total.amplitude.insert(end(total.amplitude), begin(r.amplitude), end(r.amplitude));
-    total.normalized_compression.insert(end(total.normalized_compression), begin(r.normalized_compression), end(r.normalized_compression));
-    total.self_compression.insert(end(total.self_compression), begin(r.self_compression), end(r.self_compression));
+    total.merge(std::move(r));    
+    // total.tmNumber.insert(end(total.tmNumber),begin(r.tmNumber),end(r.tmNumber));
+    // total.amplitude.insert(end(total.amplitude), begin(r.amplitude), end(r.amplitude));
+    // total.normalized_compression.insert(end(total.normalized_compression), begin(r.normalized_compression), end(r.normalized_compression));
+    // total.self_compression.insert(end(total.self_compression), begin(r.self_compression), end(r.self_compression));
   }
 
   return total;

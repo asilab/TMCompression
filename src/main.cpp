@@ -55,23 +55,8 @@ int main (int argc, char **argv){
   }
 
   std::cout<< "-------------------------------------------------" <<std::endl;
-  float mean_amp = std::accumulate( data.amplitude.begin(), data.amplitude.end(), 0.0)/data.amplitude.size();
-  float mean_sc = std::accumulate( data.self_compression.begin(),  data.self_compression.end(), 0.0)/ data.self_compression.size();
-  float mean_nc = std::accumulate( data.normalized_compression.begin(), data.normalized_compression.end(), 0.0)/data.normalized_compression.size();
-  
-  double sq_amp_sum = std::inner_product(data.amplitude.begin(), data.amplitude.end(), data.amplitude.begin(), 0.0);
-  double sq_sc_sum = std::inner_product(data.self_compression.begin(), data.self_compression.end(), data.self_compression.begin(), 0.0);
-  double sq_nc_sum = std::inner_product(data.normalized_compression.begin(), data.normalized_compression.end(), data.normalized_compression.begin(), 0.0);
+  AvgMetrics avgMetrics = data.avg();
 
-  double stdev_amp = std::sqrt(sq_amp_sum / data.amplitude.size() - mean_amp * mean_amp);
-  double stdev_sc = std::sqrt(sq_sc_sum / data.self_compression.size() - mean_sc * mean_sc);
-  double stdev_nc = std::sqrt(sq_nc_sum / data.normalized_compression.size() - mean_nc * mean_nc);
+  data.print_avg_metrics(avgMetrics);
 
-
-
-  std::cout<< "Number of TM \t Mean Amp+/-std \t Mean sc+/-std \t Mean nc+/-std" << std::endl;
-  std::cout << data.amplitude.size() << "\t\t" << mean_amp << "+/-" << stdev_amp 
-                                              << "\t\t" << mean_sc << "+/-" << stdev_sc 
-                                              << "\t" << mean_nc << "+/-" << stdev_nc
-                                              << std::endl;
 }

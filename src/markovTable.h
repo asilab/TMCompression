@@ -1,3 +1,11 @@
+/**
+    markovTable.h
+    Purpose: Make and fill Markov Tables.
+             Mesure Statistical Complexity.
+
+    @author Jorge Miguel Ferreira da Silva
+    @version 0.1
+*/
 
 #pragma once
 #include <vector>

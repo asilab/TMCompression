@@ -11,7 +11,7 @@
 ## INSTALL
 Get TMCompression and make the project, using:
 ```bash
-git https://github.com/jorgeMFS/TMCompression.git
+git clone https://github.com/jorgeMFS/TMCompression.git
 cd TMCompression
 make
 make ioStNormalize
@@ -20,7 +20,7 @@ make ioStNormalize
 
 ```bash
 chmod +x *.sh
-bash ProcessResults.sh 1 0 0 0 0
+bash ProcessResults.sh 0 0 0 0 0
 ```
 
 ## CITE

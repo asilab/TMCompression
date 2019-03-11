@@ -16,6 +16,19 @@ struct Metrics{
   double normalizedCompression;
 };
 
+struct IndexAndMetrics{
+  TmId tmNumber;
+  Metrics metrics;
+};
+
+
+struct AvgMetrics{
+  std::pair<double,double> amp;
+  std::pair<double,double> sc;
+  std::pair<double,double> nc;
+};
+
+
 struct CompressionResultsData
 {
   // Integer
@@ -29,7 +42,10 @@ struct CompressionResultsData
   double self_compression,
   double normalized_compression);
   
-  void clear_data();
-  void avg();
+  void append_metrics(IndexAndMetrics);
 
+  void clear_data();
+  void merge(CompressionResultsData&& other);
+  AvgMetrics avg();
+  void print_avg_metrics(AvgMetrics avgMetrics);
 };

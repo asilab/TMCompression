@@ -1,6 +1,7 @@
 /**
-    markovTable.cpp
-    Purpose: Create and Fill Markov Tables.
+    markovTable.h
+    Purpose: Make and fill Markov Tables.
+             Mesure Statistical Complexity.
 
     @author Jorge Miguel Ferreira da Silva
     @version 0.1
@@ -137,6 +138,7 @@ CompressionResultsData NormalizedCompressionMarkovTable::profile_update_nc_mk_ta
     auto b = begin(tape.tape) + tape.ind_left- this->mrkvTable.k  + 1 ; // To have k context at the begining    
     auto e = begin(tape.tape) + tape.ind_right - this->mrkvTable.k;
     CompressionResultsData data;
+
     unsigned int diff_indexes= (tape.ind_right) - (tape.ind_left + 1);
     unsigned int counter=0;
 

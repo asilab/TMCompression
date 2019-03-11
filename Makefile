@@ -5,6 +5,7 @@ CXXFLAGS = -Wall -Wextra -O3 -m64 -g
 LFLAGS = -pthread
 
 objects = src/turingMachine.o \
+ 		  src/metrics.o \
 		  src/markovTable.o \
 		  src/parseArgs.o \
 		  src/util.o \
@@ -26,9 +27,11 @@ clean:
 
 main.o: src/main.cpp src/tm.h src/parseArgs.h
 
+src/metrics.o: src/metrics.cpp src/metrics.h src/turingMachine.h
+
 src/tm.o: src/tm.cpp src/tm.h src/turingMachine.h src/markovTable.h src/util.h
 
-src/markovTable.o: src/markovTable.cpp src/markovTable.h src/turingMachine.h src/util.h
+src/markovTable.o: src/markovTable.cpp src/markovTable.h src/turingMachine.h src/util.h src/metrics.h
 
 src/parseArgs.o: src/parseArgs.cpp src/parseArgs.h src/traversal.h src/util.h
 
