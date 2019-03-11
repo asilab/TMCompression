@@ -1,3 +1,11 @@
+/**
+    ioStNormalize.cpp
+    Purpose: Program that reads txt file and normalizes amplitude and nmvc
+
+    @author Jorge Miguel Ferreira da Silva
+    @version 0.1
+*/
+
 #include <iostream>     // std::cout
 #include <fstream>      // std::fstream
 #include <string>       // std::string

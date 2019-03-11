@@ -84,7 +84,7 @@ Args parseArgs (int argc, char **argv){
             std::cout << "--brief" << "\t" << "Indicates programs that will receive inputs in a brief form." << std::endl << std::endl;
             std::cout << "--tmverbose" << "\t" << "Indicates programs that tm output will be send to the user." << std::endl << std::endl;
             std::cout << "--tmgrowth" << "\t" 
-            << "Indicates programs that output a list of turing machines with an increase in the number of states and a alphabeth size of 2" 
+            << "Indicates programs that output a list of Turing machines with an increase in the number of states and a alphabet size of 2" 
             << std::endl<< std::endl;
             std::cout << "--replicate" << "\t" 
             << "Indicates programs that will replicate experiment to determine the best k and it for a given number of states and alphabet size." 
@@ -387,7 +387,7 @@ void printArgs(Args arguments){
     std::cout<<"k = " << arguments.k << std::endl;
     std::cout<<"tm = " << arguments.tm.first << std::endl;
     if(arguments.strategy == TraversalStrategy::SEQUENTIAL){
-        std::cout << "strategy = " << "Sequential"  << std::endl; //might require twirks
+        std::cout << "strategy = " << "Sequential"  << std::endl; //might require twerks
     }
     else if(arguments.strategy == TraversalStrategy::MONTE_CARLO){
         std::cout << "strategy = " << "Monte Carlo"  << std::endl;
