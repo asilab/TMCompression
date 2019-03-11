@@ -6,8 +6,7 @@
     @version 0.1
 */
 
-#include <iostream>
-#include <iomanip>
+
 #include <sstream>
 #include <numeric>
 #include <cmath>
@@ -36,27 +35,9 @@ int main (int argc, char **argv){
     argument.verbose,
     argument.jobs);
   
-  std::cout<< "TM \t k value \t iterations \t amplitude \t Self-Compression \t Normalized Compression " << std::endl; 
-  std::cout<< "-------------------------------------------------" <<std::endl;
-  if (argument.strategy == TraversalStrategy::SEQUENTIAL){
-    for (auto i = 0u; i < data.amplitude.size(); ++i) {
-      std::cout << (i + 1) << "\t" << argument.k << "\t" << argument.numIt << "\t" << data.amplitude[i] << "\t" 
-      << std::setprecision(5) << std::showpoint <<  data.self_compression[i] << "\t" << std::setprecision(5) << std::showpoint << data.normalized_compression[i] << "\t" << std::endl;
-    }
-  }
-  else if (argument.strategy == TraversalStrategy::MONTE_CARLO){
-    //std::cout <<data.tmNumber.size()<<std::endl;
-
-    for (auto i = 0u; i < data.amplitude.size(); ++i) {
-    std::cout << data.tmNumber[i] << "\t" << argument.k << "\t" << argument.numIt << "\t" << data.amplitude[i] << "\t" 
-    << std::setprecision(5)  << std::showpoint <<  data.self_compression[i] << "\t" << std::setprecision(5) 
-    << std::showpoint << data.normalized_compression[i] << "\t" << std::endl;
-    }
-  }
-
-  std::cout<< "-------------------------------------------------" <<std::endl;
+  
+  data.print_data(argument.k,argument.numIt);
   AvgMetrics avgMetrics = data.avg();
-
   data.print_avg_metrics(avgMetrics);
 
 }

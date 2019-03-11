@@ -1,3 +1,10 @@
+/**
+    transversal.h
+    Purpose: defining the strategy of traversal through possible turing machines
+
+    @version 0.1
+*/
+
 #pragma once
 
 /** Enum for defining the strategy of traversal through possible

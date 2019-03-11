@@ -1,3 +1,11 @@
+/**
+    util.h
+    Purpose: Utility functions for the program.
+
+    @author Jorge Miguel Ferreira da Silva
+    @version 0.1
+*/
+
 #pragma once
 #include <stddef.h>
 

@@ -1,3 +1,16 @@
+/**
+    tm.h
+    Purpose: Various functions related to:
+    - Profile of TM
+    - Dynamical Profile of TM
+    - Test various k
+    - Mutithread TM
+    - Cardinality of TM
+
+    @author Jorge Miguel Ferreira da Silva
+    @version 0.1
+*/
+
 #pragma once
 #include <vector>
 

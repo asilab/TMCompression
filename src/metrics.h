@@ -47,5 +47,6 @@ struct CompressionResultsData
   void clear_data();
   void merge(CompressionResultsData&& other);
   AvgMetrics avg();
+  void print_data(unsigned int k, unsigned int numIt);
   void print_avg_metrics(AvgMetrics avgMetrics);
 };

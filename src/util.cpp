@@ -1,3 +1,11 @@
+/**
+    util.cpp
+    Purpose: Utility functions for the program.
+
+    @author Jorge Miguel Ferreira da Silva
+    @version 0.1
+*/
+
 #include <vector>
 #include <iostream>
 

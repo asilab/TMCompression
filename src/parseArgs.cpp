@@ -1,3 +1,11 @@
+/**
+    parseArgs.cpp
+    Purpose: Parse input arguments
+
+    @author Jorge Miguel Ferreira da Silva
+    @version 0.1
+*/
+
 #include <getopt.h>
 #include <cstring>
 #include <iostream>

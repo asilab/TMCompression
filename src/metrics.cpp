@@ -5,6 +5,7 @@
     @author Jorge Miguel Ferreira da Silva
     @version 0.1
 */
+#include <iomanip>
 
 #include "metrics.h"
 
@@ -61,6 +62,16 @@ AvgMetrics CompressionResultsData::avg(){
     
     
     
+}
+void CompressionResultsData::print_data(unsigned int k, unsigned int numIt){
+    std::cout<< "TM \t k value \t iterations \t amplitude \t Self-Compression \t Normalized Compression " << std::endl; 
+    std::cout<< "-------------------------------------------------" <<std::endl;
+    for (auto i = 0u; i < this->amplitude.size(); ++i) {
+    std::cout << this->tmNumber[i] << "\t" << k << "\t" << numIt << "\t" << this->amplitude[i] << "\t" 
+    << std::setprecision(5)  << std::showpoint <<  this->self_compression[i] << "\t" << std::setprecision(5) 
+    << std::showpoint << this->normalized_compression[i] << "\t" << std::endl;
+    }
+    std::cout<< "-------------------------------------------------" <<std::endl;
 }
 
 void CompressionResultsData::print_avg_metrics(AvgMetrics avgMetrics){
