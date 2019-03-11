@@ -26,7 +26,7 @@
 #include "util.h"
 #include "tm.h"
 
-/** Run the given turing machine for a certain number of iterations.
+/** Run the given Turing machine for a certain number of iterations.
  * Currently a private function.
  */
 IndexAndMetrics run_machine(TuringMachine& machine, NormalizedCompressionMarkovTable& normalizedCompressionMarkovTable, unsigned int num_iterations) {
@@ -58,18 +58,18 @@ TmId tm_cardinality(unsigned int states, unsigned int alphabet_size) {
     return ipow(record_cardinality, nstates * nalphabet);
 }
 
-/** Evaluate all relative turing machine programs with the given architecture.
+/** Evaluate all relative Turing machine programs with the given architecture.
  *
  * @param states
  * @param alphabet_size
  * @param num_iterations
  * @param k
- * @param strategy the turing machine traversal strategy
- * @param traversal_len number of different turing machines to run, can be 0 in
+ * @param strategy the Turing machine traversal strategy
+ * @param traversal_len number of different Turing machines to run, can be 0 in
  *        sequential traversal for the full TM domain
  * @param traversal_offset offset of the partition to travers (only in sequential strategy)
  * @param verbose
- * @return a struct containing the results of evaluation, one per turing machine
+ * @return a struct containing the results of evaluation, one per Turing machine
  */
 CompressionResultsData tm(
     size_t states,
@@ -128,7 +128,7 @@ CompressionResultsData tm(
           << indAndmetrics.metrics.normalizedCompression << "\r";
         }
         
-        // get turing machine index
+        // get Turing machine index
         data.append_metrics(indAndmetrics);
       }
     }
@@ -141,7 +141,7 @@ CompressionResultsData tm(
   return data;
 }
 
-/**Tape of a Turing machine after n interations
+/**Tape of a Turing machine after n iterations
  * 
  * @param states
  * @param alphabet_size
@@ -332,10 +332,6 @@ CompressionResultsData multicore_monte_carlo(
     auto r = f.get();
     
     total.merge(std::move(r));    
-    // total.tmNumber.insert(end(total.tmNumber),begin(r.tmNumber),end(r.tmNumber));
-    // total.amplitude.insert(end(total.amplitude), begin(r.amplitude), end(r.amplitude));
-    // total.normalized_compression.insert(end(total.normalized_compression), begin(r.normalized_compression), end(r.normalized_compression));
-    // total.self_compression.insert(end(total.self_compression), begin(r.self_compression), end(r.self_compression));
   }
 
   return total;
@@ -392,10 +388,6 @@ CompressionResultsData multicore_sequential_partition(
   for (auto& f: jobs) {
     auto r = f.get();
     total.merge(std::move(r));    
-    // total.tmNumber.insert(end(total.tmNumber),begin(r.tmNumber),end(r.tmNumber));
-    // total.amplitude.insert(end(total.amplitude), begin(r.amplitude), end(r.amplitude));
-    // total.normalized_compression.insert(end(total.normalized_compression), begin(r.normalized_compression), end(r.normalized_compression));
-    // total.self_compression.insert(end(total.self_compression), begin(r.self_compression), end(r.self_compression));
   }
 
   return total;

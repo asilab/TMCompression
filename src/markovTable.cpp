@@ -135,7 +135,7 @@ Metrics NormalizedCompressionMarkovTable::update_nc_mk_table(const Tape& tape){
 
 //obtain all values of specific table
 CompressionResultsData NormalizedCompressionMarkovTable::profile_update_nc_mk_table(const Tape& tape, unsigned int divison){
-    auto b = begin(tape.tape) + tape.ind_left- this->mrkvTable.k  + 1 ; // To have k context at the begining    
+    auto b = begin(tape.tape) + tape.ind_left- this->mrkvTable.k  + 1 ; // To have k context at the beginning    
     auto e = begin(tape.tape) + tape.ind_right - this->mrkvTable.k;
     CompressionResultsData data;
 

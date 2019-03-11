@@ -38,7 +38,7 @@ T ipow(T base, T exp) {
     return result;
 }
 
-/** Calculate the number of turing machines with the increase in number of states.
+/** Calculate the number of Turing machines with the increase in number of states.
  * @param max_number_states the number of states cardinality
  */
 void tm_growth_with_cardinality(size_t max_number_states);
