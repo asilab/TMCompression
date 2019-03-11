@@ -26,6 +26,22 @@
 #include "util.h"
 #include "tm.h"
 
+
+/// The RNG engine for sampling random numbers in Monte Carlo.
+using Rng = std::minstd_rand;
+
+/** Calculate the full cardinality of all possible Turing machine state matrices.
+ * @param states the state cardinality
+ * @param alphabet_size the alphabet's size
+ */
+TmId tm_cardinality(unsigned int states, unsigned int alphabet_size) {
+    TmId nstates = states;
+    TmId nalphabet = alphabet_size;
+    auto record_cardinality = nstates * nalphabet * 3;
+
+    return ipow(record_cardinality, nstates * nalphabet);
+}
+
 /** Run the given Turing machine for a certain number of iterations.
  * Currently a private function.
  */
@@ -43,20 +59,6 @@ IndexAndMetrics run_machine(TuringMachine& machine, NormalizedCompressionMarkovT
   return indMetrics;
 }
 
-/// The RNG engine for sampling random numbers in Monte Carlo.
-using Rng = std::minstd_rand;
-
-/** Calculate the full cardinality of all possible turing machine state matrices.
- * @param states the state cardinality
- * @param alphabet_size the alphabet's size
- */
-TmId tm_cardinality(unsigned int states, unsigned int alphabet_size) {
-    TmId nstates = states;
-    TmId nalphabet = alphabet_size;
-    auto record_cardinality = nstates * nalphabet * 3;
-
-    return ipow(record_cardinality, nstates * nalphabet);
-}
 
 /** Evaluate all relative Turing machine programs with the given architecture.
  *
@@ -141,146 +143,6 @@ CompressionResultsData tm(
   return data;
 }
 
-/**Tape of a Turing machine after n iterations
- * 
- * @param states
- * @param alphabet_size
- * @param num_iterations
- * @param tm_number
- */
-void tm_print_tape(
-  size_t states,
-  size_t alphabet_size,
-  unsigned int num_iterations,
-  TmId tm_number)
-  {
-  
-  TuringMachine machine(states, alphabet_size);    
-  machine.stMatrix.set_by_index(tm_number); 
-  machine.reset_tape_and_state();
-  for (auto i = 0u; i < num_iterations -1 ; ++i){
-          machine.act(); //importante ser antes
-  }
-  machine.turingTape.print();
-}
-
-/**Print State matrix of a Turing machine
- * 
- * @param states
- * @param alphabet_size
- * @param tm_number
- */
-void tm_print_state_matrix(
-  size_t states,
-  size_t alphabet_size,
-  TmId tm_number){
-
-  TuringMachine machine(states, alphabet_size);    
-  machine.stMatrix.set_by_index(tm_number); 
-  machine.stMatrix.print();
-}
-
-
-void tm_dynamical_profile(
-  size_t states,
-  size_t alphabet_size,
-  unsigned int num_iterations,
-  unsigned int k,
-  TmId tm_number,
-  unsigned int divison)
-  {
-
-  TuringMachine machine(states, alphabet_size);
-  CompressionResultsData data;
-  NormalizedCompressionMarkovTable normalizedCompressionMarkovTable(k, alphabet_size);
-  
-  machine.stMatrix.set_by_index(tm_number);    
-  machine.reset_tape_and_state();
-
-  for (auto i = 0u; i < num_iterations -1 ; ++i){
-    normalizedCompressionMarkovTable.mrkvTable.reset();
-    machine.act(); //importante ser antes
-    if(i%divison==0){
-      Metrics metrics = normalizedCompressionMarkovTable.update_nc_mk_table(machine.turingTape);
-      data.amplitude.push_back(metrics.amplitude); 
-      data.normalized_compression.push_back(metrics.normalizedCompression);
-      data.self_compression.push_back(metrics.selfCompression);
-    }
-  }
-  std::cout<< "iterations \t amplitude \t Self-Compression \t Normalized Compression " << std::endl; 
-  std::cout<< "-------------------------------------------------" <<std::endl;
-  for (auto i = 0u; i < data.amplitude.size(); ++i) {
-  std::cout << ((i + 1) * divison) << "\t" << data.amplitude[i] << "\t" << std::setprecision(5) << std::showpoint <<  data.self_compression[i] 
-                        << "\t" << std::setprecision(5) << std::showpoint << data.normalized_compression[i] << "\t" << std::endl;
-  }
-}  
-
-void tm_profile(
-  size_t states,
-  size_t alphabet_size,
-  unsigned int num_iterations,
-  unsigned int k,
-  TmId tm_number,
-  unsigned int divison)
-  {
-
-  TuringMachine machine(states, alphabet_size);
-  CompressionResultsData data;
-  NormalizedCompressionMarkovTable normalizedCompressionMarkovTable(k , alphabet_size);
-  
-  machine.stMatrix.set_by_index(tm_number); 
-  machine.reset_tape_and_state();
-  for (auto i = 0u; i < num_iterations -1 ; ++i){
-    normalizedCompressionMarkovTable.mrkvTable.reset();
-    machine.act(); //importante ser antes
-  }
-  data = normalizedCompressionMarkovTable.profile_update_nc_mk_table(machine.turingTape, divison);
-
-  std::cout<< "iterations \t amplitude \t Self-Compression \t Normalized Compression " << std::endl; 
-  std::cout<< "-------------------------------------------------" <<std::endl;
-  
-  for (auto i = 0u; i < data.amplitude.size(); ++i) {
-    std::cout << ((i + 1)*divison) << "\t" << data.amplitude[i] << "\t" << std::setprecision(5)  << std::showpoint <<  data.self_compression[i] 
-                        << "\t" << std::setprecision(5) << std::showpoint << data.normalized_compression[i] << "\t" << std::endl;
-  }
-}
-
-
-void ktm(size_t states,
-    size_t alphabet_size){
-
-  TuringMachine machine(states, alphabet_size);
-
-  std::vector <unsigned int> range_of_k = {2,3,4,5,6,7,8,9,10};
-  std::vector <unsigned int> range_of_it = {100, 1000, 10000};
-  CompressionResultsData data;
-  for(auto kval = range_of_k.begin(); kval != range_of_k.end(); ++kval) {
-    
-    NormalizedCompressionMarkovTable normalizedCompressionMarkovTable(*kval, alphabet_size);
-    
-    for(auto nb_it_val = range_of_it.begin(); nb_it_val != range_of_it.end(); ++nb_it_val) {
-
-      data.clear_data();
-      
-      do {
-        auto indAndmetrics = run_machine(machine, normalizedCompressionMarkovTable, *nb_it_val);
-
-        data.append_metrics(indAndmetrics);
-
-      } while (machine.stMatrix.next());
-
-      auto avg_metrics = data.avg();
-
-      std::cout<< "Number of TM \t k \t number iterations \tMean Amp+/-std \t Mean sc+/-std \t Mean nc+/-std" << std::endl;
-      std::cout << data.amplitude.size() << "\t\t" << *kval 
-                                         << "\t\t" << *nb_it_val 
-                                         << "\t\t" << avg_metrics.amp.first << "+/-" << avg_metrics.amp.second 
-                                         << "\t\t" << avg_metrics.sc.first << "+/-" << avg_metrics.sc.second 
-                                         << "\t" << avg_metrics.nc.first << "+/-" << avg_metrics.nc.second
-                                         << std::endl;
-    } 
-  }
-}
 
 /** Perform tasks in parallel by performing the same operation `n` times over
  * `threads` workers. Each worker will then make its own random number
@@ -425,6 +287,108 @@ CompressionResultsData tm_multicore(
   throw std::runtime_error("unsupported traversal strategy");
 }
 
+
+void tm_dynamical_profile(
+  size_t states,
+  size_t alphabet_size,
+  unsigned int num_iterations,
+  unsigned int k,
+  TmId tm_number,
+  unsigned int divison)
+  {
+
+  TuringMachine machine(states, alphabet_size);
+  CompressionResultsData data;
+  NormalizedCompressionMarkovTable normalizedCompressionMarkovTable(k, alphabet_size);
+  
+  machine.stMatrix.set_by_index(tm_number);    
+  machine.reset_tape_and_state();
+
+  for (auto i = 0u; i < num_iterations -1 ; ++i){
+    normalizedCompressionMarkovTable.mrkvTable.reset();
+    machine.act(); //importante ser antes
+    if(i%divison==0){
+      Metrics metrics = normalizedCompressionMarkovTable.update_nc_mk_table(machine.turingTape);
+      data.amplitude.push_back(metrics.amplitude); 
+      data.normalized_compression.push_back(metrics.normalizedCompression);
+      data.self_compression.push_back(metrics.selfCompression);
+    }
+  }
+  std::cout<< "iterations \t amplitude \t Self-Compression \t Normalized Compression " << std::endl; 
+  std::cout<< "-------------------------------------------------" <<std::endl;
+  for (auto i = 0u; i < data.amplitude.size(); ++i) {
+  std::cout << ((i + 1) * divison) << "\t" << data.amplitude[i] << "\t" << std::setprecision(5) << std::showpoint <<  data.self_compression[i] 
+                        << "\t" << std::setprecision(5) << std::showpoint << data.normalized_compression[i] << "\t" << std::endl;
+  }
+}  
+
+void tm_profile(
+  size_t states,
+  size_t alphabet_size,
+  unsigned int num_iterations,
+  unsigned int k,
+  TmId tm_number,
+  unsigned int divison)
+  {
+
+  TuringMachine machine(states, alphabet_size);
+  CompressionResultsData data;
+  NormalizedCompressionMarkovTable normalizedCompressionMarkovTable(k , alphabet_size);
+  
+  machine.stMatrix.set_by_index(tm_number); 
+  machine.reset_tape_and_state();
+  for (auto i = 0u; i < num_iterations -1 ; ++i){
+    normalizedCompressionMarkovTable.mrkvTable.reset();
+    machine.act(); //importante ser antes
+  }
+  data = normalizedCompressionMarkovTable.profile_update_nc_mk_table(machine.turingTape, divison);
+
+  std::cout<< "iterations \t amplitude \t Self-Compression \t Normalized Compression " << std::endl; 
+  std::cout<< "-------------------------------------------------" <<std::endl;
+  
+  for (auto i = 0u; i < data.amplitude.size(); ++i) {
+    std::cout << ((i + 1)*divison) << "\t" << data.amplitude[i] << "\t" << std::setprecision(5)  << std::showpoint <<  data.self_compression[i] 
+                        << "\t" << std::setprecision(5) << std::showpoint << data.normalized_compression[i] << "\t" << std::endl;
+  }
+}
+
+
+void ktm(size_t states,
+    size_t alphabet_size){
+
+  TuringMachine machine(states, alphabet_size);
+
+  std::vector <unsigned int> range_of_k = {2,3,4,5,6,7,8,9,10};
+  std::vector <unsigned int> range_of_it = {100, 1000, 10000};
+  CompressionResultsData data;
+  for(auto kval = range_of_k.begin(); kval != range_of_k.end(); ++kval) {
+    
+    NormalizedCompressionMarkovTable normalizedCompressionMarkovTable(*kval, alphabet_size);
+    
+    for(auto nb_it_val = range_of_it.begin(); nb_it_val != range_of_it.end(); ++nb_it_val) {
+
+      data.clear_data();
+      
+      do {
+        auto indAndmetrics = run_machine(machine, normalizedCompressionMarkovTable, *nb_it_val);
+
+        data.append_metrics(indAndmetrics);
+
+      } while (machine.stMatrix.next());
+
+      auto avg_metrics = data.avg();
+
+      std::cout<< "Number of TM \t k \t number iterations \tMean Amp+/-std \t Mean sc+/-std \t Mean nc+/-std" << std::endl;
+      std::cout << data.amplitude.size() << "\t\t" << *kval 
+                                         << "\t\t" << *nb_it_val 
+                                         << "\t\t" << avg_metrics.amp.first << "+/-" << avg_metrics.amp.second 
+                                         << "\t\t" << avg_metrics.sc.first << "+/-" << avg_metrics.sc.second 
+                                         << "\t" << avg_metrics.nc.first << "+/-" << avg_metrics.nc.second
+                                         << std::endl;
+    } 
+  }
+}
+
 void ktm_multicore(
     size_t states,
     size_t alphabet_size,
@@ -439,23 +403,55 @@ void ktm_multicore(
 
     for(auto nb_it_val = range_of_it.begin(); nb_it_val != range_of_it.end(); ++nb_it_val) {
       auto data = tm_multicore(states, alphabet_size, *nb_it_val, *kval, TraversalStrategy::SEQUENTIAL, 0, 0, false, threads);
-      float mean_amp = std::accumulate( data.amplitude.begin(), data.amplitude.end(), 0.0)/data.amplitude.size();
-      float mean_sc = std::accumulate( data.self_compression.begin(),  data.self_compression.end(), 0.0)/ data.self_compression.size();
-      float mean_nc = std::accumulate( data.normalized_compression.begin(), data.normalized_compression.end(), 0.0)/data.normalized_compression.size();
-      double sq_amp_sum = std::inner_product(data.amplitude.begin(), data.amplitude.end(), data.amplitude.begin(), 0.0);
-      double sq_sc_sum = std::inner_product(data.self_compression.begin(), data.self_compression.end(), data.self_compression.begin(), 0.0);
-      double sq_nc_sum = std::inner_product(data.normalized_compression.begin(), data.normalized_compression.end(), data.normalized_compression.begin(), 0.0);
-      double stdev_amp = std::sqrt(sq_amp_sum / data.amplitude.size() - mean_amp * mean_amp);
-      double stdev_sc = std::sqrt(sq_sc_sum / data.self_compression.size() - mean_sc * mean_sc);
-      double stdev_nc = std::sqrt(sq_nc_sum / data.normalized_compression.size() - mean_nc * mean_nc);
-
+      AvgMetrics avgData = data.avg();
+      data.print_avg_metrics(avgData);
       std::cout << "\t" << data.amplitude.size() << "\t\t" << *kval 
                                          << "\t\t" << *nb_it_val 
-                                         << "\t\t" << mean_amp << "+/-" << stdev_amp 
-                                         << "\t\t" << mean_sc << "+/-" << stdev_sc 
-                                         << "\t" << mean_nc << "+/-" << stdev_nc
+                                         << "\t\t" << avgData.amp.first << "+/-" << avgData.amp.second 
+                                         << "\t\t" << avgData.sc.first << "+/-" << avgData.sc.second 
+                                         << "\t" << avgData.nc.first << "+/-" << avgData.nc.second
                                          << std::endl;
     } 
   }
 }
 
+
+
+/**Tape of a Turing machine after n iterations
+ * 
+ * @param states
+ * @param alphabet_size
+ * @param num_iterations
+ * @param tm_number
+ */
+void tm_print_tape(
+  size_t states,
+  size_t alphabet_size,
+  unsigned int num_iterations,
+  TmId tm_number)
+  {
+  
+  TuringMachine machine(states, alphabet_size);    
+  machine.stMatrix.set_by_index(tm_number); 
+  machine.reset_tape_and_state();
+  for (auto i = 0u; i < num_iterations -1 ; ++i){
+          machine.act(); //importante ser antes
+  }
+  machine.turingTape.print();
+}
+
+/**Print State matrix of a Turing machine
+ * 
+ * @param states
+ * @param alphabet_size
+ * @param tm_number
+ */
+void tm_print_state_matrix(
+  size_t states,
+  size_t alphabet_size,
+  TmId tm_number){
+
+  TuringMachine machine(states, alphabet_size);    
+  machine.stMatrix.set_by_index(tm_number); 
+  machine.stMatrix.print();
+}
