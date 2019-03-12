@@ -134,7 +134,7 @@ struct NormalizedCompressionMarkovTable{
         auto e = begin(tape.tape) + tape.ind_right - markovTable.k;
         CompressionResultsData data;
 
-        unsigned int diff_indexes= (tape.ind_right) - (tape.ind_left + 1);
+        unsigned int diff_indexes = (tape.ind_right) - (tape.ind_left + 1);
         unsigned int counter=0;
 
         for (auto it = b; it != e; ++it) {

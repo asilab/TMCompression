@@ -199,7 +199,7 @@ int NormalizedCompressionMarkovTable::sum_all_elements_vector(std::vector<unsign
 double NormalizedCompressionMarkovTable::calculateLog(int index_value, int sum_all_line_elem){
     
     double value = static_cast<double>(index_value)/ static_cast<double>(sum_all_line_elem);
-    //std::cout << "value div = " << value << std::endl ;
+    //std::cout << "value div = " << value << std::endl;
     return (- log2(value));
 }
 

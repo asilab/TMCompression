@@ -14,13 +14,23 @@ Get TMCompression and make the project, using:
 git clone https://github.com/jorgeMFS/TMCompression.git
 cd TMCompression
 make
+
 make ioStNormalize
 ```
-## RUN
+## RUN TMCompression
+There are many ways to run this program see help for clarification:
 
 ```bash
-chmod +x *.sh
-bash ProcessResults.sh 0 0 0 0 0
+./tm --help;
+```
+
+
+## RUN SCRIPTS
+
+```bash
+./tm --help;
+chmod +x *.sh;
+bash ProcessResults.sh 0 0 0 0 0;
 ```
 
 ## CITE
