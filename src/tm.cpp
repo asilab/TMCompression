@@ -45,17 +45,18 @@ TmId tm_cardinality(unsigned int states, unsigned int alphabet_size) {
 /** Run the given Turing machine for a certain number of iterations.
  * Currently a private function.
  */
-IndexAndMetrics run_machine(TuringMachine& machine, NormalizedCompressionMarkovTable& normalizedCompressionMarkovTable, unsigned int num_iterations) {
+template <typename M>
+IndexAndMetrics run_machine(TuringMachine& machine, M& compressionTable, unsigned int num_iterations) {
     IndexAndMetrics indMetrics;
 
     machine.reset_tape_and_state();
     for (auto i = 0u; i < num_iterations -1 ; ++i){
-      normalizedCompressionMarkovTable.reset();
+      compressionTable.reset();
       machine.act(); // grave esti antaŭe
     }
 
-    indMetrics.metrics = normalizedCompressionMarkovTable.update(machine.turingTape);
-    normalizedCompressionMarkovTable.reset();
+    indMetrics.metrics = compressionTable.update(machine.turingTape);
+    compressionTable.reset();
     indMetrics.tmNumber = machine.stMatrix.calculate_index();
   return indMetrics;
 }
@@ -88,7 +89,17 @@ CompressionResultsData tm(
   TuringMachine machine(states, alphabet_size);
   CompressionResultsData data;
   data.clear_data();
-  NormalizedCompressionMarkovTable normalizedCompressionMarkovTable(k , alphabet_size);
+  // Under construction
+  std::vector<unsigned int> kvector;
+  kvector.push_back(k);
+
+  BestKMarkovTables<NormalizedCompressionMarkovTable> bestMkvTableCompression(kvector, alphabet_size);
+  
+  
+  // Under construction
+
+
+  //NormalizedCompressionMarkovTable normalizedCompressionMarkovTable(k , alphabet_size);
 
   switch (strategy) {
     case TraversalStrategy::SEQUENTIAL: {
@@ -102,7 +113,7 @@ CompressionResultsData tm(
       unsigned int counter = 0;
       do {
         
-        auto indAndmetrics = run_machine(machine, normalizedCompressionMarkovTable, num_iterations);
+        auto indAndmetrics = run_machine(machine, bestMkvTableCompression, num_iterations);
         if (verbose && counter % 4096 == 0) {
           std::cerr << "TM #" << std::setw(8) << indAndmetrics.tmNumber << ": amplitude = " << indAndmetrics.metrics.amplitude 
           << ": sc = " << std::setprecision(5) << std::showpoint <<indAndmetrics.metrics.selfCompression <<": nc = " << std::setprecision(5) << std::showpoint 
@@ -123,7 +134,7 @@ CompressionResultsData tm(
 
       for (auto counter = 0ull; counter < traversal_len; counter++) {
         machine.stMatrix.set_random(rng);
-        auto indAndmetrics = run_machine(machine, normalizedCompressionMarkovTable, num_iterations);
+        auto indAndmetrics = run_machine(machine, bestMkvTableCompression, num_iterations);
 
         if (verbose && counter % 4096 == 0) {
           std::cerr << "TM #" << std::setw(8) << indAndmetrics.tmNumber << ": amplitude = " << indAndmetrics.metrics.amplitude 

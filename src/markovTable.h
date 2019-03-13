@@ -48,26 +48,23 @@ struct NormalizedCompressionMarkovTable{
 };
 
 
-// // Create vector of MarkovTables?
  template <typename T> 
  struct BestKMarkovTables{ 
     std::vector<T> mrkvTables;
 
     BestKMarkovTables(const std::vector<unsigned int>& k, unsigned int alphabet_size){
         for (auto iterator = k.begin(); iterator != k.end(); ++iterator)
-            mrkvTables.emplace_back(k, alphabet_size);
+            mrkvTables.emplace_back(*iterator, alphabet_size);
     }
 
-
-    Metrics bestMetrics(const Tape& tape){
+    Metrics update(const Tape& tape){
         std::vector<unsigned int> amplitude;
         std::vector<double> sc;
         std::vector<double> nc;
         Metrics bestMetrics;
-        Metrics results;
-        for (auto& mkvTable: this->mrkvTables) {
-            results = update(tape, mkvTable);
 
+        for (auto& mkvTable: this->mrkvTables) {
+            Metrics results = mkvTable.update(tape);
             sc.push_back(results.selfCompression);
             amplitude.push_back(results.amplitude);
             nc.push_back(results.normalizedCompression);
@@ -80,63 +77,14 @@ struct NormalizedCompressionMarkovTable{
         return bestMetrics;
     };
 
-    
-    Metrics update(const Tape& tape,const T& mkvTable) {
-        return mkvTable.update(tape);
-    };
-    
-    double normalization_base(unsigned int length_of_tape, unsigned int cardinality){
-        return ( length_of_tape * log2(cardinality) ); 
-    };
-
-    int sum_all_elements_vector(std::vector<unsigned int>& subvector_markovtable){
-        int sum_of_elems = 0;
-
-        for (auto& n : subvector_markovtable){
-            sum_of_elems += n;
-            }
-        return sum_of_elems;
-    };
-
-    double calculateLog(int index_value, int sum_all_line_elem){
-        double value = static_cast<double>(index_value)/ static_cast<double>(sum_all_line_elem);
-        //std::cout << "value div = " << value << std::endl ;
-        return (- log2(value));
-    };
-
     void reset() {
         for (auto& nmkt: this->mrkvTables){
-            *nmkt.mrkvTable.reset();
+            nmkt.mrkvTable.reset();
         }
     };
 
-    CompressionResultsData profile_update_nc_mk_table(const Tape& tape, unsigned int divison, T markovTable){
-        auto b = begin(tape.tape) + tape.ind_left- markovTable.k  + 1 ; // To have k context at the beginning    
-        auto e = begin(tape.tape) + tape.ind_right - markovTable.k;
-        CompressionResultsData data;
-
-        unsigned int diff_indexes = (tape.ind_right) - (tape.ind_left + 1);
-        unsigned int counter=0;
-
-        for (auto it = b; it != e; ++it) {
-            ++counter;
-            auto indxvalue = markovTable.at(&*it) + 1;
-            auto subvectorOfMarkovTable = markovTable.getLine(&*it); 
-            std::transform(subvectorOfMarkovTable.begin(), subvectorOfMarkovTable.end(), subvectorOfMarkovTable.begin(), bind2nd(std::plus<int>(), 1)); 
-            double logaritm = calculateLog(indxvalue    ,   sum_all_elements_vector(subvectorOfMarkovTable));
-            markovTable.at(&*it)+=1;
-            if(diff_indexes<=5){       
-                data.amplitude.push_back(counter);
-                data.self_compression.push_back(logaritm);
-                data.normalized_compression.push_back(logaritm/normalization_base(diff_indexes, markovTable.alphSz));
-            }
-            else if (counter % divison ==0){
-                data.amplitude.push_back(counter);
-                data.self_compression.push_back(logaritm);
-                data.normalized_compression.push_back(logaritm/normalization_base(diff_indexes, markovTable.alphSz));
-            }
-        }
-        return  data; 
+    CompressionResultsData profile_update_nc_mk_table(const Tape& tape, unsigned int divison, const T& markovTable){
+        return  markovTable.profile_update_nc_mk_table(tape);
     };
 };
 
