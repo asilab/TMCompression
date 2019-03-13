@@ -53,7 +53,7 @@ struct NormalizedCompressionMarkovTable{
  struct BestKMarkovTables{ 
     std::vector<T> mrkvTables;
 
-    BestKMarkovTables(std::vector<unsigned int> k, unsigned int alphabet_size){
+    BestKMarkovTables(const std::vector<unsigned int>& k, unsigned int alphabet_size){
         for (auto iterator = k.begin(); iterator != k.end(); ++iterator)
             mrkvTables.emplace_back(k, alphabet_size);
     }
@@ -65,8 +65,8 @@ struct NormalizedCompressionMarkovTable{
         std::vector<double> nc;
         Metrics bestMetrics;
         Metrics results;
-        for (auto mkvTableIndex = this->mrkvTables.begin(); mkvTableIndex != this->mrkvTables.end(); ++mkvTableIndex){
-            results = update(tape, mkvTableIndex);
+        for (auto& mkvTable: this->mrkvTables) {
+            results = update(tape, mkvTable);
 
             sc.push_back(results.selfCompression);
             amplitude.push_back(results.amplitude);
@@ -80,28 +80,9 @@ struct NormalizedCompressionMarkovTable{
         return bestMetrics;
     };
 
-    Metrics update(const Tape& tape,const T& mkvTableIndex ){
-        auto b = begin(tape.tape) + tape.ind_left - mkvTableIndex.k  + 1 ; // To have k context at the begining    
-        auto e = begin(tape.tape) + tape.ind_right - mkvTableIndex.k;
-        Metrics metrics;
-        double value = 0 ;
-
-        for (auto it = b; it != e; ++it) {
-            auto indxvalue = mkvTableIndex.at(&*it) + 1;
-            auto subvectorOfMarkovTable = mkvTableIndex.getLine(&*it); 
-            
-            std::transform(subvectorOfMarkovTable.begin(), subvectorOfMarkovTable.end(), subvectorOfMarkovTable.begin(), bind2nd(std::plus<int>(), 1)); 
-            double logaritm = calculateLog(indxvalue    ,   sum_all_elements_vector(subvectorOfMarkovTable));
-            value += logaritm;
-            mkvTableIndex.at(&*it)+=1;
-        }
-
-        unsigned int diff_indexes = (tape.ind_right) - (tape.ind_left + 1);
-        metrics.amplitude = diff_indexes;
-        metrics.selfCompression = value;
-        metrics.normalizedCompression = (value/normalization_base(diff_indexes, mkvTableIndex.alphSz));
-        
-        return  metrics; 
+    
+    Metrics update(const Tape& tape,const T& mkvTable) {
+        return mkvTable.update(tape);
     };
     
     double normalization_base(unsigned int length_of_tape, unsigned int cardinality){
@@ -123,9 +104,9 @@ struct NormalizedCompressionMarkovTable{
         return (- log2(value));
     };
 
-    void reset(){
-        for (auto mkvTableIndex = this->mrkvTables.begin(); mkvTableIndex != this->mrkvTables.end(); ++mkvTableIndex){
-            *mkvTableIndex.mrkvTable.reset();
+    void reset() {
+        for (auto& nmkt: this->mrkvTables){
+            *nmkt.mrkvTable.reset();
         }
     };
 
