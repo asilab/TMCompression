@@ -98,7 +98,6 @@ impl StateMatrix {
     }
 
     pub fn calculate_id(&self) -> TmId {
-        //Problem when jobs>1 ;
         let record_cardinality = (self.nb_states * self.alph_sz * 3) as u64;
         let mut id = 0;
         for st in self.v.iter().rev() {
