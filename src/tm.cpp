@@ -67,7 +67,7 @@ IndexAndMetrics run_machine(TuringMachine& machine, M& compressionTable, unsigne
  * @param states
  * @param alphabet_size
  * @param num_iterations
- * @param k
+ * @param kvector vector of values of k
  * @param strategy the Turing machine traversal strategy
  * @param traversal_len number of different Turing machines to run, can be 0 in
  *        sequential traversal for the full TM domain
@@ -79,7 +79,7 @@ CompressionResultsData tm(
     size_t states,
     size_t alphabet_size,
     unsigned int num_iterations,
-    unsigned int k,
+    std::vector <unsigned int> kvector,
     TraversalStrategy strategy,
     unsigned long long traversal_len,
     unsigned long long traversal_offset,
@@ -89,17 +89,10 @@ CompressionResultsData tm(
   TuringMachine machine(states, alphabet_size);
   CompressionResultsData data;
   data.clear_data();
-  
-  // Under construction
-  std::vector<unsigned int> kvector;
-  kvector.push_back(k);
 
   BestKMarkovTables<NormalizedCompressionMarkovTable> bestMkvTableCompression(kvector, alphabet_size);
   
   
-  // Under construction
-
-
   //NormalizedCompressionMarkovTable normalizedCompressionMarkovTable(k , alphabet_size);
 
   switch (strategy) {
@@ -273,27 +266,27 @@ CompressionResultsData tm_multicore(
     size_t states,
     size_t alphabet_size,
     unsigned int num_iterations,
-    unsigned int k,
+    std::vector<unsigned int> kvector,
     TraversalStrategy strategy,
     unsigned long long traversal_len,
     unsigned long long traversal_offset,
     bool verbose,
     unsigned int threads){
     if (threads < 2) {
-      return tm(states, alphabet_size, num_iterations, k, strategy, traversal_len, traversal_offset, verbose);
+      return tm(states, alphabet_size, num_iterations, kvector, strategy, traversal_len, traversal_offset, verbose);
     }
 
     if (strategy == TraversalStrategy::SEQUENTIAL) {
       auto real_len = traversal_len > 0 ? traversal_len : tm_cardinality(states, alphabet_size);
 
       return multicore_sequential_partition([=](auto len, auto offset) {
-        return tm(states, alphabet_size, num_iterations, k, strategy, len, offset, verbose);
+        return tm(states, alphabet_size, num_iterations, kvector, strategy, len, offset, verbose);
           },real_len, traversal_offset,threads, verbose);
     } 
     else if (strategy == TraversalStrategy::MONTE_CARLO) {
     
       return multicore_monte_carlo([=](auto n) -> CompressionResultsData {
-        return tm(states, alphabet_size, num_iterations, k, strategy, n, 0, verbose);
+        return tm(states, alphabet_size, num_iterations, kvector, strategy, n, 0, verbose);
       }, traversal_len, threads, verbose);
     }
 
@@ -333,7 +326,7 @@ void tm_dynamical_profile(
       data.append_metrics(indxMetrics);
     }
   }
-  data.print_data(divison);
+  data.print_profile_data(divison);
 }  
 
 /** Evaluates a specific Turing machine Profile.
@@ -364,7 +357,7 @@ void tm_profile(
     machine.act(); //importante ser antes
   }
   data = normalizedCompressionMarkovTable.profile_update_nc_mk_table(machine.turingTape, divison);
-  data.print_data(divison);
+  data.print_profile_data(divison);
 }
 
 /** Replicate experiment to determine the best k and it for a given number of states and alphabet size.
@@ -421,14 +414,16 @@ void ktm_multicore(
     unsigned int threads) {
   
   TuringMachine machine(states, alphabet_size);
-
+  std::vector<unsigned int> kvalues;
   std::vector <unsigned int> range_of_k = {2,3,4,5,6,7,8,9,10};
   std::vector <unsigned int> range_of_it = {100, 1000, 10000};
   std::cout<< "Number of TM \t k \t number iterations \tMean Amp+/-std \t Mean sc+/-std \t Mean nc+/-std" << std::endl;
   for(auto kval = range_of_k.begin(); kval != range_of_k.end(); ++kval) {
 
     for(auto nb_it_val = range_of_it.begin(); nb_it_val != range_of_it.end(); ++nb_it_val) {
-      auto data = tm_multicore(states, alphabet_size, *nb_it_val, *kval, TraversalStrategy::SEQUENTIAL, 0, 0, false, threads);
+      kvalues.push_back(*kval);
+      auto data = tm_multicore(states, alphabet_size, *nb_it_val, kvalues , TraversalStrategy::SEQUENTIAL, 0, 0, false, threads);
+      kvalues.clear();
       AvgMetrics avgData = data.avg();
       data.print_avg_metrics(avgData);
       std::cout << "\t" << data.amplitude.size() << "\t\t" << *kval 

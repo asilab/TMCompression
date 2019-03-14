@@ -11,6 +11,7 @@
 #include "turingMachine.h"
 
 struct Metrics{
+  unsigned int k;
   unsigned int amplitude;
   double selfCompression;
   double normalizedCompression;
@@ -32,12 +33,14 @@ struct AvgMetrics{
 struct CompressionResultsData
 {
   // Integer
+  std::vector <unsigned int> kvalue;
   std::vector <TmId> tmNumber;
   std::vector <unsigned int> amplitude;
   std::vector <double> normalized_compression;
   std::vector <double> self_compression;
 
-  void append(TmId tmNumber,
+  void append(unsigned int k,
+  TmId tmNumber,
   unsigned int amplitudes,
   double self_compression,
   double normalized_compression);
@@ -47,7 +50,7 @@ struct CompressionResultsData
   void clear_data();
   void merge(CompressionResultsData&& other);
   AvgMetrics avg();
-  void print_data(unsigned int divison);
-  void print_data(unsigned int k, unsigned int numIt);
+  void print_profile_data(unsigned int divison);
+  void print_data(unsigned int numIt);
   void print_avg_metrics(AvgMetrics avgMetrics);
 };

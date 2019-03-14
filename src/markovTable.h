@@ -61,6 +61,7 @@ struct NormalizedCompressionMarkovTable{
         std::vector<unsigned int> amplitude;
         std::vector<double> sc;
         std::vector<double> nc;
+        std::vector<double> k;
         Metrics bestMetrics;
 
         for (auto& mkvTable: this->mrkvTables) {
@@ -68,12 +69,15 @@ struct NormalizedCompressionMarkovTable{
             sc.push_back(results.selfCompression);
             amplitude.push_back(results.amplitude);
             nc.push_back(results.normalizedCompression);
+            k.push_back(mkvTable.mrkvTable.k);
         }
-
+        
         int min_index = std::distance(nc.begin(),std::min_element(std::begin(nc), std::end(nc)));
+        bestMetrics.k=k[min_index];
         bestMetrics.amplitude = amplitude[min_index];
         bestMetrics.selfCompression = sc[min_index];
         bestMetrics.normalizedCompression = nc[min_index];
+
         return bestMetrics;
     };
 

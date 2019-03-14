@@ -198,11 +198,12 @@ Args parseArgs (int argc, char **argv){
         }
         case 'k':
         {   
-            
+            std::pair<unsigned int,unsigned int> k_limits;
+            std::vector<unsigned int> k_values;
             if (std::strchr(optarg, ':')){
                 auto token = std::strtok (optarg," :");
                 unsigned int counter=0;
-
+                
                 while (token != NULL)
                 {
                     if (counter>1){
@@ -212,19 +213,25 @@ Args parseArgs (int argc, char **argv){
                          "Example: -k 2:4"<< std::endl;
                         exit(0);
                     }
-
-                    printf ("%s\n",token);
-                    correctInput = strtol(token, &end, 10);
-                    if (*end != '\0') {
-                        std::cerr << "Invalid input for -k/--context.\n";
-                        exit(0);
+                    else{
+                        correctInput = strtol(token, &end, 10);
+                        if (*end != '\0') {
+                            std::cerr << "Invalid input for -k/--context.\n";
+                            exit(0);
+                        }
+                        else if (correctInput<=0){
+                            fprintf (stderr, "-k/--context value was set to %d, must be an int larger than 0.\n",correctInput); 
+                            exit(0);
+                        }
+                        else {
+                            if (counter==0) k_limits.first=correctInput;
+                            else if (counter==1) k_limits.second=correctInput;
+                        };
                     }
-                    
                     token = strtok (NULL, ":");
-                    
                     ++counter;
                 }
-                exit(1);
+
             }            
             else{
                 correctInput = strtol(optarg, &end, 10);
@@ -236,8 +243,21 @@ Args parseArgs (int argc, char **argv){
                     fprintf (stderr, "-k/--context value was set to %d, must be an int larger than 0.\n",correctInput); 
                     exit(0);
                 }
-                else argument.k = correctInput;
+                else {
+                    k_limits.first = correctInput;
+                    k_limits.second = correctInput; 
+                }
             }
+
+            if (k_limits.first<=k_limits.second){
+                for (auto it=k_limits.first; it!=k_limits.second+1;++it){
+                    k_values.push_back(it);
+                }
+            }
+            argument.k = k_values;
+
+
+
             break;
         }
         case 't':
@@ -319,12 +339,12 @@ Args parseArgs (int argc, char **argv){
         putchar ('\n');
     }
 
-    if (tm_number_growth_flag && argument.states==0 && argument.alphabet_size==0 && argument.numIt==0 && argument.k==0 && argument.tm.second==false){
+    if (tm_number_growth_flag && argument.states==0 && argument.alphabet_size==0 && argument.numIt==0 && argument.k.empty() && argument.tm.second==false){
         std::cerr << "TM growth for alphabet = 2 and Max number of states = 100" <<std::endl;
         tm_growth_with_cardinality(100);
         exit(0);
     }
-    else if((argument.states!=0 && argument.alphabet_size!=0 && argument.numIt!=0 && argument.k==0 && argument.tm.second) && tm_print_flag==1 && tm_profile_flag==0 && replicate_flag==0 && tm_number_growth_flag==0){
+    else if((argument.states!=0 && argument.alphabet_size!=0 && argument.numIt!=0 && argument.k.empty() && argument.tm.second) && tm_print_flag==1 && tm_profile_flag==0 && replicate_flag==0 && tm_number_growth_flag==0){
             tm_print_tape(argument.states,
                      argument.alphabet_size,
                      argument.numIt,
@@ -333,14 +353,14 @@ Args parseArgs (int argc, char **argv){
 
     }
     
-    else if ( (argument.states!=0 || argument.alphabet_size!=0 || argument.numIt!=0 || argument.k!=0 || argument.jobs!=0 ) && tm_number_growth_flag ){
+    else if ( (argument.states!=0 || argument.alphabet_size!=0 || argument.numIt!=0 || (!argument.k.empty()) || argument.jobs!=0 ) && tm_number_growth_flag ){
         std::cerr << "Please fill all the required arguments in order to perform the tm growth" <<std::endl;
         std::cerr << "Example: ./tm --tmgrowth" << std::endl;
         exit(0);
     }
 
 
-    else if((argument.states==0 || argument.alphabet_size==0 || argument.numIt==0 || argument.k==0 || argument.tm.second==false ) && tm_profile_flag==1 && replicate_flag==0 && tm_number_growth_flag==0){
+    else if((argument.states==0 || argument.alphabet_size==0 || argument.numIt==0 || argument.k.empty() || argument.tm.second==false ) && tm_profile_flag==1 && replicate_flag==0 && tm_number_growth_flag==0){
         std::cerr << "Please fill all the required arguments" <<std::endl;
         exit(0);
     }
@@ -351,11 +371,11 @@ Args parseArgs (int argc, char **argv){
         exit(0);
     }
 
-    else if ( (argument.states!=0 && argument.alphabet_size!=0 && argument.numIt!=0 && argument.k!=0 && argument.tm.second) && tm_profile_flag==0 && tm_dynamical_profile_flag==1 && replicate_flag==0){
+    else if ( (argument.states!=0 && argument.alphabet_size!=0 && argument.numIt!=0 && (argument.k.size()==1 ) && argument.tm.second) && tm_profile_flag==0 && tm_dynamical_profile_flag==1 && replicate_flag==0){
         tm_dynamical_profile(argument.states,
                 argument.alphabet_size,
                 argument.numIt,
-                argument.k,
+                argument.k.front(),
                 argument.tm.first , 5);
         exit(0);
 
@@ -367,11 +387,11 @@ Args parseArgs (int argc, char **argv){
         exit(0);
 
     }
-    else if ( (argument.states!=0 || argument.alphabet_size!=0 || argument.numIt!=0 || argument.k!=0 || argument.tm.second ) && tm_profile_flag==1 && replicate_flag==0 && tm_dynamical_profile_flag==0){
+    else if ( (argument.states!=0 || argument.alphabet_size!=0 || argument.numIt!=0 || (argument.k.size()==1 ) || argument.tm.second ) && tm_profile_flag==1 && replicate_flag==0 && tm_dynamical_profile_flag==0){
         tm_profile(argument.states,
                 argument.alphabet_size,
                 argument.numIt,
-                argument.k,
+                argument.k.front(),
                 argument.tm.first, 5);
         exit(0);
     }
@@ -382,12 +402,12 @@ Args parseArgs (int argc, char **argv){
         exit(0);
     }
 
-    else if ( (argument.states==0 || argument.alphabet_size==0 || argument.numIt==0 || argument.k==0) && replicate_flag==0 && tm_profile_flag==0) 
+    else if ( (argument.states==0 || argument.alphabet_size==0 || argument.numIt==0 || argument.k.empty()) && replicate_flag==0 && tm_profile_flag==0) 
     {
         std::cerr << "Please fill all the required arguments" <<std::endl;
         exit(0);
     }
-    else if ( (argument.numIt==0 || argument.k==0) &&  argument.states!=0 && argument.alphabet_size!=0 && replicate_flag && argument.jobs!=0)
+    else if ( (argument.numIt==0 || argument.k.empty()) &&  argument.states!=0 && argument.alphabet_size!=0 && replicate_flag && argument.jobs!=0)
     { 
         printf ("replication flag is set, the system will run for alphabet_size = %zu and states = %zu, number of iterations ={100, 1000, 10000} and k=[2,10] using threads=%u\n"
         ,argument.alphabet_size,argument.states,argument.jobs);
@@ -395,15 +415,21 @@ Args parseArgs (int argc, char **argv){
         ktm_multicore(argument.states, argument.alphabet_size,argument.jobs);
         exit(0);
     }
-    
-    printf ("states = %zu, alphabet_size = %zu, number of iterations = %u , k = %u\n",
-    argument.states, argument.alphabet_size, argument.numIt, argument.k);
+    if (argument.k.size()>1){
+        printf ("states = %zu, alphabet_size = %zu, number of iterations = %u , k = %u:%u\n",
+        argument.states, argument.alphabet_size, argument.numIt, argument.k.front(), argument.k.back());
+    }
+    else if (argument.k.size()==1){
+        printf ("states = %zu, alphabet_size = %zu, number of iterations = %u , k = %u\n",
+        argument.states, argument.alphabet_size, argument.numIt, argument.k.front());
+    }
 
-    if(ipow<unsigned long long>(argument.alphabet_size, argument.k) >= ipow<unsigned long long>(2,28))
-    {
-        fprintf (stderr, "k/context (%u) and Alphabet size/a (%zu) is too large..\n", argument.k, argument.alphabet_size);
-        fprintf (stderr, " please consider a size of a^k (%zu^%u) smaller than 2^28..\n", argument.alphabet_size,argument.k);
-        exit(0);
+    for (auto kval: argument.k){
+        if(ipow<unsigned long long>(argument.alphabet_size, kval) >= ipow<unsigned long long>(2,28)){
+            fprintf (stderr, "k/context (%u) and Alphabet size/a (%zu) is too large..\n", kval, argument.alphabet_size);
+            fprintf (stderr, " please consider a size of a^k (%zu^%u) smaller than 2^28..\n", argument.alphabet_size,kval);
+            exit(0);
+        }
     }
 
     return argument;
@@ -414,7 +440,13 @@ void printArgs(Args arguments){
     std::cout<<"alphabet_size = " << arguments.alphabet_size<< std::endl;
     std::cout<<"threshold = " << arguments.threshold << std::endl;
     std::cout<<"numIt = " << arguments.numIt << std::endl;
-    std::cout<<"k = " << arguments.k << std::endl;
+    
+    if (arguments.k.size()>1){
+        std::cout<<"k = " << arguments.k.front()<<  ":" << arguments.k.back() << std::endl;
+    }
+    else if (arguments.k.size()==1){
+        std::cout<<"k = " << arguments.k.front() << std::endl;
+    }
     std::cout<<"tm = " << arguments.tm.first << std::endl;
     if(arguments.strategy == TraversalStrategy::SEQUENTIAL){
         std::cout << "strategy = " << "Sequential"  << std::endl; //might require twerks

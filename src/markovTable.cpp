@@ -111,7 +111,7 @@ Metrics NormalizedCompressionMarkovTable::update(const Tape& tape){
     auto b = begin(tape.tape) + tape.ind_left - this->mrkvTable.k  + 1 ; // To have k context at the begining    
     auto e = begin(tape.tape) + tape.ind_right - this->mrkvTable.k;
     Metrics metrics;
-
+    metrics.k = this->mrkvTable.k;
 
     double value = 0 ;
 
