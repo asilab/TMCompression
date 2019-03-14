@@ -231,7 +231,6 @@ Args parseArgs (int argc, char **argv){
                     token = strtok (NULL, ":");
                     ++counter;
                 }
-
             }            
             else{
                 correctInput = strtol(optarg, &end, 10);
@@ -255,9 +254,6 @@ Args parseArgs (int argc, char **argv){
                 }
             }
             argument.k = k_values;
-
-
-
             break;
         }
         case 't':
