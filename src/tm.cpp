@@ -89,6 +89,7 @@ CompressionResultsData tm(
   TuringMachine machine(states, alphabet_size);
   CompressionResultsData data;
   data.clear_data();
+  
   // Under construction
   std::vector<unsigned int> kvector;
   kvector.push_back(k);

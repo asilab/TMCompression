@@ -150,18 +150,18 @@ Args parseArgs (int argc, char **argv){
             exit (0);
 
         case 'v':
-                    std::cout << "Relative Turing Machine Version 0.1" << std::endl<<std::endl;
-                    exit (0);
+            std::cout << "Relative Turing Machine Version 0.1" << std::endl<<std::endl;
+            exit (0);
         case 's':
             {
             correctInput = strtol(optarg, &end, 10);
             if (*end != '\0') {
-            std::cerr << "invalid input for -s/--number_states.\n";
-            exit(0);
+                std::cerr << "Invalid input for -s/--number_states.\n";
+                exit(0);
             }
             else if (correctInput<=0){
-            fprintf (stderr, "-s/--number_states value was set to %d, must be an int larger than 0.\n",correctInput); 
-            exit(0);
+                fprintf (stderr, "-s/--number_states value was set to %d, must be an int larger than 0.\n",correctInput); 
+                exit(0);
             }
             else argument.states = correctInput;
             break;
@@ -171,12 +171,12 @@ Args parseArgs (int argc, char **argv){
             {
             correctInput = strtol(optarg, &end, 10);
             if (*end != '\0') {
-            std::cerr << "invalid input for -a/--alphabet_size.\n";
-            exit(0);
+                std::cerr << "Invalid input for -a/--alphabet_size.\n";
+                exit(0);
             }
             else if (correctInput<=0){
-            fprintf (stderr, "-a/--alphabet_size value was set to %d, must be an int larger than 0.\n",correctInput); 
-            exit(0);
+                fprintf (stderr, "-a/--alphabet_size value was set to %d, must be an int larger than 0.\n",correctInput); 
+                exit(0);
             }
             else argument.alphabet_size = correctInput;
             break;
@@ -186,40 +186,70 @@ Args parseArgs (int argc, char **argv){
             {
             correctInput = strtol(optarg, &end, 10);
             if (*end != '\0') {
-            std::cerr << "invalid input for -i/--iterations.\n";
-            exit(0);
+                std::cerr << "Invalid input for -i/--iterations.\n";
+                exit(0);
             }
             else if (correctInput<=0){
-            fprintf (stderr, "-i/--iterations value was set to %d, must be an int larger than 0.\n",correctInput); 
-            exit(0);
+                fprintf (stderr, "-i/--iterations value was set to %d, must be an int larger than 0.\n",correctInput); 
+                exit(0);
             }
             else argument.numIt = correctInput;
             break;
         }
         case 'k':
-        {
-            correctInput = strtol(optarg, &end, 10);
-            if (*end != '\0') {
-            std::cerr << "invalid input for -k/--context.\n";
-            exit(0);
+        {   
+            
+            if (std::strchr(optarg, ':')){
+                auto token = std::strtok (optarg," :");
+                unsigned int counter=0;
+
+                while (token != NULL)
+                {
+                    if (counter>1){
+                        std::cerr << "Invalid input for -k/--context." << std::endl <<
+                        "If you want to provide a range for k " <<
+                         "please provide -k/--context with 2 elements separeted by \":\".\n" <<
+                         "Example: -k 2:4"<< std::endl;
+                        exit(0);
+                    }
+
+                    printf ("%s\n",token);
+                    correctInput = strtol(token, &end, 10);
+                    if (*end != '\0') {
+                        std::cerr << "Invalid input for -k/--context.\n";
+                        exit(0);
+                    }
+                    
+                    token = strtok (NULL, ":");
+                    
+                    ++counter;
+                }
+                exit(1);
+            }            
+            else{
+                correctInput = strtol(optarg, &end, 10);
+                if (*end != '\0') {
+                    std::cerr << "Invalid input for -k/--context.\n";
+                    exit(0);
+                    }
+                else if (correctInput<=0){
+                    fprintf (stderr, "-k/--context value was set to %d, must be an int larger than 0.\n",correctInput); 
+                    exit(0);
+                }
+                else argument.k = correctInput;
             }
-            else if (correctInput<=0){
-            fprintf (stderr, "-k/--context value was set to %d, must be an int larger than 0.\n",correctInput); 
-            exit(0);
-            }
-            else argument.k = correctInput;
             break;
         }
         case 't':
         {
             correctInput = strtol(optarg, &end, 10);
             if (*end != '\0') {
-            std::cerr << "invalid input for -t/--tm.\n";
-            exit(0);
+                std::cerr << "Invalid input for -t/--tm.\n";
+                exit(0);
             }
             else if (correctInput<0){
-            fprintf (stderr, "-t/--tm value was set to %d, must be an int larger than 0.\n",correctInput); 
-            exit(0);
+                fprintf (stderr, "-t/--tm value was set to %d, must be an int larger than 0.\n",correctInput); 
+                exit(0);
             }
             else{
                 argument.tm.first = correctInput;
@@ -232,12 +262,12 @@ Args parseArgs (int argc, char **argv){
         {
             correctInput = strtol(optarg, &end, 10);
             if (*end != '\0') {
-            std::cerr << "invalid input for -j/--jobs." << std::endl;
-            exit(0);
+                std::cerr << "Invalid input for -j/--jobs." << std::endl;
+                exit(0);
             }
             else if (correctInput<=0){
-            fprintf (stderr, "-j/--jobs value was set to %d, must be an int larger than 0.\n",correctInput); 
-            exit(0);
+                fprintf (stderr, "-j/--jobs value was set to %d, must be an int larger than 0.\n",correctInput); 
+                exit(0);
             }
             else argument.jobs = correctInput;
             break;
@@ -258,7 +288,7 @@ Args parseArgs (int argc, char **argv){
         {
             auto parsed = strtoull(optarg, &end, 10);
             if (*end != '\0') {
-                std::cerr << "invalid input for -N.\n";
+                std::cerr << "Invalid input for -N.\n";
                 exit(0);
             }
             argument.n = parsed;
