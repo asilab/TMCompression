@@ -32,29 +32,33 @@ INSTALL_GOOSE=$1;
 CARDINALITY=$2;
 STATE2_TMs=$3;
 STATE3_TMs=$4;
-STATE2_ALPH_TMs=$5;
+STATE2_ALPH3_TMs=$5;
 # ==============================================================================
 # Install Goose
 # ==============================================================================
 
 if [[ "$INSTALL_GOOSE" -eq "1" ]];
     then
+    cd ..;
     echo "Installing goose in your system, which is required for result processing ...";
-    rm -r goose
-    git clone https://github.com/pratas/goose.git
-    cd goose/src/
-    make
-    cd ../../
+    
+    rm -r goose;
+    git clone https://github.com/pratas/goose.git;
+    cd goose/src/;
+    make;
+    cd ../../;
 fi
 
 # ==============================================================================
 # Process Results of cardinality
 # ==============================================================================
+
 if [[ "$CARDINALITY" -eq "1" ]];
     then
+    cd ..;
     echo "Creating plot of Turing Machine Cardinality Growth with the increase in number of states.. ";
-    ./tm --tmgrowth > Cardinality.txt
-    tail -n +2 Cardinality.txt | head -n -20 > Cardinality2.txt
+    ./tm --tmgrowth > Cardinality.txt;
+    tail -n +2 Cardinality.txt | head -n -20 > Cardinality2.txt;
     gnuplot << EOF
     reset
     set terminal pdfcairo enhanced color font 'Verdana,8'
@@ -74,10 +78,10 @@ if [[ "$CARDINALITY" -eq "1" ]];
     set style fill transparent solid 0.5 noborder
     plot f(x)  ls 1 title "f(x) = (6x)^2^x", 'Cardinality2.txt' using 1:2 linecolor '#4169E1' pointtype 7  pointsize 0.5 lw 0.5 title "Growth in Number of TMs"
 EOF
-rm Cardinality.txt Cardinality2.txt
-mv Cardinality.pdf ./results
+    rm Cardinality.txt Cardinality2.txt;
+    mv Cardinality.pdf ./results;
+    cd ./scripts;
 fi
-
 
 # ==============================================================================
 # Process Results of 2 state Turing Machines
@@ -85,6 +89,7 @@ fi
 
 if [[ "$STATE2_TMs" -eq "1" ]];
     then
+    cd ..;
     echo "Creating plot of of all TM with #Alphabet=2, #States=2... ";
     
     var="2st";
@@ -123,6 +128,7 @@ gnuplot << EOF
 EOF
     mv 2sts.pdf ./results;
     rm Amplitude.txt NC_f.txt $var"Results.txt";
+    cd ./scripts;
 fi
 
 # ==============================================================================
@@ -131,11 +137,12 @@ fi
 
 if [[ "$STATE3_TMs" -eq "1" ]];
     then
+    cd ..;
     echo " Creating plot of of all TM with #Alphabet=2, #States=3 ... ";
     var="3st";
     text=${var}.txt;
     results=${var}Results.txt;
-    tail -n +4 $text | head -n -3 | ./ioStNormalize $text >  $results;
+    tail -n +4 $text | head -n -3 | ./ioStNormalize $text > $results;
     #Amplitude
     awk '{ print $4;}' $results | ./goose/bin/goose-filter -w 80001 -d 10000 -1 > Amplitude3.txt; 
     #nc
@@ -168,21 +175,22 @@ EOF
     mv 3sts.pdf ./results;
     rm Amplitude3.txt NC_f3.txt; 
     rm  $results;
+    cd ./scripts;
 fi
 
-
 # ==============================================================================
-# Process Results of 2 state Turing Machines and 3 alphabet letters k = 2
+# Process Results of 2 state Turing Machines and 3 alphabet letters
 # ==============================================================================
 
-if [[ "$STATE2_ALPH_TMs" -eq "1" ]];
+if [[ "$STATE2_ALPH3_TMs" -eq "1" ]];
     then
+    cd ..;
     echo "Creating plot of of all TM with #Alphabet=3, #States=2... ";
     var="busy2st3alph";
     text=${var}.txt;
     results=${var}Results.txt;
     
-    tail -n +4 $text | head -n -3 | ./ioStNormalize $text >  $results
+    tail -n +4 $text | head -n -3 | ./ioStNormalize $text > $results;
     
     #Amplitude
     awk '{ print $4;}' $results | ./goose/bin/goose-filter -w 80001 -d 10000 -1 > AmplitudeSt2Alp3.txt; 
@@ -192,7 +200,7 @@ if [[ "$STATE2_ALPH_TMs" -eq "1" ]];
 gnuplot << EOF
     reset
     set terminal pdfcairo enhanced color font 'Verdana,8'
-    set output "2stsAlp3_k2.pdf"
+    set output "2stsAlp3.pdf"
     set boxwidth 0.5
     set size ratio 0.6
     set style line 101 lc rgb '#000000' lt 1 lw 3
@@ -213,53 +221,8 @@ gnuplot << EOF
     set style fill transparent solid 0.4 noborder
     plot "AmplitudeSt2Alp3.txt" using 1:2 with boxes linecolor '#CFB53B' title "Amplitude of Tape", "NC_f3St2Alp3.txt" using 1:2  with boxes linecolor '#4169E1' title "Normalized Compression"
 EOF
-    mv 2stsAlp3_k2.pdf ./results;
+    mv 2stsAlp3.pdf ./results;
     rm  AmplitudeSt2Alp3.txt NC_f3St2Alp3.txt;
     rm  $results;
+    cd ./scripts;
 fi
-# ==============================================================================
-# Process Results of 2 state Turing Machines and 3 alphabet letters k = 5
-# ==============================================================================
-
-if [[ "$STATE2_ALPH_TMs" -eq "1" ]];
-    then
-    echo "Creating plot of of all TM with #Alphabet=3, #States=2... ";
-    var="busy2st3alphk5";
-    text=${var}.txt
-    results=${var}Results.txt;
-    tail -n +4 $text | head -n -3 | ./ioStNormalize $text >  $results;
-    
-    #Amplitude
-    awk '{ print $4;}' $results | ./goose/bin/goose-filter -w 80001 -d 10000 -1 > AmplitudeSt2Alp3k5.txt; 
-    #nc
-    awk '{ print $6;}' $results | ./goose/bin/goose-filter -w 80001 -d 10000 -1 > NC_f3St2Alp3k5.txt;
-    
-gnuplot << EOF
-    reset
-    set terminal pdfcairo enhanced color font 'Verdana,8'
-    set output "2stsAlp3_k5.pdf"
-    set boxwidth 0.5
-    set size ratio 0.6
-    set style line 101 lc rgb '#000000' lt 1 lw 3
-    set key outside horiz center top
-    set tics nomirror out scale 0.75
-    set xrange [0:34012224]
-    set yrange [0:1]
-    set border 3 front ls 101
-    set grid ytics lt -1
-    set style fill solid
-    set format '%g'
-    set xtics font ", 6"
-    set xlabel "2 State, 3 Alphabet Turing Machines 0 to 34012224"
-    set datafile separator "\t"
-    ntics = 20
-    stats 'AmplitudeSt2Alp3k5.txt' using 1 name 'x' nooutput
-    set xtics int(x_max/ntics)
-    set style fill transparent solid 0.4 noborder
-    plot "AmplitudeSt2Alp3k5.txt" using 1:2 with boxes linecolor '#CFB53B' title "Amplitude of Tape", "NC_f3St2Alp3k5.txt" using 1:2  with boxes linecolor '#4169E1' title "Normalized Compression"
-EOF
-    mv 2stsAlp3_k5.pdf ./results;
-    rm  AmplitudeSt2Alp3k5.txt NC_f3St2Alp3k5.txt;
-    rm  $results;
-fi
-

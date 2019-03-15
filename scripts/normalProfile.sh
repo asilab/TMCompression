@@ -15,6 +15,7 @@ fi
 # ==============================================================================
 # Variables
 # ==============================================================================
+
 Machine=$1;
 txtName=Profile${1}.txt;
 pdfName=Profile${1}.pdf;
@@ -31,23 +32,23 @@ K=$5;
 Folder=${STATE}St${ALPHABET}AlphTM/;
 DIRECTORY=${SavePath}${Folder};
 
-if [ -d "$DIRECTORY" ]; then
+if [ -d "$DIRECTORY" ]; 
+    then
     echo "this folder exists";
 else
-    cd $SavePath
-    mkdir $Folder
-    cd ..
+    cd $SavePath;
+    mkdir $Folder;
+    cd ..;
 fi
 
-
 # ==============================================================================
-# Pofile curves Turing Machines
+# Profile curves of Turing Machines
 # ==============================================================================
 
 ./tm --brief --profile -s $STATE -a $ALPHABET -i $NUMBERITERATION -k $K -t $Machine > $txtName;
 tail -n +3 $txtName | awk '{ print $4;}'  > nc_profile.txt;
 tail -n +3 $txtName | awk '{ print $2;}'> amp_profile.txt;
-paste amp_profile.txt nc_profile.txt > profile.txt
+paste amp_profile.txt nc_profile.txt > profile.txt;
 
 gnuplot << EOF
     reset

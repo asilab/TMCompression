@@ -31,7 +31,8 @@ K=2;
 
 if [[ "$FILTER" -eq "1" ]];
     then
-    echo "Please insert a specific file to be filtered ex: 2st.txt"
+    cd ..;
+    echo "Please insert a specific file to be filtered ex: 2st.txt";
     read FILENAME;
     
     if [[ $FILENAME == *.txt ]];
@@ -48,6 +49,7 @@ if [[ "$FILTER" -eq "1" ]];
     else
         echo "Please select .txt file";
     fi
+    cd ./scripts;
 fi
 
 # ==============================================================================
@@ -55,8 +57,9 @@ fi
 # ==============================================================================
 
 if [[ "$PROFILE" -eq "1" ]];
-then
-    echo "Please insert filtered file with machines that will make the profile: Ex: InterestingTM2st.txt"
+    then
+    cd ..;
+    echo "Please insert filtered file with machines that will make the profile: Ex: InterestingTM2st.txt";
     read FILENAME;
     if [[ $FILENAME == *.txt ]]
       then
@@ -67,15 +70,17 @@ then
             read ALPHABET;
 
             while read p; do
-                bash ./Profile.sh $p $STATES $ALPHABET $NUMBERITERATION $K
+                bash ./scripts/normalProfile.sh $p $STATES $ALPHABET $NUMBERITERATION $K;
             done <$FILENAME
         fi
     fi
+    cd ./scripts;
 fi
 
 if [[ "$DYNAMICPROFILE" -eq "1" ]];
-then
-    echo "Please insert filtered file with machines that will make the dynamic profile: Ex: InterestingTM2st.txt"
+    then
+    cd ..;
+    echo "Please insert filtered file with machines that will make the dynamic profile: Ex: InterestingTM2st.txt";
     read FILENAME;
     if [[ $FILENAME == *.txt ]]
       then
@@ -86,8 +91,9 @@ then
             read ALPHABET;
 
             while read p; do 
-                bash ./DynamicProfile.sh $p $STATES $ALPHABET $NUMBERITERATION $K
+                bash ./scripts/dynamicProfile.sh $p $STATES $ALPHABET $NUMBERITERATION $K;
             done <$FILENAME
         fi
     fi
+    cd ./scripts;
 fi

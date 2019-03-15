@@ -33,9 +33,9 @@ DIRECTORY=${SavePath}${Folder};
 if [ -d "$DIRECTORY" ]; then
     echo "this folder already exists";
 else
-    cd $SavePath
-    mkdir $Folder
-    cd ..
+    cd $SavePath;
+    mkdir $Folder;
+    cd ..;
 fi
 
 # ==============================================================================
@@ -44,9 +44,9 @@ fi
 
 ./tm --brief --dynprofile -s $STATE -a $ALPHABET -i $NUMBERITERATION -k $K -t $Machine > $txtName;
 
-tail -n +3 $txtName | awk '{ print $4;}'  > nc_dynProfile.txt;
-tail -n +3 $txtName | awk '{ print $2;}'> amp_dynProfile.txt;
-paste amp_dynProfile.txt nc_dynProfile.txt > dynProfile.txt
+tail -n +3 $txtName | awk '{ print $4;}' > nc_dynProfile.txt;
+tail -n +3 $txtName | awk '{ print $2;}' > amp_dynProfile.txt;
+paste amp_dynProfile.txt nc_dynProfile.txt > dynProfile.txt;
 
 gnuplot << EOF
     reset
