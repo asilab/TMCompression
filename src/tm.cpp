@@ -79,7 +79,7 @@ CompressionResultsData tm(
     size_t states,
     size_t alphabet_size,
     unsigned int num_iterations,
-    std::vector <unsigned int> kvector,
+    const std::vector <unsigned int>& kvector,
     TraversalStrategy strategy,
     unsigned long long traversal_len,
     unsigned long long traversal_offset,
