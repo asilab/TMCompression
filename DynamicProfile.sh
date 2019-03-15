@@ -17,7 +17,7 @@ fi
 Machine=$1;
 txtName=DynProfile${1}.txt;
 pdfName=DynProfile${1}.pdf;
-SavePath="./Profiles/";
+SavePath="./profiles/";
 STATE=$2;
 ALPHABET=$3;
 NUMBERITERATION=$4;

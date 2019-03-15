@@ -18,7 +18,7 @@ fi
 Machine=$1;
 txtName=Profile${1}.txt;
 pdfName=Profile${1}.pdf;
-SavePath="./Profiles/";
+SavePath="./profiles/";
 STATE=$2;
 ALPHABET=$3;
 NUMBERITERATION=$4;

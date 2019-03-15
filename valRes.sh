@@ -87,7 +87,7 @@ if [[ "$TEST_CMP" -eq "1" ]];
     while read p; do
         txtName=ACProfile${p}.txt;
         PdfName=ACProfile${p}.pdf;
-        SavePath="./Profiles/3st/AC/";
+        SavePath="./profiles/3st/AC/"; # Change this path
         ./tm --brief --printTape -s 3 -a 2 -i $ITERATION -t $p > tape.txt;
         tr -d -c "01" < tape.txt > tape_clean.txt;
         ./AC -v -e -tm 3:1:0.9/0:0:0 tape_clean.txt;
