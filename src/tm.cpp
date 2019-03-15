@@ -45,17 +45,18 @@ TmId tm_cardinality(unsigned int states, unsigned int alphabet_size) {
 /** Run the given Turing machine for a certain number of iterations.
  * Currently a private function.
  */
-IndexAndMetrics run_machine(TuringMachine& machine, NormalizedCompressionMarkovTable& normalizedCompressionMarkovTable, unsigned int num_iterations) {
+template <typename M>
+IndexAndMetrics run_machine(TuringMachine& machine, M& compressionTable, unsigned int num_iterations) {
     IndexAndMetrics indMetrics;
 
     machine.reset_tape_and_state();
     for (auto i = 0u; i < num_iterations -1 ; ++i){
-      normalizedCompressionMarkovTable.reset();
+      compressionTable.reset();
       machine.act(); // grave esti antaŭe
     }
 
-    indMetrics.metrics = normalizedCompressionMarkovTable.update(machine.turingTape);
-    normalizedCompressionMarkovTable.reset();
+    indMetrics.metrics = compressionTable.update(machine.turingTape);
+    compressionTable.reset();
     indMetrics.tmNumber = machine.stMatrix.calculate_index();
   return indMetrics;
 }
@@ -66,7 +67,7 @@ IndexAndMetrics run_machine(TuringMachine& machine, NormalizedCompressionMarkovT
  * @param states
  * @param alphabet_size
  * @param num_iterations
- * @param k
+ * @param kvector vector of values of k
  * @param strategy the Turing machine traversal strategy
  * @param traversal_len number of different Turing machines to run, can be 0 in
  *        sequential traversal for the full TM domain
@@ -78,7 +79,7 @@ CompressionResultsData tm(
     size_t states,
     size_t alphabet_size,
     unsigned int num_iterations,
-    unsigned int k,
+    const std::vector <unsigned int>& kvector,
     TraversalStrategy strategy,
     unsigned long long traversal_len,
     unsigned long long traversal_offset,
@@ -88,8 +89,9 @@ CompressionResultsData tm(
   TuringMachine machine(states, alphabet_size);
   CompressionResultsData data;
   data.clear_data();
-  NormalizedCompressionMarkovTable normalizedCompressionMarkovTable(k , alphabet_size);
 
+  BestKMarkovTables<NormalizedCompressionMarkovTable> bestMkvTableCompression(kvector, alphabet_size);
+  
   switch (strategy) {
     case TraversalStrategy::SEQUENTIAL: {
       if (traversal_offset > 0) {
@@ -102,14 +104,12 @@ CompressionResultsData tm(
       unsigned int counter = 0;
       do {
         
-        auto indAndmetrics = run_machine(machine, normalizedCompressionMarkovTable, num_iterations);
+        auto indAndmetrics = run_machine(machine, bestMkvTableCompression, num_iterations);
         if (verbose && counter % 4096 == 0) {
           std::cerr << "TM #" << std::setw(8) << indAndmetrics.tmNumber << ": amplitude = " << indAndmetrics.metrics.amplitude 
           << ": sc = " << std::setprecision(5) << std::showpoint <<indAndmetrics.metrics.selfCompression <<": nc = " << std::setprecision(5) << std::showpoint 
           << indAndmetrics.metrics.normalizedCompression << "\r";
         }
-
-        
         data.append_metrics(indAndmetrics);
         machine.stMatrix.next();
         counter += 1;
@@ -123,7 +123,7 @@ CompressionResultsData tm(
 
       for (auto counter = 0ull; counter < traversal_len; counter++) {
         machine.stMatrix.set_random(rng);
-        auto indAndmetrics = run_machine(machine, normalizedCompressionMarkovTable, num_iterations);
+        auto indAndmetrics = run_machine(machine, bestMkvTableCompression, num_iterations);
 
         if (verbose && counter % 4096 == 0) {
           std::cerr << "TM #" << std::setw(8) << indAndmetrics.tmNumber << ": amplitude = " << indAndmetrics.metrics.amplitude 
@@ -261,27 +261,27 @@ CompressionResultsData tm_multicore(
     size_t states,
     size_t alphabet_size,
     unsigned int num_iterations,
-    unsigned int k,
+    const std::vector<unsigned int> &kvector,
     TraversalStrategy strategy,
     unsigned long long traversal_len,
     unsigned long long traversal_offset,
     bool verbose,
     unsigned int threads){
     if (threads < 2) {
-      return tm(states, alphabet_size, num_iterations, k, strategy, traversal_len, traversal_offset, verbose);
+      return tm(states, alphabet_size, num_iterations, kvector, strategy, traversal_len, traversal_offset, verbose);
     }
 
     if (strategy == TraversalStrategy::SEQUENTIAL) {
       auto real_len = traversal_len > 0 ? traversal_len : tm_cardinality(states, alphabet_size);
 
       return multicore_sequential_partition([=](auto len, auto offset) {
-        return tm(states, alphabet_size, num_iterations, k, strategy, len, offset, verbose);
+        return tm(states, alphabet_size, num_iterations, kvector, strategy, len, offset, verbose);
           },real_len, traversal_offset,threads, verbose);
     } 
     else if (strategy == TraversalStrategy::MONTE_CARLO) {
     
       return multicore_monte_carlo([=](auto n) -> CompressionResultsData {
-        return tm(states, alphabet_size, num_iterations, k, strategy, n, 0, verbose);
+        return tm(states, alphabet_size, num_iterations, kvector, strategy, n, 0, verbose);
       }, traversal_len, threads, verbose);
     }
 
@@ -321,7 +321,7 @@ void tm_dynamical_profile(
       data.append_metrics(indxMetrics);
     }
   }
-  data.print_data(divison);
+  data.print_profile_data(divison);
 }  
 
 /** Evaluates a specific Turing machine Profile.
@@ -352,7 +352,7 @@ void tm_profile(
     machine.act(); //importante ser antes
   }
   data = normalizedCompressionMarkovTable.profile_update_nc_mk_table(machine.turingTape, divison);
-  data.print_data(divison);
+  data.print_profile_data(divison);
 }
 
 /** Replicate experiment to determine the best k and it for a given number of states and alphabet size.
@@ -409,14 +409,16 @@ void ktm_multicore(
     unsigned int threads) {
   
   TuringMachine machine(states, alphabet_size);
-
+  std::vector<unsigned int> kvalues;
   std::vector <unsigned int> range_of_k = {2,3,4,5,6,7,8,9,10};
   std::vector <unsigned int> range_of_it = {100, 1000, 10000};
   std::cout<< "Number of TM \t k \t number iterations \tMean Amp+/-std \t Mean sc+/-std \t Mean nc+/-std" << std::endl;
   for(auto kval = range_of_k.begin(); kval != range_of_k.end(); ++kval) {
 
     for(auto nb_it_val = range_of_it.begin(); nb_it_val != range_of_it.end(); ++nb_it_val) {
-      auto data = tm_multicore(states, alphabet_size, *nb_it_val, *kval, TraversalStrategy::SEQUENTIAL, 0, 0, false, threads);
+      kvalues.push_back(*kval);
+      auto data = tm_multicore(states, alphabet_size, *nb_it_val, kvalues , TraversalStrategy::SEQUENTIAL, 0, 0, false, threads);
+      kvalues.clear();
       AvgMetrics avgData = data.avg();
       data.print_avg_metrics(avgData);
       std::cout << "\t" << data.amplitude.size() << "\t\t" << *kval 

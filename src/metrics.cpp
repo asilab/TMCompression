@@ -6,15 +6,18 @@
     @version 0.1
 */
 #include <iomanip>
+#include <cassert>
 
 #include "metrics.h"
 
     
-void CompressionResultsData::append(TmId tmNumber,
+void CompressionResultsData::append(unsigned int k,
+    TmId tmNumber,
     unsigned int amplitudes,
     double self_compression,
     double normalized_compression){
-
+    
+    this->kvalue.push_back(k);
     this->tmNumber.push_back(tmNumber);
     this->amplitude.push_back(amplitudes);
     this->self_compression.push_back(self_compression);
@@ -23,13 +26,16 @@ void CompressionResultsData::append(TmId tmNumber,
 }
 
 void CompressionResultsData::append_metrics(IndexAndMetrics indAndMetrics){
+    
     this->tmNumber.push_back(indAndMetrics.tmNumber);
+    this->kvalue.push_back(indAndMetrics.metrics.k);
     this->amplitude.push_back(indAndMetrics.metrics.amplitude);
     this->self_compression.push_back(indAndMetrics.metrics.selfCompression);
     this->normalized_compression.push_back(indAndMetrics.metrics.normalizedCompression);
 }
 
 void CompressionResultsData::clear_data(){
+    this->kvalue.clear();
     this->tmNumber.clear();
     this->amplitude.clear();
     this->self_compression.clear();
@@ -37,6 +43,7 @@ void CompressionResultsData::clear_data(){
 }
 
 void CompressionResultsData::merge(CompressionResultsData&& other){
+    this->kvalue.insert(end(this->kvalue),begin(other.kvalue),end(other.kvalue));
     this->tmNumber.insert(end(this->tmNumber),begin(other.tmNumber),end(other.tmNumber));
     this->amplitude.insert(end(this->amplitude), begin(other.amplitude), end(other.amplitude));
     this->normalized_compression.insert(end(this->normalized_compression), begin(other.normalized_compression), end(other.normalized_compression));
@@ -59,11 +66,12 @@ AvgMetrics CompressionResultsData::avg(){
     avgMetrics.nc.second = std::sqrt(sq_nc_sum / this->normalized_compression.size() - avgMetrics.nc.first * avgMetrics.nc.first);
     
     return avgMetrics;
-    
-    
-    
 }
-void CompressionResultsData::print_data(unsigned int divison){
+
+void CompressionResultsData::print_profile_data(unsigned int divison){
+    assert(this->amplitude.size()== this->self_compression.size() && 
+    this->self_compression.size()== this->normalized_compression.size());
+
 
     std::cout<< "iterations \t amplitude \t Self-Compression \t Normalized Compression " << std::endl; 
     std::cout<< "-------------------------------------------------" <<std::endl;
@@ -73,13 +81,17 @@ void CompressionResultsData::print_data(unsigned int divison){
   }
 }
 
-
-
-void CompressionResultsData::print_data(unsigned int k, unsigned int numIt){
+void CompressionResultsData::print_data( unsigned int numIt){
+    assert( this->tmNumber.size()==this->amplitude.size() && 
+    this->amplitude.size()==this->kvalue.size() && 
+    this->kvalue.size() == this->self_compression.size() && 
+    this->self_compression.size()== this->normalized_compression.size());
+    
+    
     std::cout<< "TM \t k value \t iterations \t amplitude \t Self-Compression \t Normalized Compression " << std::endl; 
     std::cout<< "-------------------------------------------------" <<std::endl;
     for (auto i = 0u; i < this->amplitude.size(); ++i) {
-    std::cout << this->tmNumber[i] << "\t" << k << "\t" << numIt << "\t" << this->amplitude[i] << "\t" 
+    std::cout << this->tmNumber[i] << "\t" << this->kvalue[i] << "\t" << numIt << "\t" << this->amplitude[i] << "\t" 
     << std::setprecision(5)  << std::showpoint <<  this->self_compression[i] << "\t" << std::setprecision(5) 
     << std::showpoint << this->normalized_compression[i] << "\t" << std::endl;
     }
