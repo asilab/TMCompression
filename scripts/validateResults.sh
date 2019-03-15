@@ -6,13 +6,13 @@ if [ $# -ne 3 ]; then
     echo "All args are boolean (0 or 1)";
     echo "";
     echo "Arg[0]: Install AC";
-    echo "bash ProcessResults.sh 1 0 0";
+    echo "bash validateResults.sh 1 0 0";
     echo "";
     echo "Arg[2]: Validate TM Tapes";
-    echo "bash ProcessResults.sh 0 1 0";
+    echo "bash validateResults.sh 0 1 0";
     echo "";
     echo "Arg[3]: Validate Profile with Compression AC";
-    echo "bash ProcessResults.sh 0 0 1";
+    echo "bash validateResults.sh 0 0 1";
     echo "";
     exit 1;
 fi

@@ -5,13 +5,13 @@ if [ $# -ne 3 ]; then
     echo "All args are boolean (0 or 1)";
     echo "";
     echo "If 1st Argument == 1: Filters are the results of a given file and provide the 50 most statistically complex machines";
-    echo "bash ProcessResults.sh 1 0 0";
+    echo "bash filteringResults.sh 1 0 0";
     echo "";
     echo "If 2nd Argument == 1:Requests the file and make the profile with the turing machines present in the file in the form of its indexes";
-    echo "bash ProcessResults.sh 0 1 0";
+    echo "bash filteringResults.sh 0 1 0";
     echo "";
     echo "If 3rd Argument == 1:Requests the file and make the dynamical profile with the turing machines present in the file in the form of its indexes";
-    echo "bash ProcessResults.sh 0 0 1";
+    echo "bash filteringResults.sh 0 0 1";
     echo "";
     exit 1;
 fi

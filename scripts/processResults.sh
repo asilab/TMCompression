@@ -8,19 +8,19 @@ if [ $# -ne 5 ]; then
     echo "All args are boolean (0 or 1)";
     echo "";
     echo "If 1st Argument == 1: Installs goose in your system, which is required for result processing";
-    echo "bash ProcessResults.sh 1 0 0 0 0";
+    echo "bash processResults.sh 1 0 0 0 0";
     echo "";
     echo "If 2nd Argument == 1:Creates plot of TM Cardinality Growth";
-    echo "bash ProcessResults.sh 0 1 0 0 0";
+    echo "bash processResults.sh 0 1 0 0 0";
     echo "";
     echo "If 3rd Argument == 1:Creates plot of all TM with #Alphabet=2, #States=2";
-    echo "bash ProcessResults.sh 0 0 1 0 0";
+    echo "bash processResults.sh 0 0 1 0 0";
     echo "";
     echo "If 4th Argument == 1:Creates plot of all TM with #Alphabet=2, #States=3";
-    echo "bash ProcessResults.sh 0 0 0 1 0";
+    echo "bash processResults.sh 0 0 0 1 0";
     echo "";
     echo "If 5th Argument == 1:Creates plot of all TM with #Alphabet=3, #States=2";
-    echo "bash ProcessResults.sh 0 0 0 0 1";
+    echo "bash processResults.sh 0 0 0 0 1";
     echo "";
     exit 1;
 fi
@@ -89,19 +89,18 @@ fi
 
 if [[ "$STATE2_TMs" -eq "1" ]];
     then
-    cd ..;
     echo "Creating plot of of all TM with #Alphabet=2, #States=2... ";
-    
+    cd ..;
     var="2st";
     text=$var".txt";
-    tail -n +4 $text | head -n -3 | ./ioStNormalize $text >  $var"Results.txt";
-        
+    tail -n +4 $text | head -n -3 | ./ioStNormalize $text > $var"Results.txt";
+    
     #Amplitude
     awk '{ print $4;}' 2stResults.txt | ./goose/bin/goose-filter -w 201 -d 5 -1 > Amplitude.txt; 
     
     #nc
     awk '{ print $6;}' 2stResults.txt | ./goose/bin/goose-filter -w 201 -d 5 -1 > NC_f.txt;
-
+    exit;
 gnuplot << EOF
     reset
     set terminal pdfcairo enhanced color font 'Verdana,8'
@@ -137,8 +136,11 @@ fi
 
 if [[ "$STATE3_TMs" -eq "1" ]];
     then
+    
     cd ..;
+    pwd
     echo " Creating plot of of all TM with #Alphabet=2, #States=3 ... ";
+    
     var="3st";
     text=${var}.txt;
     results=${var}Results.txt;
