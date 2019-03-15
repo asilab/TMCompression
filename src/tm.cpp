@@ -92,9 +92,6 @@ CompressionResultsData tm(
 
   BestKMarkovTables<NormalizedCompressionMarkovTable> bestMkvTableCompression(kvector, alphabet_size);
   
-  
-  //NormalizedCompressionMarkovTable normalizedCompressionMarkovTable(k , alphabet_size);
-
   switch (strategy) {
     case TraversalStrategy::SEQUENTIAL: {
       if (traversal_offset > 0) {
@@ -113,8 +110,6 @@ CompressionResultsData tm(
           << ": sc = " << std::setprecision(5) << std::showpoint <<indAndmetrics.metrics.selfCompression <<": nc = " << std::setprecision(5) << std::showpoint 
           << indAndmetrics.metrics.normalizedCompression << "\r";
         }
-
-        
         data.append_metrics(indAndmetrics);
         machine.stMatrix.next();
         counter += 1;
@@ -266,7 +261,7 @@ CompressionResultsData tm_multicore(
     size_t states,
     size_t alphabet_size,
     unsigned int num_iterations,
-    std::vector<unsigned int> kvector,
+    const std::vector<unsigned int> &kvector,
     TraversalStrategy strategy,
     unsigned long long traversal_len,
     unsigned long long traversal_offset,

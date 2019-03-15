@@ -88,7 +88,7 @@ struct NormalizedCompressionMarkovTable{
     };
 
     CompressionResultsData profile_update_nc_mk_table(const Tape& tape, unsigned int divison, const T& markovTable){
-        return  markovTable.profile_update_nc_mk_table(tape);
+        return  markovTable.profile_update_nc_mk_table(tape, divison);
     };
 };
 
