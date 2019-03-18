@@ -43,8 +43,9 @@ fi
 
 ./tm --brief --dynprofile -s $STATE -a $ALPHABET -i $NUMBERITERATION -k $K -t $Machine > $txtName;
 
-tail -n +3 $txtName | awk '{ print $4;}' > nc_dynProfile.txt;
-tail -n +3 $txtName | awk '{ print $2;}' > amp_dynProfile.txt;
+tail -n +3 $txtName | awk '{ print $4;}' | ./goose/bin/goose-filter -p1 -w 20 -d 80 -1 > nc_dynProfile.txt;
+tail -n +3 $txtName | awk '{ print $2;}' | ./goose/bin/goose-filter -p1 -w 20 -d 80 -1 > amp_dynProfile.txt;
+
 paste amp_dynProfile.txt nc_dynProfile.txt > dynProfile.txt;
 
 gnuplot << EOF
