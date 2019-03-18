@@ -23,10 +23,12 @@ FILTER=$1;
 PROFILE=$2;
 DYNAMICPROFILE=$3;
 
-NUMBERITERATION=100;
+NUMBERITERATION=50000;
 K=2;
+SavePath="./profiles/";
+
 # ==============================================================================
-# FILTER MOST RELAVANT MACHINES
+# FILTER MOST RELEVANT MACHINES
 # ==============================================================================
 
 if [[ "$FILTER" -eq "1" ]];
@@ -40,8 +42,8 @@ if [[ "$FILTER" -eq "1" ]];
         if [ -f $FILENAME ]; 
         then
 
-            tail -n +4 $FILENAME | head -n -3 | sort -k 6,6 |awk '$4 < 100 { next } { print }' | tail -n 100 > "InterestingTM"$FILENAME;
-            tail -n +4 $FILENAME | head -n -3 | sort -k 6,6 |awk '$4 < 100 { next } { print }' | tail -n 100 | awk ' { print $1}' > "InterestingTMindex"$FILENAME;
+            tail -n +4 $FILENAME | head -n -3 | sort -k 6,6 |awk '$4 < 100 { next } { print }' | tail -n 15 > "InterestingTM"$FILENAME;
+            tail -n +4 $FILENAME | head -n -3 | sort -k 6,6 |awk '$4 < 100 { next } { print }' | tail -n 15 | awk ' { print $1}' > "InterestingTMindex"$FILENAME;
 
         else
             echo "File $FILENAME does not exist.";
@@ -53,7 +55,7 @@ if [[ "$FILTER" -eq "1" ]];
 fi
 
 # ==============================================================================
-# Profile of TM inprovided file
+# Profile of TM in provided file
 # ==============================================================================
 
 if [[ "$PROFILE" -eq "1" ]];
@@ -65,17 +67,28 @@ if [[ "$PROFILE" -eq "1" ]];
       then
         if [ -f $FILENAME ]; then
             echo "Please insert #States: Ex: 2"
-            read STATES;
+            read STATE;
             echo "Please insert #Alphabet: Ex: 2"
             read ALPHABET;
 
             while read p; do
-                bash ./scripts/normalProfile.sh $p $STATES $ALPHABET $NUMBERITERATION $K;
+                bash ./scripts/normalProfile.sh $p $STATE $ALPHABET $NUMBERITERATION $K;
             done <$FILENAME
+        
+            Folder=${STATE}St${ALPHABET}AlphTM/;
+            DIRECTORY=${SavePath}${Folder};
+            cd ${DIRECTORY};
+            pdfunite Profile*.pdf AllNormProfile${STATE}St${ALPHABET}AlphTM.pdf;
+            rm Profile*.pdf;
+            cd ../..;
         fi
     fi
     cd ./scripts;
 fi
+
+# ==============================================================================
+# Dynamical Temporal Profile of TM from provided file
+# ==============================================================================
 
 if [[ "$DYNAMICPROFILE" -eq "1" ]];
     then
@@ -86,14 +99,20 @@ if [[ "$DYNAMICPROFILE" -eq "1" ]];
       then
         if [ -f $FILENAME ]; then
             echo "Please insert #States: Ex: 2"
-            read STATES;
+            read STATE;
             echo "Please insert #Alphabet: Ex: 2"
             read ALPHABET;
 
             while read p; do 
-                bash ./scripts/dynamicProfile.sh $p $STATES $ALPHABET $NUMBERITERATION $K;
+                bash ./scripts/dynamicProfile.sh $p $STATE $ALPHABET $NUMBERITERATION $K;
             done <$FILENAME
         fi
+        Folder=${STATE}St${ALPHABET}AlphTM/;
+        DIRECTORY=${SavePath}${Folder};
+        cd ${DIRECTORY};
+        pdfunite DynProfile*.pdf AllDynProfile${STATE}St${ALPHABET}AlphTM.pdf;
+        rm DynProfile*.pdf
+        cd ../..
     fi
     cd ./scripts;
 fi

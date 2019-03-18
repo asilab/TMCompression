@@ -91,20 +91,22 @@ if [[ "$STATE2_TMs" -eq "1" ]];
     then
     echo "Creating plot of of all TM with #Alphabet=2, #States=2... ";
     cd ..;
-    var="2st";
+    var="2sts2alp";
     text=$var".txt";
-    tail -n +4 $text | head -n -3 | ./ioStNormalize $text > $var"Results.txt";
+    results=${var}Results.txt;
+    echo $var"Results.txt";
+    tail -n +4 $text | head -n -3 | ./ioStNormalize $text > $results;
     
     #Amplitude
-    awk '{ print $4;}' 2stResults.txt | ./goose/bin/goose-filter -w 201 -d 5 -1 > Amplitude.txt; 
+    awk '{ print $4;}' $results | ./goose/bin/goose-filter -w 80 -d 5 -1 > Amplitude.txt; 
     
     #nc
-    awk '{ print $6;}' 2stResults.txt | ./goose/bin/goose-filter -w 201 -d 5 -1 > NC_f.txt;
-    exit;
+    awk '{ print $6;}' $results | ./goose/bin/goose-filter -w 80 -d 5 -1 > NC_f.txt;
+  
 gnuplot << EOF
     reset
     set terminal pdfcairo enhanced color font 'Verdana,8'
-    set output "2sts.pdf"
+    set output "2sts2alp.pdf"
     set boxwidth 0.5
     set size ratio 0.6
     set style line 101 lc rgb '#000000' lt 1 lw 3
@@ -125,8 +127,8 @@ gnuplot << EOF
     set style fill transparent solid 0.6 noborder
     plot "Amplitude.txt" using 1:2 with boxes linecolor '#CFB53B' title "Amplitude of Tape", "NC_f.txt" using 1:2  with boxes linecolor '#4169E1' title "Normalized Compression"
 EOF
-    mv 2sts.pdf ./results;
-    rm Amplitude.txt NC_f.txt $var"Results.txt";
+    mv 2sts2alp.pdf ./results;
+    rm Amplitude.txt NC_f.txt $results;
     cd ./scripts;
 fi
 
@@ -136,12 +138,9 @@ fi
 
 if [[ "$STATE3_TMs" -eq "1" ]];
     then
-    
-    cd ..;
-    pwd
     echo " Creating plot of of all TM with #Alphabet=2, #States=3 ... ";
-    
-    var="3st";
+    cd ..;
+    var="3sts2alp";
     text=${var}.txt;
     results=${var}Results.txt;
     tail -n +4 $text | head -n -3 | ./ioStNormalize $text > $results;
@@ -153,7 +152,7 @@ if [[ "$STATE3_TMs" -eq "1" ]];
 gnuplot << EOF
     reset
     set terminal pdfcairo enhanced color font 'Verdana,8'
-    set output "3sts.pdf"
+    set output "3sts2alp.pdf"
     set boxwidth 0.5
     set size ratio 0.6
     set style line 101 lc rgb '#000000' lt 1 lw 3
@@ -174,7 +173,7 @@ gnuplot << EOF
     set style fill transparent solid 0.4 noborder
     plot "Amplitude3.txt" using 1:2 with boxes linecolor '#CFB53B' title "Amplitude of Tape", "NC_f3.txt" using 1:2  with boxes linecolor '#4169E1' title "Normalized Compression"
 EOF
-    mv 3sts.pdf ./results;
+    mv 3sts2alp.pdf ./results;
     rm Amplitude3.txt NC_f3.txt; 
     rm  $results;
     cd ./scripts;
@@ -188,7 +187,7 @@ if [[ "$STATE2_ALPH3_TMs" -eq "1" ]];
     then
     cd ..;
     echo "Creating plot of of all TM with #Alphabet=3, #States=2... ";
-    var="busy2st3alph";
+    var="2sts3alp";
     text=${var}.txt;
     results=${var}Results.txt;
     
@@ -202,7 +201,7 @@ if [[ "$STATE2_ALPH3_TMs" -eq "1" ]];
 gnuplot << EOF
     reset
     set terminal pdfcairo enhanced color font 'Verdana,8'
-    set output "2stsAlp3.pdf"
+    set output "2sts3alp.pdf"
     set boxwidth 0.5
     set size ratio 0.6
     set style line 101 lc rgb '#000000' lt 1 lw 3
@@ -223,7 +222,7 @@ gnuplot << EOF
     set style fill transparent solid 0.4 noborder
     plot "AmplitudeSt2Alp3.txt" using 1:2 with boxes linecolor '#CFB53B' title "Amplitude of Tape", "NC_f3St2Alp3.txt" using 1:2  with boxes linecolor '#4169E1' title "Normalized Compression"
 EOF
-    mv 2stsAlp3.pdf ./results;
+    mv  2sts3alp.pdf ./results;
     rm  AmplitudeSt2Alp3.txt NC_f3St2Alp3.txt;
     rm  $results;
     cd ./scripts;

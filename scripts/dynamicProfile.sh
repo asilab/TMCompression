@@ -30,9 +30,8 @@ K=$5;
 Folder=${STATE}St${ALPHABET}AlphTM/;
 DIRECTORY=${SavePath}${Folder};
 
-if [ -d "$DIRECTORY" ]; then
-    echo "this folder already exists";
-else
+if [ ! -d "$DIRECTORY" ]; 
+    then
     cd $SavePath;
     mkdir $Folder;
     cd ..;
@@ -67,7 +66,7 @@ gnuplot << EOF
     set xlabel "Amplitude of Tape"
     set ylabel "Normalized Compression"
     set datafile separator "\t"
-    plot "dynProfile.txt" using 1:2 linecolor '#4169E1' pointtype 7 pointsize 0.3 lw 0.5 title "NC Profile of Tape"
+    plot "dynProfile.txt" using 1:2 linecolor '#4169E1' pointtype 7 pointsize 0.3 lw 0.5 title "NC Profile of Tape $Machine"
 EOF
 
 mv dynProfile.pdf $pdfName;
