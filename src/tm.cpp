@@ -21,6 +21,8 @@
 #include <future>
 #include <type_traits>
 
+
+#include "NormalizedCompressionMarkovTable.h"
 #include "markovTable.h"
 #include "turingMachine.h"
 #include "util.h"
