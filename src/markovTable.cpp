@@ -1,6 +1,7 @@
 /**
-    markovTable.cpp
-    Purpose: Create and Fill Markov Tables.
+    markovTable.h
+    Purpose: Make and fill Markov Tables.
+             Mesure Statistical Complexity.
 
     @author Jorge Miguel Ferreira da Silva
     @version 0.1
@@ -57,7 +58,6 @@ std::vector<unsigned int> MarkovTable::getLine(const Char* characters){
 
 
 
-
 /**
     Resets Markov Table.
 
@@ -107,11 +107,11 @@ void MarkovTable::print() const{
 NormalizedCompressionMarkovTable::NormalizedCompressionMarkovTable(unsigned int k, unsigned int alphabet_size):
 mrkvTable(k, alphabet_size) {}
 
-Metrics NormalizedCompressionMarkovTable::update_nc_mk_table(const Tape& tape){
+Metrics NormalizedCompressionMarkovTable::update(const Tape& tape){
     auto b = begin(tape.tape) + tape.ind_left - this->mrkvTable.k  + 1 ; // To have k context at the begining    
     auto e = begin(tape.tape) + tape.ind_right - this->mrkvTable.k;
     Metrics metrics;
-
+    metrics.k = this->mrkvTable.k;
 
     double value = 0 ;
 
@@ -134,9 +134,10 @@ Metrics NormalizedCompressionMarkovTable::update_nc_mk_table(const Tape& tape){
 
 //obtain all values of specific table
 CompressionResultsData NormalizedCompressionMarkovTable::profile_update_nc_mk_table(const Tape& tape, unsigned int divison){
-    auto b = begin(tape.tape) + tape.ind_left- this->mrkvTable.k  + 1 ; // To have k context at the begining    
+    auto b = begin(tape.tape) + tape.ind_left- this->mrkvTable.k  + 1 ; // To have k context at the beginning    
     auto e = begin(tape.tape) + tape.ind_right - this->mrkvTable.k;
     CompressionResultsData data;
+
     unsigned int diff_indexes= (tape.ind_right) - (tape.ind_left + 1);
     unsigned int counter=0;
 
@@ -198,6 +199,10 @@ int NormalizedCompressionMarkovTable::sum_all_elements_vector(std::vector<unsign
 double NormalizedCompressionMarkovTable::calculateLog(int index_value, int sum_all_line_elem){
     
     double value = static_cast<double>(index_value)/ static_cast<double>(sum_all_line_elem);
-    //std::cout << "value div = " << value << std::endl ;
+    //std::cout << "value div = " << value << std::endl;
     return (- log2(value));
+}
+
+void NormalizedCompressionMarkovTable::reset(){
+    this->mrkvTable.reset();
 }

@@ -1,6 +1,6 @@
 /**
     turingMachine.cpp
-    Purpose: Create and execute Turing Machines in a brute force manner.
+    Purpose: Create and execute Turing Machines.
 
     @author Jorge Miguel Ferreira da Silva
     @version 0.1
@@ -143,7 +143,7 @@ size_t Tape::getposition() {
     
     
     It also:
-    - Alocates space to the left or the right of the tape if the max_size is exceeded;
+    - Allocates space to the left or the right of the tape if the max_size is exceeded;
     - defines if index positions of the left and right of the tape have changed.
 
     @param relativePos . Relative position that the tm must move in the tape.

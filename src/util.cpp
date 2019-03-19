@@ -1,3 +1,11 @@
+/**
+    util.cpp
+    Purpose: Utility functions for the program.
+
+    @author Jorge Miguel Ferreira da Silva
+    @version 0.1
+*/
+
 #include <vector>
 #include <iostream>
 
@@ -44,7 +52,7 @@ void power(int x, int n)
       std::cout << res[i]; 
 } 
 
-/// Calculate the full cardinality of all possible turing machine state matrices
+/// Calculate the full cardinality of all possible Turing machine state matrices
   void tm_fl_cardinality(size_t states, size_t alphabet_size) {
     
     int nstates = states;

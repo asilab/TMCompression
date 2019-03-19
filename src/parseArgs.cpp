@@ -1,3 +1,11 @@
+/**
+    parseArgs.cpp
+    Purpose: Parse input arguments
+
+    @author Jorge Miguel Ferreira da Silva
+    @version 0.1
+*/
+
 #include <getopt.h>
 #include <cstring>
 #include <iostream>
@@ -76,7 +84,7 @@ Args parseArgs (int argc, char **argv){
             std::cout << "--brief" << "\t" << "Indicates programs that will receive inputs in a brief form." << std::endl << std::endl;
             std::cout << "--tmverbose" << "\t" << "Indicates programs that tm output will be send to the user." << std::endl << std::endl;
             std::cout << "--tmgrowth" << "\t" 
-            << "Indicates programs that output a list of turing machines with an increase in the number of states and a alphabeth size of 2" 
+            << "Indicates programs that output a list of Turing machines with an increase in the number of states and a alphabet size of 2" 
             << std::endl<< std::endl;
             std::cout << "--replicate" << "\t" 
             << "Indicates programs that will replicate experiment to determine the best k and it for a given number of states and alphabet size." 
@@ -142,18 +150,18 @@ Args parseArgs (int argc, char **argv){
             exit (0);
 
         case 'v':
-                    std::cout << "Relative Turing Machine Version 0.1" << std::endl<<std::endl;
-                    exit (0);
+            std::cout << "Relative Turing Machine Version 0.1" << std::endl<<std::endl;
+            exit (0);
         case 's':
             {
             correctInput = strtol(optarg, &end, 10);
             if (*end != '\0') {
-            std::cerr << "invalid input for -s/--number_states.\n";
-            exit(0);
+                std::cerr << "Invalid input for -s/--number_states.\n";
+                exit(0);
             }
             else if (correctInput<=0){
-            fprintf (stderr, "-s/--number_states value was set to %d, must be an int larger than 0.\n",correctInput); 
-            exit(0);
+                fprintf (stderr, "-s/--number_states value was set to %d, must be an int larger than 0.\n",correctInput); 
+                exit(0);
             }
             else argument.states = correctInput;
             break;
@@ -163,12 +171,12 @@ Args parseArgs (int argc, char **argv){
             {
             correctInput = strtol(optarg, &end, 10);
             if (*end != '\0') {
-            std::cerr << "invalid input for -a/--alphabet_size.\n";
-            exit(0);
+                std::cerr << "Invalid input for -a/--alphabet_size.\n";
+                exit(0);
             }
             else if (correctInput<=0){
-            fprintf (stderr, "-a/--alphabet_size value was set to %d, must be an int larger than 0.\n",correctInput); 
-            exit(0);
+                fprintf (stderr, "-a/--alphabet_size value was set to %d, must be an int larger than 0.\n",correctInput); 
+                exit(0);
             }
             else argument.alphabet_size = correctInput;
             break;
@@ -178,40 +186,86 @@ Args parseArgs (int argc, char **argv){
             {
             correctInput = strtol(optarg, &end, 10);
             if (*end != '\0') {
-            std::cerr << "invalid input for -i/--iterations.\n";
-            exit(0);
+                std::cerr << "Invalid input for -i/--iterations.\n";
+                exit(0);
             }
             else if (correctInput<=0){
-            fprintf (stderr, "-i/--iterations value was set to %d, must be an int larger than 0.\n",correctInput); 
-            exit(0);
+                fprintf (stderr, "-i/--iterations value was set to %d, must be an int larger than 0.\n",correctInput); 
+                exit(0);
             }
             else argument.numIt = correctInput;
             break;
         }
         case 'k':
-        {
-            correctInput = strtol(optarg, &end, 10);
-            if (*end != '\0') {
-            std::cerr << "invalid input for -k/--context.\n";
-            exit(0);
+        {   
+            std::pair<unsigned int,unsigned int> k_limits;
+            std::vector<unsigned int> k_values;
+            if (std::strchr(optarg, ':')){
+                auto token = std::strtok (optarg," :");
+                unsigned int counter=0;
+                
+                while (token != NULL)
+                {
+                    if (counter>1){
+                        std::cerr << "Invalid input for -k/--context." << std::endl <<
+                        "If you want to provide a range for k " <<
+                         "please provide -k/--context with 2 elements separeted by \":\".\n" <<
+                         "Example: -k 2:4"<< std::endl;
+                        exit(0);
+                    }
+                    else{
+                        correctInput = strtol(token, &end, 10);
+                        if (*end != '\0') {
+                            std::cerr << "Invalid input for -k/--context.\n";
+                            exit(0);
+                        }
+                        else if (correctInput<=0){
+                            fprintf (stderr, "-k/--context value was set to %d, must be an int larger than 0.\n",correctInput); 
+                            exit(0);
+                        }
+                        else {
+                            if (counter==0) k_limits.first=correctInput;
+                            else if (counter==1) k_limits.second=correctInput;
+                        };
+                    }
+                    token = strtok (NULL, ":");
+                    ++counter;
+                }
+            }            
+            else{
+                correctInput = strtol(optarg, &end, 10);
+                if (*end != '\0') {
+                    std::cerr << "Invalid input for -k/--context.\n";
+                    exit(0);
+                    }
+                else if (correctInput<=0){
+                    fprintf (stderr, "-k/--context value was set to %d, must be an int larger than 0.\n",correctInput); 
+                    exit(0);
+                }
+                else {
+                    k_limits.first = correctInput;
+                    k_limits.second = correctInput; 
+                }
             }
-            else if (correctInput<=0){
-            fprintf (stderr, "-k/--context value was set to %d, must be an int larger than 0.\n",correctInput); 
-            exit(0);
+
+            if (k_limits.first<=k_limits.second){
+                for (auto it=k_limits.first; it!=k_limits.second+1;++it){
+                    k_values.push_back(it);
+                }
             }
-            else argument.k = correctInput;
+            argument.k = k_values;
             break;
         }
         case 't':
         {
             correctInput = strtol(optarg, &end, 10);
             if (*end != '\0') {
-            std::cerr << "invalid input for -t/--tm.\n";
-            exit(0);
+                std::cerr << "Invalid input for -t/--tm.\n";
+                exit(0);
             }
             else if (correctInput<0){
-            fprintf (stderr, "-t/--tm value was set to %d, must be an int larger than 0.\n",correctInput); 
-            exit(0);
+                fprintf (stderr, "-t/--tm value was set to %d, must be an int larger than 0.\n",correctInput); 
+                exit(0);
             }
             else{
                 argument.tm.first = correctInput;
@@ -224,12 +278,12 @@ Args parseArgs (int argc, char **argv){
         {
             correctInput = strtol(optarg, &end, 10);
             if (*end != '\0') {
-            std::cerr << "invalid input for -j/--jobs." << std::endl;
-            exit(0);
+                std::cerr << "Invalid input for -j/--jobs." << std::endl;
+                exit(0);
             }
             else if (correctInput<=0){
-            fprintf (stderr, "-j/--jobs value was set to %d, must be an int larger than 0.\n",correctInput); 
-            exit(0);
+                fprintf (stderr, "-j/--jobs value was set to %d, must be an int larger than 0.\n",correctInput); 
+                exit(0);
             }
             else argument.jobs = correctInput;
             break;
@@ -250,7 +304,7 @@ Args parseArgs (int argc, char **argv){
         {
             auto parsed = strtoull(optarg, &end, 10);
             if (*end != '\0') {
-                std::cerr << "invalid input for -N.\n";
+                std::cerr << "Invalid input for -N.\n";
                 exit(0);
             }
             argument.n = parsed;
@@ -281,12 +335,12 @@ Args parseArgs (int argc, char **argv){
         putchar ('\n');
     }
 
-    if (tm_number_growth_flag && argument.states==0 && argument.alphabet_size==0 && argument.numIt==0 && argument.k==0 && argument.tm.second==false){
+    if (tm_number_growth_flag && argument.states==0 && argument.alphabet_size==0 && argument.numIt==0 && argument.k.empty() && argument.tm.second==false){
         std::cerr << "TM growth for alphabet = 2 and Max number of states = 100" <<std::endl;
         tm_growth_with_cardinality(100);
         exit(0);
     }
-    else if((argument.states!=0 && argument.alphabet_size!=0 && argument.numIt!=0 && argument.k==0 && argument.tm.second) && tm_print_flag==1 && tm_profile_flag==0 && replicate_flag==0 && tm_number_growth_flag==0){
+    else if((argument.states!=0 && argument.alphabet_size!=0 && argument.numIt!=0 && argument.k.empty() && argument.tm.second) && tm_print_flag==1 && tm_profile_flag==0 && replicate_flag==0 && tm_number_growth_flag==0){
             tm_print_tape(argument.states,
                      argument.alphabet_size,
                      argument.numIt,
@@ -295,14 +349,14 @@ Args parseArgs (int argc, char **argv){
 
     }
     
-    else if ( (argument.states!=0 || argument.alphabet_size!=0 || argument.numIt!=0 || argument.k!=0 || argument.jobs!=0 ) && tm_number_growth_flag ){
+    else if ( (argument.states!=0 || argument.alphabet_size!=0 || argument.numIt!=0 || (!argument.k.empty()) || argument.jobs!=0 ) && tm_number_growth_flag ){
         std::cerr << "Please fill all the required arguments in order to perform the tm growth" <<std::endl;
         std::cerr << "Example: ./tm --tmgrowth" << std::endl;
         exit(0);
     }
 
 
-    else if((argument.states==0 || argument.alphabet_size==0 || argument.numIt==0 || argument.k==0 || argument.tm.second==false ) && tm_profile_flag==1 && replicate_flag==0 && tm_number_growth_flag==0){
+    else if((argument.states==0 || argument.alphabet_size==0 || argument.numIt==0 || argument.k.empty() || argument.tm.second==false ) && tm_profile_flag==1 && replicate_flag==0 && tm_number_growth_flag==0){
         std::cerr << "Please fill all the required arguments" <<std::endl;
         exit(0);
     }
@@ -313,11 +367,11 @@ Args parseArgs (int argc, char **argv){
         exit(0);
     }
 
-    else if ( (argument.states!=0 && argument.alphabet_size!=0 && argument.numIt!=0 && argument.k!=0 && argument.tm.second) && tm_profile_flag==0 && tm_dynamical_profile_flag==1 && replicate_flag==0){
+    else if ( (argument.states!=0 && argument.alphabet_size!=0 && argument.numIt!=0 && (argument.k.size()==1 ) && argument.tm.second) && tm_profile_flag==0 && tm_dynamical_profile_flag==1 && replicate_flag==0){
         tm_dynamical_profile(argument.states,
                 argument.alphabet_size,
                 argument.numIt,
-                argument.k,
+                argument.k.front(),
                 argument.tm.first , 5);
         exit(0);
 
@@ -329,11 +383,11 @@ Args parseArgs (int argc, char **argv){
         exit(0);
 
     }
-    else if ( (argument.states!=0 || argument.alphabet_size!=0 || argument.numIt!=0 || argument.k!=0 || argument.tm.second ) && tm_profile_flag==1 && replicate_flag==0 && tm_dynamical_profile_flag==0){
+    else if ( (argument.states!=0 || argument.alphabet_size!=0 || argument.numIt!=0 || (argument.k.size()==1 ) || argument.tm.second ) && tm_profile_flag==1 && replicate_flag==0 && tm_dynamical_profile_flag==0){
         tm_profile(argument.states,
                 argument.alphabet_size,
                 argument.numIt,
-                argument.k,
+                argument.k.front(),
                 argument.tm.first, 5);
         exit(0);
     }
@@ -344,12 +398,12 @@ Args parseArgs (int argc, char **argv){
         exit(0);
     }
 
-    else if ( (argument.states==0 || argument.alphabet_size==0 || argument.numIt==0 || argument.k==0) && replicate_flag==0 && tm_profile_flag==0) 
+    else if ( (argument.states==0 || argument.alphabet_size==0 || argument.numIt==0 || argument.k.empty()) && replicate_flag==0 && tm_profile_flag==0) 
     {
         std::cerr << "Please fill all the required arguments" <<std::endl;
         exit(0);
     }
-    else if ( (argument.numIt==0 || argument.k==0) &&  argument.states!=0 && argument.alphabet_size!=0 && replicate_flag && argument.jobs!=0)
+    else if ( (argument.numIt==0 || argument.k.empty()) &&  argument.states!=0 && argument.alphabet_size!=0 && replicate_flag && argument.jobs!=0)
     { 
         printf ("replication flag is set, the system will run for alphabet_size = %zu and states = %zu, number of iterations ={100, 1000, 10000} and k=[2,10] using threads=%u\n"
         ,argument.alphabet_size,argument.states,argument.jobs);
@@ -357,15 +411,21 @@ Args parseArgs (int argc, char **argv){
         ktm_multicore(argument.states, argument.alphabet_size,argument.jobs);
         exit(0);
     }
-    
-    printf ("states = %zu, alphabet_size = %zu, number of iterations = %u , k = %u\n",
-    argument.states, argument.alphabet_size, argument.numIt, argument.k);
+    if (argument.k.size()>1){
+        printf ("states = %zu, alphabet_size = %zu, number of iterations = %u , k = %u:%u\n",
+        argument.states, argument.alphabet_size, argument.numIt, argument.k.front(), argument.k.back());
+    }
+    else if (argument.k.size()==1){
+        printf ("states = %zu, alphabet_size = %zu, number of iterations = %u , k = %u\n",
+        argument.states, argument.alphabet_size, argument.numIt, argument.k.front());
+    }
 
-    if(ipow<unsigned long long>(argument.alphabet_size, argument.k) >= ipow<unsigned long long>(2,28))
-    {
-        fprintf (stderr, "k/context (%u) and Alphabet size/a (%zu) is too large..\n", argument.k, argument.alphabet_size);
-        fprintf (stderr, " please consider a size of a^k (%zu^%u) smaller than 2^28..\n", argument.alphabet_size,argument.k);
-        exit(0);
+    for (auto kval: argument.k){
+        if(ipow<unsigned long long>(argument.alphabet_size, kval) >= ipow<unsigned long long>(2,28)){
+            fprintf (stderr, "k/context (%u) and Alphabet size/a (%zu) is too large..\n", kval, argument.alphabet_size);
+            fprintf (stderr, " please consider a size of a^k (%zu^%u) smaller than 2^28..\n", argument.alphabet_size,kval);
+            exit(0);
+        }
     }
 
     return argument;
@@ -376,10 +436,16 @@ void printArgs(Args arguments){
     std::cout<<"alphabet_size = " << arguments.alphabet_size<< std::endl;
     std::cout<<"threshold = " << arguments.threshold << std::endl;
     std::cout<<"numIt = " << arguments.numIt << std::endl;
-    std::cout<<"k = " << arguments.k << std::endl;
+    
+    if (arguments.k.size()>1){
+        std::cout<<"k = " << arguments.k.front()<<  ":" << arguments.k.back() << std::endl;
+    }
+    else if (arguments.k.size()==1){
+        std::cout<<"k = " << arguments.k.front() << std::endl;
+    }
     std::cout<<"tm = " << arguments.tm.first << std::endl;
     if(arguments.strategy == TraversalStrategy::SEQUENTIAL){
-        std::cout << "strategy = " << "Sequential"  << std::endl; //might require twirks
+        std::cout << "strategy = " << "Sequential"  << std::endl; //might require twerks
     }
     else if(arguments.strategy == TraversalStrategy::MONTE_CARLO){
         std::cout << "strategy = " << "Monte Carlo"  << std::endl;

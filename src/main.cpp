@@ -6,8 +6,7 @@
     @version 0.1
 */
 
-#include <iostream>
-#include <iomanip>
+
 #include <sstream>
 #include <numeric>
 #include <cmath>
@@ -36,42 +35,9 @@ int main (int argc, char **argv){
     argument.verbose,
     argument.jobs);
   
-  std::cout<< "TM \t k value \t iterations \t amplitude \t Self-Compression \t Normalized Compression " << std::endl; 
-  std::cout<< "-------------------------------------------------" <<std::endl;
-  if (argument.strategy == TraversalStrategy::SEQUENTIAL){
-    for (auto i = 0u; i < data.amplitude.size(); ++i) {
-      std::cout << (i + 1) << "\t" << argument.k << "\t" << argument.numIt << "\t" << data.amplitude[i] << "\t" 
-      << std::setprecision(5) << std::showpoint <<  data.self_compression[i] << "\t" << std::setprecision(5) << std::showpoint << data.normalized_compression[i] << "\t" << std::endl;
-    }
-  }
-  else if (argument.strategy == TraversalStrategy::MONTE_CARLO){
-    //std::cout <<data.tmNumber.size()<<std::endl;
-
-    for (auto i = 0u; i < data.amplitude.size(); ++i) {
-    std::cout << data.tmNumber[i] << "\t" << argument.k << "\t" << argument.numIt << "\t" << data.amplitude[i] << "\t" 
-    << std::setprecision(5)  << std::showpoint <<  data.self_compression[i] << "\t" << std::setprecision(5) 
-    << std::showpoint << data.normalized_compression[i] << "\t" << std::endl;
-    }
-  }
-
-  std::cout<< "-------------------------------------------------" <<std::endl;
-  float mean_amp = std::accumulate( data.amplitude.begin(), data.amplitude.end(), 0.0)/data.amplitude.size();
-  float mean_sc = std::accumulate( data.self_compression.begin(),  data.self_compression.end(), 0.0)/ data.self_compression.size();
-  float mean_nc = std::accumulate( data.normalized_compression.begin(), data.normalized_compression.end(), 0.0)/data.normalized_compression.size();
   
-  double sq_amp_sum = std::inner_product(data.amplitude.begin(), data.amplitude.end(), data.amplitude.begin(), 0.0);
-  double sq_sc_sum = std::inner_product(data.self_compression.begin(), data.self_compression.end(), data.self_compression.begin(), 0.0);
-  double sq_nc_sum = std::inner_product(data.normalized_compression.begin(), data.normalized_compression.end(), data.normalized_compression.begin(), 0.0);
+  data.print_data(argument.numIt);
+  AvgMetrics avgMetrics = data.avg();
+  data.print_avg_metrics(avgMetrics);
 
-  double stdev_amp = std::sqrt(sq_amp_sum / data.amplitude.size() - mean_amp * mean_amp);
-  double stdev_sc = std::sqrt(sq_sc_sum / data.self_compression.size() - mean_sc * mean_sc);
-  double stdev_nc = std::sqrt(sq_nc_sum / data.normalized_compression.size() - mean_nc * mean_nc);
-
-
-
-  std::cout<< "Number of TM \t Mean Amp+/-std \t Mean sc+/-std \t Mean nc+/-std" << std::endl;
-  std::cout << data.amplitude.size() << "\t\t" << mean_amp << "+/-" << stdev_amp 
-                                              << "\t\t" << mean_sc << "+/-" << stdev_sc 
-                                              << "\t" << mean_nc << "+/-" << stdev_nc
-                                              << std::endl;
 }

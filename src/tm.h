@@ -1,3 +1,16 @@
+/**
+    tm.h
+    Purpose: Various functions related to:
+    - Profile of TM
+    - Dynamical Profile of TM
+    - Test various k
+    - Mutithread TM
+    - Cardinality of TM
+
+    @author Jorge Miguel Ferreira da Silva
+    @version 0.1
+*/
+
 #pragma once
 #include <vector>
 
@@ -5,7 +18,7 @@
 #include "markovTable.h"
 
 
-/** Evaluate all relative turing machine programs with the given architecture.
+/** Evaluate all relative Turing machine programs with the given architecture.
  *
  * @param states
  * @param alphabet_size
@@ -19,7 +32,7 @@ CompressionResultsData tm(
     size_t states,
     size_t alphabet_size,
     unsigned int num_iterations,
-    unsigned int k,
+    const std::vector <unsigned int>& kvector,
     TraversalStrategy strategy = TraversalStrategy::SEQUENTIAL,
     unsigned long long traversal_len = 0,
     unsigned long long traversal_offset = 0,
@@ -33,7 +46,7 @@ CompressionResultsData tm(
  */
 void ktm(size_t states, size_t alphabet_size);
 
-/** Prints a specific turing machine tape after a given number of iterations.
+/** Prints a specific Turing machine tape after a given number of iterations.
  *
  * @param states
  * @param alphabet_size
@@ -59,7 +72,7 @@ void tm_print_state_matrix(
   TmId tm_number);
 
 
-/** Evaluates a specific turing machine program.
+/** Evaluates a specific Turing machine Profile.
  *
  * @param states
  * @param alphabet_size
@@ -76,7 +89,7 @@ void tm_print_state_matrix(
     unsigned int divison=5);
 
 
-/** Evaluates a specific turing machine program dynamically,analysing the time complexity.
+/** Evaluates a specific Turing machine program dynamically,analysing the time complexity.
  * @param states
  * @param alphabet_size
  * @param num_iterations
@@ -93,7 +106,7 @@ void tm_print_state_matrix(
     unsigned int divison=5);
 
 
-/** Evaluate all relative turing machine programs with the given architecture,
+/** Evaluate all relative Turing machine programs with the given architecture,
  * using multiple threads.
  *
  * @param states
@@ -103,13 +116,15 @@ void tm_print_state_matrix(
  * @param strategy
  * @param verbose
  * @param threads the number of threads to run in parallel
- * @return a vector of normalized compression values, one per turing machine
+ * @return a vector of normalized compression values, one per Turing machine
  */
+
+
 CompressionResultsData tm_multicore(
     size_t states,
     size_t alphabet_size,
     unsigned int num_iterations,
-    unsigned int k,
+    const std::vector<unsigned int> &kvector,
     TraversalStrategy strategy = TraversalStrategy::SEQUENTIAL,
     unsigned long long traversal_len = 0,
     unsigned long long traversal_offset = 0,
