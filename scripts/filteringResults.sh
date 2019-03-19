@@ -33,7 +33,7 @@ SavePath="../profiles/";
 
 if [[ "$FILTER" -eq "1" ]];
     then
-    cd ../resultsText;
+    cd ../resultText;
     echo "Please insert a specific file to be filtered ex: 2st.txt";
     read FILENAME;
     
@@ -60,7 +60,7 @@ fi
 
 if [[ "$PROFILE" -eq "1" ]];
     then
-    cd ../resultsText;
+    cd ../resultText;
     echo "Please insert filtered file with machines that will make the profile: Ex: InterestingTM2st.txt";
     read FILENAME;
     if [[ $FILENAME == *.txt ]]
@@ -92,7 +92,7 @@ fi
 
 if [[ "$DYNAMICPROFILE" -eq "1" ]];
     then
-    cd ../resultsText;
+    cd ../resultText;
     echo "Please insert file with the turing Machine Indexes which you wish to create a dynamic profile: Ex: InterestingTM2st.txt";
     read FILENAME;
     if [[ $FILENAME == *.txt ]]

@@ -90,7 +90,7 @@ fi
 if [[ "$STATE2_TMs" -eq "1" ]];
     then
     echo "Creating plot of of all TM with #Alphabet=2, #States=2... ";
-    cd ../resultsText;
+    cd ../resultText;
     pwd;
     var="2sts2alp";
     text=$var".txt";
@@ -140,7 +140,7 @@ fi
 if [[ "$STATE3_TMs" -eq "1" ]];
     then
     echo " Creating plot of of all TM with #Alphabet=2, #States=3 ... ";
-    cd ../resultsText;
+    cd ../resultText;
     var="3sts2alp";
     text=${var}.txt;
     results=${var}Results.txt;
@@ -186,7 +186,7 @@ fi
 
 if [[ "$STATE2_ALPH3_TMs" -eq "1" ]];
     then
-    cd ../resultsText;
+    cd ../resultText;
     echo "Creating plot of of all TM with #Alphabet=3, #States=2... ";
     var="2sts3alp";
     text=${var}.txt;
