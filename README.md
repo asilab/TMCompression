@@ -12,10 +12,11 @@
 ## INSTALL
 Get TMCompression and make the project, using:
 ```bash
-git clone https://github.com/jorgeMFS/TMCompression.git
-cd TMCompression
-make
-make ioStNormalize
+git clone https://github.com/jorgeMFS/TMCompression.git;
+cd TMCompression;
+make;
+make ioStNormalize;
+make TMsimulator;
 ```
     
 ## TMCompression Repository Organization
