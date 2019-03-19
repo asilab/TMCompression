@@ -67,9 +67,15 @@ gnuplot << EOF
     set xlabel "Amplitude of Tape"
     set ylabel "Normalized Compression"
     set datafile separator "\t"
-    plot "dynProfile.txt" using 1:2 linecolor '#4169E1' pointtype 7 pointsize 0.3 lw 0.5 title "NC Profile of Tape $Machine"
+    set style line 1 \
+    linecolor rgb '#0060ad' \
+    linetype 1 linewidth 3 \
+    pointtype 7 pointsize 0.01
+    plot "dynProfile.txt" using 1:2 with linespoints linestyle 1 title "NC Profile of Tape $Machine"
 EOF
 
 mv dynProfile.pdf $pdfName;
 mv $pdfName $DIRECTORY;
 rm nc_dynProfile.txt amp_dynProfile.txt dynProfile.txt $txtName;
+
+# InterestingTMindex2sts2alp.txt
