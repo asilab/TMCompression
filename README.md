@@ -19,7 +19,7 @@ make ioStNormalize
 ```
     
 
-## Organization of TMCompression Repository:
+## TMCompression Repository Organization
 
 ```Array.<string>
  ./src : Source Code of the TMCompression Program;
@@ -31,7 +31,7 @@ make ioStNormalize
 ```
 
 ## RUN TMCompression
-There are many ways to run this program see help for clarification:
+There are many ways to run this program see help for clarification :
 
 ```bash
 ./tm --help;
