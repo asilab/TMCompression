@@ -19,7 +19,7 @@ fi
 Machine=$1;
 txtName=Profile${1}.txt;
 pdfName=Profile${1}.pdf;
-SavePath="./profiles/";
+SavePath="../profiles/";
 STATE=$2;
 ALPHABET=$3;
 NUMBERITERATION=$4;
@@ -43,7 +43,7 @@ fi
 # Profile curves of Turing Machines
 # ==============================================================================
 
-./tm --brief --profile -s $STATE -a $ALPHABET -i $NUMBERITERATION -k $K -t $Machine > $txtName;
+../tm --brief --profile -s $STATE -a $ALPHABET -i $NUMBERITERATION -k $K -t $Machine > $txtName;
 tail -n +3 $txtName | awk '{ print $4;}'  > nc_profile.txt;
 tail -n +3 $txtName | awk '{ print $2;}'> amp_profile.txt;
 paste amp_profile.txt nc_profile.txt > profile.txt;

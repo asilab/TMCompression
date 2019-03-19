@@ -17,7 +17,7 @@ fi
 Machine=$1;
 txtName=DynProfile${1}.txt;
 pdfName=DynProfile${1}.pdf;
-SavePath="./profiles/";
+SavePath="../profiles/";
 STATE=$2;
 ALPHABET=$3;
 NUMBERITERATION=$4;
@@ -41,10 +41,10 @@ fi
 # Dynamic Pofile curves Turing Machines
 # ==============================================================================
 
-./tm --brief --dynprofile -s $STATE -a $ALPHABET -i $NUMBERITERATION -k $K -t $Machine > $txtName;
+../tm --brief --dynprofile -s $STATE -a $ALPHABET -i $NUMBERITERATION -k $K -t $Machine > $txtName;
 
-tail -n +3 $txtName | awk '{ print $4;}' | ./goose/bin/goose-filter -p1 -w 20 -d 80 -1 > nc_dynProfile.txt;
-tail -n +3 $txtName | awk '{ print $2;}' | ./goose/bin/goose-filter -p1 -w 20 -d 80 -1 > amp_dynProfile.txt;
+tail -n +3 $txtName | awk '{ print $4;}' | ../goose/bin/goose-filter -p1 -w 20 -d 80 -1 > nc_dynProfile.txt;
+tail -n +3 $txtName | awk '{ print $2;}' | ../goose/bin/goose-filter -p1 -w 20 -d 80 -1 > amp_dynProfile.txt;
 
 paste amp_dynProfile.txt nc_dynProfile.txt > dynProfile.txt;
 

@@ -25,7 +25,7 @@ DYNAMICPROFILE=$3;
 
 NUMBERITERATION=50000;
 K=2;
-SavePath="./profiles/";
+SavePath="../profiles/";
 
 # ==============================================================================
 # FILTER MOST RELEVANT MACHINES
@@ -33,7 +33,7 @@ SavePath="./profiles/";
 
 if [[ "$FILTER" -eq "1" ]];
     then
-    cd ..;
+    cd ../resultsText;
     echo "Please insert a specific file to be filtered ex: 2st.txt";
     read FILENAME;
     
@@ -51,7 +51,7 @@ if [[ "$FILTER" -eq "1" ]];
     else
         echo "Please select .txt file";
     fi
-    cd ./scripts;
+    cd ../scripts;
 fi
 
 # ==============================================================================
@@ -60,7 +60,7 @@ fi
 
 if [[ "$PROFILE" -eq "1" ]];
     then
-    cd ..;
+    cd ../resultsText;
     echo "Please insert filtered file with machines that will make the profile: Ex: InterestingTM2st.txt";
     read FILENAME;
     if [[ $FILENAME == *.txt ]]
@@ -72,7 +72,7 @@ if [[ "$PROFILE" -eq "1" ]];
             read ALPHABET;
 
             while read p; do
-                bash ./scripts/normalProfile.sh $p $STATE $ALPHABET $NUMBERITERATION $K;
+                bash ../scripts/normalProfile.sh $p $STATE $ALPHABET $NUMBERITERATION $K;
             done <$FILENAME
         
             Folder=${STATE}St${ALPHABET}AlphTM/;
@@ -92,8 +92,8 @@ fi
 
 if [[ "$DYNAMICPROFILE" -eq "1" ]];
     then
-    cd ..;
-    echo "Please insert filtered file with machines that will make the dynamic profile: Ex: InterestingTM2st.txt";
+    cd ../resultsText;
+    echo "Please insert file with the turing Machine Indexes which you wish to create a dynamic profile: Ex: InterestingTM2st.txt";
     read FILENAME;
     if [[ $FILENAME == *.txt ]]
       then
@@ -104,15 +104,15 @@ if [[ "$DYNAMICPROFILE" -eq "1" ]];
             read ALPHABET;
 
             while read p; do 
-                bash ./scripts/dynamicProfile.sh $p $STATE $ALPHABET $NUMBERITERATION $K;
+                bash ../scripts/dynamicProfile.sh $p $STATE $ALPHABET $NUMBERITERATION $K;
             done <$FILENAME
         fi
         Folder=${STATE}St${ALPHABET}AlphTM/;
         DIRECTORY=${SavePath}${Folder};
         cd ${DIRECTORY};
         pdfunite DynProfile*.pdf AllDynProfile${STATE}St${ALPHABET}AlphTM.pdf;
-        rm DynProfile*.pdf
-        cd ../..
+        rm DynProfile*.pdf;
+        cd ../..;
     fi
     cd ./scripts;
 fi

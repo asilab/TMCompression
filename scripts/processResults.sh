@@ -79,7 +79,7 @@ if [[ "$CARDINALITY" -eq "1" ]];
     plot f(x)  ls 1 title "f(x) = (6x)^2^x", 'Cardinality2.txt' using 1:2 linecolor '#4169E1' pointtype 7  pointsize 0.5 lw 0.5 title "Growth in Number of TMs"
 EOF
     rm Cardinality.txt Cardinality2.txt;
-    mv Cardinality.pdf ./results;
+    mv Cardinality.pdf ./resultPlots;
     cd ./scripts;
 fi
 
@@ -90,18 +90,19 @@ fi
 if [[ "$STATE2_TMs" -eq "1" ]];
     then
     echo "Creating plot of of all TM with #Alphabet=2, #States=2... ";
-    cd ..;
+    cd ../resultsText;
+    pwd;
     var="2sts2alp";
     text=$var".txt";
     results=${var}Results.txt;
     echo $var"Results.txt";
-    tail -n +4 $text | head -n -3 | ./ioStNormalize $text > $results;
+    tail -n +4 $text | head -n -3 | ../ioStNormalize $text > $results;
     
     #Amplitude
-    awk '{ print $4;}' $results | ./goose/bin/goose-filter -w 80 -d 5 -1 > Amplitude.txt; 
+    awk '{ print $4;}' $results | ../goose/bin/goose-filter -w 80 -d 5 -1 > Amplitude.txt; 
     
     #nc
-    awk '{ print $6;}' $results | ./goose/bin/goose-filter -w 80 -d 5 -1 > NC_f.txt;
+    awk '{ print $6;}' $results | ../goose/bin/goose-filter -w 80 -d 5 -1 > NC_f.txt;
   
 gnuplot << EOF
     reset
@@ -127,9 +128,9 @@ gnuplot << EOF
     set style fill transparent solid 0.6 noborder
     plot "Amplitude.txt" using 1:2 with boxes linecolor '#CFB53B' title "Amplitude of Tape", "NC_f.txt" using 1:2  with boxes linecolor '#4169E1' title "Normalized Compression"
 EOF
-    mv 2sts2alp.pdf ./results;
+    mv 2sts2alp.pdf ../resultPlots;
     rm Amplitude.txt NC_f.txt $results;
-    cd ./scripts;
+    cd ../scripts;
 fi
 
 # ==============================================================================
@@ -139,15 +140,15 @@ fi
 if [[ "$STATE3_TMs" -eq "1" ]];
     then
     echo " Creating plot of of all TM with #Alphabet=2, #States=3 ... ";
-    cd ..;
+    cd ../resultsText;
     var="3sts2alp";
     text=${var}.txt;
     results=${var}Results.txt;
-    tail -n +4 $text | head -n -3 | ./ioStNormalize $text > $results;
+    tail -n +4 $text | head -n -3 | ../ioStNormalize $text > $results;
     #Amplitude
-    awk '{ print $4;}' $results | ./goose/bin/goose-filter -w 80001 -d 10000 -1 > Amplitude3.txt; 
+    awk '{ print $4;}' $results | ../goose/bin/goose-filter -w 80001 -d 10000 -1 > Amplitude3.txt; 
     #nc
-    awk '{ print $6;}' $results | ./goose/bin/goose-filter -w 80001 -d 10000 -1 > NC_f3.txt;
+    awk '{ print $6;}' $results | ../goose/bin/goose-filter -w 80001 -d 10000 -1 > NC_f3.txt;
     
 gnuplot << EOF
     reset
@@ -173,10 +174,10 @@ gnuplot << EOF
     set style fill transparent solid 0.4 noborder
     plot "Amplitude3.txt" using 1:2 with boxes linecolor '#CFB53B' title "Amplitude of Tape", "NC_f3.txt" using 1:2  with boxes linecolor '#4169E1' title "Normalized Compression"
 EOF
-    mv 3sts2alp.pdf ./results;
+    mv 3sts2alp.pdf ../resultPlots;
     rm Amplitude3.txt NC_f3.txt; 
     rm  $results;
-    cd ./scripts;
+    cd ../scripts;
 fi
 
 # ==============================================================================
@@ -185,18 +186,18 @@ fi
 
 if [[ "$STATE2_ALPH3_TMs" -eq "1" ]];
     then
-    cd ..;
+    cd ../resultsText;
     echo "Creating plot of of all TM with #Alphabet=3, #States=2... ";
     var="2sts3alp";
     text=${var}.txt;
     results=${var}Results.txt;
     
-    tail -n +4 $text | head -n -3 | ./ioStNormalize $text > $results;
+    tail -n +4 $text | head -n -3 | ../ioStNormalize $text > $results;
     
     #Amplitude
-    awk '{ print $4;}' $results | ./goose/bin/goose-filter -w 80001 -d 10000 -1 > AmplitudeSt2Alp3.txt; 
+    awk '{ print $4;}' $results | ../goose/bin/goose-filter -w 80001 -d 10000 -1 > AmplitudeSt2Alp3.txt; 
     #nc
-    awk '{ print $6;}' $results | ./goose/bin/goose-filter -w 80001 -d 10000 -1 > NC_f3St2Alp3.txt;
+    awk '{ print $6;}' $results | ../goose/bin/goose-filter -w 80001 -d 10000 -1 > NC_f3St2Alp3.txt;
     
 gnuplot << EOF
     reset
@@ -222,8 +223,8 @@ gnuplot << EOF
     set style fill transparent solid 0.4 noborder
     plot "AmplitudeSt2Alp3.txt" using 1:2 with boxes linecolor '#CFB53B' title "Amplitude of Tape", "NC_f3St2Alp3.txt" using 1:2  with boxes linecolor '#4169E1' title "Normalized Compression"
 EOF
-    mv  2sts3alp.pdf ./results;
+    mv  2sts3alp.pdf ../resultPlots;
     rm  AmplitudeSt2Alp3.txt NC_f3St2Alp3.txt;
     rm  $results;
-    cd ./scripts;
+    cd ../scripts;
 fi
