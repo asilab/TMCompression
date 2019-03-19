@@ -19,7 +19,7 @@ make ioStNormalize
 ```
     
 ## TMCompression Repository Organization
-
+Folder organization:
 ```Array.<string>
  ./src : Source Code of the TMCompression Program;
  ./val : Source Code of program used in Turing Tape Validation;
