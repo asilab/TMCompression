@@ -18,7 +18,6 @@ make
 make ioStNormalize
 ```
     
-
 ## TMCompression Repository Organization
 
 ```Array.<string>
