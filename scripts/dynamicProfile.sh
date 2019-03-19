@@ -78,4 +78,3 @@ mv dynProfile.pdf $pdfName;
 mv $pdfName $DIRECTORY;
 rm nc_dynProfile.txt amp_dynProfile.txt dynProfile.txt $txtName;
 
-# InterestingTMindex2sts2alp.txt
