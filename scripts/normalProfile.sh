@@ -44,8 +44,8 @@ fi
 # ==============================================================================
 
 ../tm --brief --profile -s $STATE -a $ALPHABET -i $NUMBERITERATION -k $K -t $Machine > $txtName;
-tail -n +3 $txtName | awk '{ print $4;}'  > nc_profile.txt;
-tail -n +3 $txtName | awk '{ print $2;}'> amp_profile.txt;
+tail -n +3 $txtName | awk '{ print $4;}' > nc_profile.txt;
+tail -n +3 $txtName | awk '{ print $2;}' > amp_profile.txt;
 paste amp_profile.txt nc_profile.txt > profile.txt;
 
 gnuplot << EOF

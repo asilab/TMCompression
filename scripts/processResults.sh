@@ -141,6 +141,8 @@ if [[ "$STATE3_TMs" -eq "1" ]];
     then
     echo " Creating plot of of all TM with #Alphabet=2, #States=3 ... ";
     cd ../resultText;
+    pwd;
+    echo"jorge Silva --------------"
     var="3sts2alp";
     text=${var}.txt;
     results=${var}Results.txt;

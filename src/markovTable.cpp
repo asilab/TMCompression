@@ -1,7 +1,7 @@
 /**
     markovTable.h
     Purpose: Make and fill Markov Tables.
-             Mesure Statistical Complexity.
+             Measure Statistical Complexity.
 
     @author Jorge Miguel Ferreira da Silva
     @version 0.1
