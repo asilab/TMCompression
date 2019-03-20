@@ -34,7 +34,7 @@ src/tm.o: src/tm.cpp src/tm.h src/turingMachine.h src/markovTable.h src/util.h s
 
 src/markovTable.o: src/markovTable.cpp src/markovTable.h src/turingMachine.h src/util.h src/metrics.h
 
-src/NormalizedCompressionMarkovTable.o: src/markovTable.h src/metrics.h
+src/NormalizedCompressionMarkovTable.o: src/NormalizedCompressionMarkovTable.h src/markovTable.h src/metrics.h
 
 src/parseArgs.o: src/parseArgs.cpp src/parseArgs.h src/traversal.h src/util.h
 
