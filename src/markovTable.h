@@ -24,13 +24,11 @@ struct MarkovTable{
   MarkovTable(unsigned int k, unsigned int alphabet_size);
   
   int& at(const Char* characters);
-  std::vector <unsigned int> getLine(const Char* characters);
+  std::vector <unsigned int> getLine(const Char* characters) const;
   void reset();
   void print() const;
 
   private:
-    size_t str_to_index(const Char* x);
+    size_t str_to_index(const Char* x) const;
 };
-
-
 

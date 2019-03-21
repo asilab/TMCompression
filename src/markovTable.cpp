@@ -32,9 +32,9 @@ MarkovTable::MarkovTable(unsigned int k, unsigned int alphabet_size):
   markovVector(alphabet_size* ipow(alphabet_size,k),0), alphSz(alphabet_size), k(k){}
 
 /**
-    Acesses position on Markov Table, by providing a pointer to a position on array of chars.
+    Acesses position on Markov Table, by providing a pointer to a position on array of unsigned int.
 
-    @param void.
+    @param const Char* characters.
     @return void.
 */
 int& MarkovTable::at(const Char* characters){
@@ -43,7 +43,13 @@ int& MarkovTable::at(const Char* characters){
     return this->markovVector.at(( (str_to_index(characters) +1) * alphSz ) - (alphSz - characters[k]) ); 
 }
 
-std::vector<unsigned int> MarkovTable::getLine(const Char* characters){
+/**
+    Provides line of of Markov Table, by providing a pointer to a position on array of unsigned ints.
+
+    @param const Char* characters.
+    @return vector of unsigned ints.
+*/
+std::vector<unsigned int> MarkovTable::getLine(const Char* characters) const{
     // std::cout<< "characters -> "<< *characters << std::endl;
     // std::cout<< "str_to_index(characters) -> " << str_to_index(characters) << std::endl;
     // std::cout<<"Begin --> " <<(((str_to_index(characters) + 1) * this->alphSz) - this->alphSz)<< std::endl;
@@ -75,7 +81,7 @@ void MarkovTable::reset() {
     @param const Char*. Pointer to char array.
     @return size_t. Returns context number on the Markov Table.
 */
-size_t MarkovTable::str_to_index(const Char* x) {
+size_t MarkovTable::str_to_index(const Char* x)  const{
     size_t o = 0;
     for (auto i = 0u; i < this->k; ++i) { //-1
         o = (o * this->alphSz) + x[i];
