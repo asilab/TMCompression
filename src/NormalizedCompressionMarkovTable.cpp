@@ -13,21 +13,21 @@ NormalizedCompressionMarkovTable::NormalizedCompressionMarkovTable(unsigned int 
 mrkvTable(k, alphabet_size) {}
 
 Metrics NormalizedCompressionMarkovTable::update(const Tape& tape){
-    auto b = begin(tape.tape) + tape.ind_left - this->mrkvTable.k  + 1 ; // To have k context at the begining    
-    auto e = begin(tape.tape) + tape.ind_right - this->mrkvTable.k;
+    auto b = tape.ind_left - this->mrkvTable.k  + 1 ; // To have k context at the begining    
+    auto e = tape.ind_right - this->mrkvTable.k;
     Metrics metrics;
     metrics.k = this->mrkvTable.k;
 
     double value = 0 ;
 
     for (auto it = b; it != e; ++it) {
-        auto indxvalue = this->mrkvTable.at(&*it) + 1;
-        auto subvectorOfMarkovTable = this->mrkvTable.getLine(&*it); 
+        auto indxvalue = this->mrkvTable.at(&tape.tape[it]) + 1;
+        auto subvectorOfMarkovTable = this->mrkvTable.getLine(&tape.tape[it]); 
         
         std::transform(subvectorOfMarkovTable.begin(), subvectorOfMarkovTable.end(), subvectorOfMarkovTable.begin(), bind2nd(std::plus<int>(), 1)); 
         double logaritm = calculateLog(indxvalue    ,   sum_all_elements_vector(subvectorOfMarkovTable));
         value += logaritm;
-        this->mrkvTable.at(&*it)+=1;
+        this->mrkvTable.at(&tape.tape[it])+=1;
     }
     
     metrics.selfCompression = value;
