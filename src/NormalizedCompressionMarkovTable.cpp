@@ -25,7 +25,7 @@ Metrics NormalizedCompressionMarkovTable::update(const Tape& tape){
         auto subvectorOfMarkovTable = this->mrkvTable.getLine(&tape.tape[it]); 
         
         std::transform(subvectorOfMarkovTable.begin(), subvectorOfMarkovTable.end(), subvectorOfMarkovTable.begin(), bind2nd(std::plus<int>(), 1)); 
-        double logaritm = calculateLog(indxvalue    ,   sum_all_elements_vector(subvectorOfMarkovTable));
+        double logaritm = calculateLog(indxvalue, sum_all_elements_vector(subvectorOfMarkovTable));
         value += logaritm;
         this->mrkvTable.at(&tape.tape[it])+=1;
     }

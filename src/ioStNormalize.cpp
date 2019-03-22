@@ -23,8 +23,6 @@ int main(int argc, char *argv[])
     in.open(input);
     std::string line;
     
-    
-
     std::vector <unsigned long long> tmVector;
     std::vector <unsigned int> kVector;
     std::vector <unsigned int> itVector;
