@@ -8,7 +8,8 @@
 
 #pragma once
 #include <stddef.h>
-
+#include <array>
+#include <cmath>
 
 /**
     Returns integer base raised to the power of an integer exponent.
@@ -54,3 +55,27 @@ void power(int x, int n);
  res_size is size of res[] or number of digits in the number represented by res[]. This function uses simple school mathematics for multiplication. 
 This function may value of res_size and returns the new value of res_size */
 int multiply(int x, int res[], int res_size);
+
+/// Look-up table for log2
+template <typename T, size_t precision>
+class Log2Lut {
+    std::array<T, precision> lut;
+    T m;
+
+    public:
+    Log2Lut()
+    : m(precision)
+    {
+        for (size_t i = 1; i <= precision; i++) {
+            T x = i;
+            x /= this->m;
+            this->lut[i] = std::log2(x);
+        }
+    }
+
+    T log2(T x) const {
+        return this->lut.at(static_cast<size_t>(x * m ) - 1);
+    }
+};
+
+extern Log2Lut<double, 1000> DEFAULT_LOG2_LUT;

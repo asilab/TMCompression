@@ -8,6 +8,7 @@
 
 #include "metrics.h"
 #include "NormalizedCompressionMarkovTable.h"
+#include "util.h"
 
 NormalizedCompressionMarkovTable::NormalizedCompressionMarkovTable(unsigned int k, unsigned int alphabet_size):
 mrkvTable(k, alphabet_size) {}
@@ -105,7 +106,7 @@ double NormalizedCompressionMarkovTable::calculateLog(int index_value, int sum_a
     
     double value = static_cast<double>(index_value)/ static_cast<double>(sum_all_line_elem);
     //std::cout << "value div = " << value << std::endl;
-    return (- log2(value));
+    return (- DEFAULT_LOG2_LUT.log2(value));
 }
 
 void NormalizedCompressionMarkovTable::reset(){
