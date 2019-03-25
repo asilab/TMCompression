@@ -82,4 +82,4 @@ class Log2Lut {
     }
 };
 
-extern Log2Lut<double, 1000> DEFAULT_LOG2_LUT;
+extern Log2Lut<double, 1000000> DEFAULT_LOG2_LUT;

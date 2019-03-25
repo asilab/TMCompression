@@ -11,7 +11,7 @@
 
 #include "util.h"
 
-Log2Lut<double, 1000> DEFAULT_LOG2_LUT {};
+Log2Lut<double, 1000000> DEFAULT_LOG2_LUT {};
 
 #define MAX 100000 
 
