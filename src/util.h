@@ -10,6 +10,7 @@
 #include <stddef.h>
 #include <array>
 #include <cmath>
+#include <limits>
 
 /**
     Returns integer base raised to the power of an integer exponent.
@@ -59,13 +60,15 @@ int multiply(int x, int res[], int res_size);
 /// Look-up table for log2
 template <typename T, size_t precision>
 class Log2Lut {
-    std::array<T, precision> lut;
+    std::array<T, precision + 1> lut;
     T m;
 
     public:
     Log2Lut()
     : m(precision)
     {
+        /// for numerical stability, assume log(0) = -FLT_MAX
+        this->lut[0] = std::numeric_limits<T>::lowest();
         for (size_t i = 1; i <= precision; i++) {
             T x = i;
             x /= this->m;
@@ -74,7 +77,8 @@ class Log2Lut {
     }
 
     T log2(T x) const {
-        return this->lut.at(static_cast<size_t>(x * m ) - 1);
+        auto i = static_cast<size_t>(x * m);
+        return this->lut.at(i);
     }
 };
 
