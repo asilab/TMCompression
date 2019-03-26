@@ -243,11 +243,11 @@ if [[ "$STATE4_ALPH2_TMs" -eq "1" ]];
     
     var="4sts2alp";
     text=${var}.txt;
-    #sort -k1 -n 4sts2alp.txt > new;
-    #mv new $text
     results=${var}Results.txt;
 
-    tail -n +4 $text | head -n -3 | ../ioStNormalize $text > $results;
+    # tail -n +4 $text | head -n -3 | sort -k1 -n > new;
+    # mv new $text
+    cat $text | ../ioStNormalize $text > $results;
     
     #Amplitude
     awk '{ print $4;}' $results | ../goose/bin/goose-filter -w 80001 -d 10000 -1 -p1> AmplitudeSt4Alp2l.txt; 
