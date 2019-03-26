@@ -95,7 +95,7 @@ if [[ "$STATE2_TMs" -eq "1" ]];
     then
     echo "Creating plot of of all TM with #Alphabet=2, #States=2... ";
     cd ../resultText;
-    pwd;
+
     var="2sts2alp";
     text=$var".txt";
     results=${var}Results.txt;
@@ -247,7 +247,7 @@ if [[ "$STATE4_ALPH2_TMs" -eq "1" ]];
 
     # tail -n +4 $text | head -n -3 | sort -k1 -n > new;
     # mv new $text
-    cat $text | ../ioStNormalize $text > $results;
+    < $text ../ioStNormalize $text > $results;
     
     #Amplitude
     awk '{ print $4;}' $results | ../goose/bin/goose-filter -w 80001 -d 10000 -1 -p1> AmplitudeSt4Alp2l.txt; 
