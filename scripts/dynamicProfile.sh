@@ -8,7 +8,7 @@ if [ $# -ne 5 ]; then
     echo "Arg[2]: TM #States";
     echo "Arg[3]: TM #Alphabet";
     echo "Arg[4]: TM Number Iterations";
-    echo "Arg[4]: TM k Number";
+    echo "Arg[5]: TM k Number";
     exit 1;
 fi
 # ==============================================================================

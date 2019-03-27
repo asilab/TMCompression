@@ -171,7 +171,8 @@ TapeMoves Tape::setandmove(Move relativePos, Char value) {
   if (this->position >= this->max_size) {
     this->reserve_right(this->max_size);
   } 
-  else if (this->position == 0) {
+  //  else if (this->position <= 10) {
+  else if (this->position <= 10) {
     this->reserve_left(this->max_size);
   }
   tapeMove.previousValue = this->tape[this->position];
@@ -203,12 +204,13 @@ void Tape::reserve_left(size_t amount) {
 }
 
 /* prints written part of the tape.*/
-void Tape::print(){
-  for (auto i = this->tape.begin() + this->ind_left + 1; i != this->tape.begin() + this->ind_right; ++i)
+void Tape::print() const{
+  for (auto i = this->tape.begin() + this->ind_left - 8 + 1; i != this->tape.end(); ++i)
     std::cout << *i << ' ';
-
+//this->tape.begin() + this->ind_right
   std::cout<< std::endl;
 } 
+
 std::ostream& operator<<( std::ostream& o, const Tape& t) {
   auto start = std::find_if(t.tape.begin(), t.tape.end(), [](auto c) { return c != 0; });
   auto end = std::find_if(t.tape.rbegin(), t.tape.rend(), [](auto c) { return c != 0; }).base() + 1;
@@ -233,6 +235,7 @@ TapeMoves TuringMachine::act(){
   this->state = tr.state;
   return tpMove;
 }
+
 void TuringMachine::reset_tape_and_state(){
  this->turingTape.resetTape();
  this->state=0;

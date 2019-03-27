@@ -23,6 +23,7 @@ FILTER=$1;
 PROFILE=$2;
 DYNAMICPROFILE=$3;
 
+# Default Values
 NUMBERITERATION=50000;
 K=2;
 SavePath="../profiles/";
@@ -41,10 +42,7 @@ if [[ "$FILTER" -eq "1" ]];
       then
         if [ -f $FILENAME ]; 
         then
-
             tail -n +4 $FILENAME | head -n -3 | sort -k 6,6 |awk '$4 < 100 { next } { print }' | tail -n 15 > "InterestingTM"$FILENAME;
-            tail -n +4 $FILENAME | head -n -3 | sort -k 6,6 |awk '$4 < 100 { next } { print }' | tail -n 15 | awk ' { print $1}' > "InterestingTMindex"$FILENAME;
-
         else
             echo "File $FILENAME does not exist.";
         fi
@@ -72,7 +70,11 @@ if [[ "$PROFILE" -eq "1" ]];
             read ALPHABET;
 
             while read p; do
-                bash ../scripts/normalProfile.sh $p $STATE $ALPHABET $NUMBERITERATION $K;
+                TM=`echo $p | awk '{ print $1;}'`;
+                K=`echo $p | awk '{ print $2;}'`;
+                NUMBERITERATION=`echo $p | awk '{ print $3;}'`;
+                
+                bash ../scripts/normalProfile.sh $TM $STATE $ALPHABET $NUMBERITERATION $K;
             done <$FILENAME
         
             Folder=${STATE}St${ALPHABET}AlphTM/;
@@ -104,7 +106,10 @@ if [[ "$DYNAMICPROFILE" -eq "1" ]];
             read ALPHABET;
 
             while read p; do 
-                bash ../scripts/dynamicProfile.sh $p $STATE $ALPHABET $NUMBERITERATION $K;
+                TM=`echo $p | awk '{ print $1;}'`;
+                K=`echo $p | awk '{ print $2;}'`;
+                NUMBERITERATION=`echo $p | awk '{ print $3;}'`;
+                bash ../scripts/dynamicProfile.sh $TM $STATE $ALPHABET $NUMBERITERATION $K;
             done <$FILENAME
         fi
         Folder=${STATE}St${ALPHABET}AlphTM/;

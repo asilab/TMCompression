@@ -38,8 +38,9 @@ MarkovTable::MarkovTable(unsigned int k, unsigned int alphabet_size):
     @return void.
 */
 int& MarkovTable::at(const Char* characters){
-    // std::cout<< "str_to_index(characters) -> " << str_to_index(characters) << std::endl;
-    // std::cout<< "characters[k] -> " << characters[k]  << std::endl;
+    //std::cout << "str_to_index(characters) -> " << str_to_index(characters) << std::endl;
+    //std::cout << "characters[k] -> " << characters[k]  << std::endl;
+    //std::cout << "size = " << this->markovVector.size() << std::endl;
     return this->markovVector.at(( (str_to_index(characters) +1) * alphSz ) - (alphSz - characters[k]) ); 
 }
 

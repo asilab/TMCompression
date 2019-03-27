@@ -304,7 +304,7 @@ void tm_dynamical_profile(
   unsigned int num_iterations,
   unsigned int k,
   TmId tm_number,
-  unsigned int divison)
+  unsigned int division)
   {
   IndexAndMetrics indxMetrics;
   indxMetrics.tmNumber=tm_number;
@@ -318,12 +318,12 @@ void tm_dynamical_profile(
   for (auto i = 0u; i < num_iterations -1 ; ++i){
     normalizedCompressionMarkovTable.mrkvTable.reset();
     machine.act(); //importante ser antes
-    if(i%divison==0){
+    if(i%division==0){
       indxMetrics.metrics = normalizedCompressionMarkovTable.update(machine.turingTape);
       data.append_metrics(indxMetrics);
     }
   }
-  data.print_profile_data(divison);
+  data.print_profile_data(division);
 }  
 
 /** Evaluates a specific Turing machine Profile.
@@ -340,21 +340,21 @@ void tm_profile(
   unsigned int num_iterations,
   unsigned int k,
   TmId tm_number,
-  unsigned int divison)
+  unsigned int division)
   {
 
   TuringMachine machine(states, alphabet_size);
   CompressionResultsData data;
   NormalizedCompressionMarkovTable normalizedCompressionMarkovTable(k , alphabet_size);
-  
   machine.stMatrix.set_by_index(tm_number); 
   machine.reset_tape_and_state();
   for (auto i = 0u; i < num_iterations -1 ; ++i){
     normalizedCompressionMarkovTable.mrkvTable.reset();
     machine.act(); //importante ser antes
   }
-  data = normalizedCompressionMarkovTable.profile_update_nc_mk_table(machine.turingTape, divison);
-  data.print_profile_data(divison);
+
+  data = normalizedCompressionMarkovTable.profile_update_nc_mk_table(machine.turingTape, division);
+  data.print_profile_data(division);
 }
 
 /** Replicate experiment to determine the best k and it for a given number of states and alphabet size.
