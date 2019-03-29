@@ -138,7 +138,7 @@ size_t Tape::getposition() {
 
 /**
     Given a relative position and a value this function:
-    - writes new value on the tape on the new position.
+    - writes new value on the tape on the position.
     - changes the position on the tape;
     
     

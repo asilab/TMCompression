@@ -65,15 +65,15 @@ if [[ "$CARDINALITY" -eq "1" ]];
     then
     cd ..;
     echo "Creating plot of Turing Machine Cardinality Growth with the increase in number of states.. ";
-    ./tm --tmgrowth > Cardinality.txt;
-    tail -n +2 Cardinality.txt | head -n -20 > Cardinality2.txt;
+    ./tm --tmgrowth | head -n +80 |tail -n 79 > Cardinality.txt;
     gnuplot << EOF
     reset
     set terminal pdfcairo enhanced color font 'Verdana,8'
     set output "Cardinality.pdf"
     set style line 1 lt rgb "red" lw 3
-    set xrange [0:100]
+    set xrange [0:50]
     set yrange [0:]
+    set key left top
     set grid ytics lt -1
     set style fill solid
     set xlabel "Number of States"
@@ -84,9 +84,9 @@ if [[ "$CARDINALITY" -eq "1" ]];
     set datafile separator "\t"
     set xtics
     set style fill transparent solid 0.5 noborder
-    plot f(x)  ls 1 title "f(x) = (6x)^2^x", 'Cardinality2.txt' using 1:2 linecolor '#4169E1' pointtype 7  pointsize 0.5 lw 0.5 title "Growth in Number of TMs"
+    plot f(x)  ls 1 title "f(x) = (6x)^2^x", 'Cardinality.txt' using 1:2 linecolor '#4169E1' pointtype 7  pointsize 0.5 lw 0.5
 EOF
-    rm Cardinality.txt Cardinality2.txt;
+    rm Cardinality.txt;
     mv Cardinality.pdf ./resultPlots;
     cd ./scripts;
 fi

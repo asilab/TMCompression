@@ -53,7 +53,7 @@ IndexAndMetrics run_machine(TuringMachine& machine, M& compressionTable, unsigne
 
     machine.reset_tape_and_state();
     for (auto i = 0u; i < num_iterations -1 ; ++i){
-      compressionTable.reset();
+      //compressionTable.reset();
       machine.act(); // grave esti antaŭe
     }
 
