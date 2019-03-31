@@ -4,7 +4,9 @@ type Char = u32;
 type Move = u32;
 type State = u32;
 
-#[derive(Debug, Default, Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
+pub mod tape;
+
+#[derive(Debug, Default, Copy, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct TuringRecord {
     write: Char,
     mov: Move,
