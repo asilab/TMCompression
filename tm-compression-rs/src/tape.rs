@@ -1,3 +1,4 @@
+use std::fmt;
 use super::{Char, Move};
 
 const INITIAL_TAPE_CAPACITY: usize = 256;
@@ -171,6 +172,49 @@ impl Tape {
     }
 }
 
+impl fmt::Display for Tape {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self.non_blank_and_head() {
+            Some((data, head)) if head < 0 => {
+                write!(f, "[0]")?;
+                for _ in head + 1..0 {
+                    write!(f, "0")?;
+                }
+                for v in data {
+                    assert!(*v < 16, "Displaying tapes with values higher than 15 is not supported");
+                    write!(f, "{:X}", v)?;
+                }
+                Ok(())
+            },
+            // head is not negative, conversion is safe
+            Some((data, head)) if head as usize >= data.len() => {
+                let head = head as usize;
+                for v in data {
+                    assert!(*v < 16, "Displaying tapes with values higher than 15 is not supported");
+                    write!(f, "{:X}", v)?;
+                }
+                for _ in data.len()..head {
+                    write!(f, "0")?;
+                }
+                write!(f, "[0]")?;
+                Ok(())
+            },
+            Some((data, head)) => {
+                let (left, right) = data.split_at(head as usize);
+                for v in left {
+                    write!(f, "{:X}", v)?;
+                }
+                write!(f, "[{:X}]", right[0])?;
+                for v in &right[1..] {
+                    write!(f, "{:X}", v)?;
+                }
+                Ok(())
+            },
+            _ => f.write_str("«empty»")
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use crate::{MOVE_LEFT, MOVE_RIGHT, MOVE_STAY};
@@ -237,5 +281,18 @@ mod tests {
 
         tape.reset();
         assert_eq!(tape.non_blank_and_head(), None);
+    }
+
+    #[test]
+    fn test_display() {
+        assert_eq!(
+            &format!("{}", Tape::from_slice(&[1, 2, 3], 1)),
+            "1[2]3"
+        );
+
+        assert_eq!(
+            &format!("{}", Tape::from_slice(&[0, 1, 2, 3, 0], 3)),
+            "12[3]"
+        );
     }
 }
