@@ -1,8 +1,12 @@
 type TmId = u64;
 type RecordId = u64;
 type Char = u32;
-type Move = u32;
 type State = u32;
+
+type Move = u32;
+pub const MOVE_LEFT: Move = 0;
+pub const MOVE_STAY: Move = 1;
+pub const MOVE_RIGHT: Move = 2;
 
 pub mod tape;
 
