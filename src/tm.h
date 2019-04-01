@@ -32,7 +32,7 @@ CompressionResultsData tm(
     size_t states,
     size_t alphabet_size,
     unsigned int num_iterations,
-    unsigned int k,
+    const std::vector <unsigned int>& kvector,
     TraversalStrategy strategy = TraversalStrategy::SEQUENTIAL,
     unsigned long long traversal_len = 0,
     unsigned long long traversal_offset = 0,
@@ -118,11 +118,13 @@ void tm_print_state_matrix(
  * @param threads the number of threads to run in parallel
  * @return a vector of normalized compression values, one per Turing machine
  */
+
+
 CompressionResultsData tm_multicore(
     size_t states,
     size_t alphabet_size,
     unsigned int num_iterations,
-    unsigned int k,
+    const std::vector<unsigned int> &kvector,
     TraversalStrategy strategy = TraversalStrategy::SEQUENTIAL,
     unsigned long long traversal_len = 0,
     unsigned long long traversal_offset = 0,

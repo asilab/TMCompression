@@ -36,7 +36,7 @@ int main (int argc, char **argv){
     argument.jobs);
   
   
-  data.print_data(argument.k,argument.numIt);
+  data.print_data(argument.numIt);
   AvgMetrics avgMetrics = data.avg();
   data.print_avg_metrics(avgMetrics);
 

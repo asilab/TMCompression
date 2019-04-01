@@ -1,8 +1,8 @@
 [package]
-name = "tm-compression"
+name = "tm-compression-rs"
 version = "0.1.0"
 publish = false
-authors = ["Eduardo Pinho <eduardopinho@ua.pt>"]
+authors = ["enet4 <enet4mikeenet@gmail.com>"]
 edition = "2018"
 
 [dependencies]

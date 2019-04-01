@@ -6,8 +6,14 @@ if [ $# -ne 3 ]; then
     echo "All args are boolean (0 or 1)";
     echo "";
     echo "Arg[0]: Install AC";
+    echo "bash validateResults.sh 1 0 0";
+    echo "";
     echo "Arg[2]: Validate TM Tapes";
+    echo "bash validateResults.sh 0 1 0";
+    echo "";
     echo "Arg[3]: Validate Profile with Compression AC";
+    echo "bash validateResults.sh 0 0 1";
+    echo "";
     exit 1;
 fi
 
@@ -23,6 +29,7 @@ ITERATION=50000;
 # ==============================================================================
 if [[ "$INSTALL_AC" -eq "1" ]];
     then
+    cd ..;
     git clone https://github.com/pratas/ac.git
     cd ac/src/
     cmake .
@@ -35,7 +42,8 @@ fi
 # ==============================================================================
 if [[ "$VAL_TAPES" -eq "1" ]];
     then
-    ./tm --brief --StMatrix -s 2 -a 3 -t 15571925
+    cd ..;
+    ./tm --brief --StMatrix -s 2 -a 3 -t 15571925;
     ./tm --brief --printTape -s 2 -a 3 -i 101 -t 15571925 > Tape1.txt;
     sed -i 's/[^0-9]*//g' Tape1.txt;
 
@@ -44,7 +52,7 @@ if [[ "$VAL_TAPES" -eq "1" ]];
     sed -i 's/[^0-9]*//g' Tape1val.txt;
     cmp Tape1.txt Tape1val.txt;
     #==============
-    ./tm --brief --StMatrix -s 2 -a 3 -t 15571907
+    ./tm --brief --StMatrix -s 2 -a 3 -t 15571907;
     ./tm --brief --printTape -s 2 -a 3 -i 101 -t 15571907 > Tape1.txt;
     sed -i 's/[^0-9]*//g' Tape1.txt;
 
@@ -53,7 +61,7 @@ if [[ "$VAL_TAPES" -eq "1" ]];
     sed -i 's/[^0-9]*//g' Tape1val.txt;
     cmp Tape1.txt Tape1val.txt;
    #===============
-    ./tm --brief --StMatrix -s 2 -a 3 -t 32438743
+    ./tm --brief --StMatrix -s 2 -a 3 -t 32438743;
     ./tm --brief --printTape -s 2 -a 3 -i 101 -t 32438743 > Tape1.txt;
     sed -i 's/[^0-9]*//g' Tape1.txt;
 
@@ -62,15 +70,17 @@ if [[ "$VAL_TAPES" -eq "1" ]];
     sed -i 's/[^0-9]*//g' Tape1val.txt;
     cmp Tape1.txt Tape1val.txt;
     #===============
-    ./tm --brief --StMatrix -s 2 -a 3 -t 19311563
+    ./tm --brief --StMatrix -s 2 -a 3 -t 19311563;
     ./tm --brief --printTape -s 2 -a 3 -i 101 -t 19311563 > Tape1.txt;
     sed -i 's/[^0-9]*//g' Tape1.txt;
     
     ./TMsimulator 2 3 100 11542228 11542228 | head -n +12;
     ./TMsimulator 2 3 100 11542228 11542228 | grep "tape" >Tape1val.txt;
     sed -i 's/[^0-9]*//g' Tape1val.txt;
-    cmp Tape1.txt Tape1val.txt
+    cmp Tape1.txt Tape1val.txt;
 
+    rm Tape1.txt Tape1val.txt;
+    cd ./scripts;
 fi
 
 
@@ -81,13 +91,13 @@ fi
 
 if [[ "$TEST_CMP" -eq "1" ]];
     then
-
+    cd ..;
     tail -n +4 3st.txt | head -n -3 | sort -k 6,6 |awk '$4 < 100 { next } { print }' | tail -n 50 | awk ' { print $1}' > InterestingMachines.txt;
 
     while read p; do
         txtName=ACProfile${p}.txt;
         PdfName=ACProfile${p}.pdf;
-        SavePath="./Profiles/3st/AC/";
+        SavePath="./profiles/3st/AC/"; # Change this path
         ./tm --brief --printTape -s 3 -a 2 -i $ITERATION -t $p > tape.txt;
         tr -d -c "01" < tape.txt > tape_clean.txt;
         ./AC -v -e -tm 3:1:0.9/0:0:0 tape_clean.txt;
@@ -117,8 +127,5 @@ EOF
     mv $PdfName $SavePath;
     mv $txtName $SavePath;
     done < InterestingMachines.txt
+    cd ./scripts;
 fi
-
-# ==============================================================================
-# Other validations
-# ==============================================================================

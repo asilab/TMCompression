@@ -1,3 +1,13 @@
+/**
+    TMsimulator.c
+    Purpose in our work: Program that serves has a way of validating Turing Tapes.
+
+    @author Dr. Hector Zenil and Dr. Fernando Soler-Toscano
+    Obtained From: https://www.algorithmicdynamics.net/uploads/4/3/8/0/43802527/tm1d.zip
+*/
+
+
+
 #include <stdlib.h>  // general-purpose library
 #include <stdio.h>   // read-write functionality
 #include <string>  // string manipulation library

@@ -12,25 +12,43 @@
 ## INSTALL
 Get TMCompression and make the project, using:
 ```bash
-git clone https://github.com/jorgeMFS/TMCompression.git
-cd TMCompression
-make
-make ioStNormalize
+git clone https://github.com/jorgeMFS/TMCompression.git;
+cd TMCompression;
+make;
+make ioStNormalize;
+make TMsimulator;
+```
+    
+## TMCompression Repository Organization
+Folder organization:
+```Array.<string>
+ ./src : Source Code of the TMCompression Program;
+ ./val : Source Code of program used in Turing Tape Validation;
+ ./scripts : Bash Scripts to Process Results and plot them
+ ./resultText : Textual results obtained from the usage of TMCompression;
+ ./resultPlots : Plots of some results obtained;
+ ./profiles : Normal Profiles and Dynamic Temporal Profiles of Turing Machine Tapes.
 ```
 
 ## RUN TMCompression
-There are many ways to run this program see help for clarification:
+There are many ways to run this program see help for clarification :
 
 ```bash
 ./tm --help;
 ```
 
 ## RUN SCRIPTS
+There are two main scripts:
+```bash
+./processResults.sh : "Plots graphics shown in Folder ./resultPlot"
+./filteringResults.sh :"Plots Profiles shown in Folder ./profiles"
+```
+
+There are many ways to the scripts, see help for clarification:
 
 ```bash
-./tm --help;
-chmod +x *.sh;
-bash ProcessResults.sh 0 0 0 0 0;
+bash scripts/processResults.sh;
+bash scripts/filteringResults.sh;
 ```
 
 ## CITE
