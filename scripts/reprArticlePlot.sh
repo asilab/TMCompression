@@ -86,7 +86,7 @@ rm profile4631.txt profile32263324.txt profile21457002.txt profile74209803023.tx
 # ==============================================================================
 
 ../tm --brief --dynprofile -s 2 -a 2 -i 50000 -k 2 -t 4631 > profile4631.txt;
-#../tm --brief --dynprofile -s 2 -a 3 -i 50000 -k 3 -t 32263324 > profile32263324.txt;
+../tm --brief --dynprofile -s 2 -a 3 -i 50000 -k 3 -t 32263324 > profile32263324.txt;
 ../tm --brief --dynprofile -s 3 -a 2 -i 50000 -k 2 -t 21457002 > profile21457002.txt;
 ../tm --brief --dynprofile -s 4 -a 2 -i 50000 -k 5 -t 74209803023 > profile74209803023.txt;
 ../tm --brief --dynprofile -s 5 -a 2 -i 50000 -k 4 -t 252090028326298 > profile252090028326298.txt;
@@ -96,9 +96,9 @@ tail -n +3 profile4631.txt | awk '{ print $4;}' | ../goose/bin/goose-filter -p1 
 tail -n +3 profile4631.txt | awk '{ print $2;}' | ../goose/bin/goose-filter -p1 -w 20 -d 80 -1 > amp_profile4631.txt;
 paste amp_profile4631.txt nc_profile4631.txt > profile4631.txt;
 
-# tail -n +3 profile32263324.txt | awk '{ print $4;}' | ../goose/bin/goose-filter -p1 -w 20 -d 80 -1 > nc_profile32263324.txt;
-# tail -n +3 profile32263324.txt | awk '{ print $2;}' | ../goose/bin/goose-filter -p1 -w 20 -d 80 -1 > amp_profile32263324.txt;
-# paste amp_profile32263324.txt nc_profile32263324.txt > profile32263324.txt;
+tail -n +3 profile32263324.txt | awk '{ print $4;}' | ../goose/bin/goose-filter -p1 -w 20 -d 80 -1 > nc_profile32263324.txt;
+tail -n +3 profile32263324.txt | awk '{ print $2;}' | ../goose/bin/goose-filter -p1 -w 20 -d 80 -1 > amp_profile32263324.txt;
+paste amp_profile32263324.txt nc_profile32263324.txt > profile32263324.txt;
 
 tail -n +3 profile21457002.txt | awk '{ print $4;}' | ../goose/bin/goose-filter -p1 -w 20 -d 80 -1 > nc_profile21457002.txt;
 tail -n +3 profile21457002.txt | awk '{ print $2;}' | ../goose/bin/goose-filter -p1 -w 20 -d 80 -1 > amp_profile21457002.txt;
@@ -117,7 +117,7 @@ tail -n +3 profile191808832736487162.txt | awk '{ print $2;}' | ../goose/bin/goo
 paste amp_profile191808832736487162.txt nc_profile191808832736487162.txt > profile191808832736487162.txt;
 
 rm amp_profile4631.txt nc_profile4631.txt;
-#rm amp_profile32263324.txt nc_profile32263324.txt;
+rm amp_profile32263324.txt nc_profile32263324.txt;
 rm amp_profile21457002.txt nc_profile21457002.txt;
 rm amp_profile74209803023.txt nc_profile74209803023.txt;
 rm amp_profile252090028326298.txt nc_profile252090028326298.txt;
@@ -147,6 +147,7 @@ gnuplot << EOF
     pointtype 7 pointsize 0.01
     plot "profile4631.txt" using 1:2 with linespoints linestyle 1 linecolor rgb '#0060ad' title "Tape 4631, #Q=2, #{/Symbol S}=2", \
     "profile21457002.txt" using 1:2 with linespoints linestyle 1 linecolor rgb '#ffbf00' title "Tape 21457002, #Q=3, #{/Symbol S}=2", \
+    "profile32263324.txt" using 1:2 with linespoints linestyle 1 linecolor rgb '#7cf251' title "Tape 32263324, #Q=2, #{/Symbol f}=3", \
     "profile74209803023.txt" using 1:2 with linespoints linestyle 1 linecolor rgb '#ff7651' title "Tape 74209803023, #Q=4, #{/Symbol S}=2", \
     "profile252090028326298.txt" using 1:2 with linespoints linestyle 1 linecolor rgb '#ff7700' title "Tape 252090028326298, #Q=5, #{/Symbol S}=2", \
     "profile191808832736487162.txt" using 1:2 with linespoints linestyle 1 linecolor rgb '#ff0000' title "Tape 191808832736487162, #Q=6, #{/Symbol S}=2"
@@ -155,6 +156,4 @@ EOF
 rm profile4631.txt profile21457002.txt profile74209803023.txt profile252090028326298.txt profile191808832736487162.txt;
 mv DynamicProfilesArticle.pdf ../profiles;
 mv NormalProfilesArticle.pdf ../profiles;
-
-#"profile32263324.txt" using 1:2 with linespoints linestyle 1 linecolor rgb '#7cf251' title "Tape 32263324, #Q=2, #{/Symbol f}=3", \
-#rm profile32263324.txt 
+rm profile32263324.txt 
