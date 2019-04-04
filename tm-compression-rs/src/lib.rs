@@ -20,8 +20,8 @@ pub struct TuringRecord {
 impl TuringRecord {
     pub fn from_id(id: RecordId, number_of_states: u32, alphabet_size: u32) -> Self {
         // order of significance (least to most): character_write -> tape_move -> state
-        let nstates = number_of_states as RecordId;
-        let nalphabet = alphabet_size as RecordId;
+        let nstates = RecordId::from(number_of_states);
+        let nalphabet = RecordId::from(alphabet_size);
         let mut rest = id;
         let write = (rest % nalphabet) as Char;
         rest /= nalphabet;
@@ -33,11 +33,15 @@ impl TuringRecord {
 
     #[inline]
     pub fn calculate_id(&self, alphabet_size: u32) -> RecordId {
-        let alphsz = alphabet_size as RecordId;
-        self.write as RecordId + (self.mov as RecordId + self.state as RecordId * 3) * alphsz
+        let alphsz = RecordId::from(alphabet_size);
+        let mov = RecordId::from(self.mov);
+        let state = RecordId::from(self.state);
+        let write = RecordId::from(self.write);
+
+        write + (mov + state * 3) * alphsz
     }
 
-    pub fn next(&mut self, number_of_states: u32, alphabet_size: u32) -> bool {
+    pub fn set_next(&mut self, number_of_states: u32, alphabet_size: u32) -> bool {
         if self.write < alphabet_size - 1 {
             self.write += 1;
             return true;
@@ -83,7 +87,7 @@ impl StateMatrix {
 
     pub fn set_by_id(&mut self, id: TmId) {
         let mut rest = id;
-        let record_cardinality = (self.nb_states * self.alph_sz * 3) as u64;
+        let record_cardinality = u64::from(self.nb_states * self.alph_sz * 3);
         for st in &mut self.v {
             let state_id = rest % record_cardinality;
             *st = TuringRecord::from_id(state_id, self.nb_states, self.alph_sz);
@@ -94,9 +98,9 @@ impl StateMatrix {
         }
     }
 
-    pub fn next(&mut self) -> bool {
+    pub fn set_next(&mut self) -> bool {
         for e in &mut self.v {
-            if e.next(self.nb_states, self.alph_sz) {
+            if e.set_next(self.nb_states, self.alph_sz) {
                 return true;
             }
         }
@@ -104,11 +108,11 @@ impl StateMatrix {
     }
 
     pub fn calculate_id(&self) -> TmId {
-        let record_cardinality = (self.nb_states * self.alph_sz * 3) as u64;
+        let record_cardinality = u64::from(self.nb_states * self.alph_sz * 3);
         let mut id = 0;
         for st in self.v.iter().rev() {
             let st_index = st.calculate_id(self.alph_sz);
-            id = id * record_cardinality + u64::from(st_index);
+            id = id * record_cardinality + st_index;
         }
         id
     }
@@ -162,7 +166,7 @@ mod tests {
 
         for id in 0..20736 {
             assert_eq!(sm.calculate_id(), id,);
-            sm.next();
+            sm.set_next();
         }
     }
 
@@ -172,7 +176,7 @@ mod tests {
 
         for id in 0..200000 {
             assert_eq!(sm.calculate_id(), id);
-            sm.next();
+            sm.set_next();
         }
     }
 }

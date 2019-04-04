@@ -30,6 +30,12 @@ pub struct Tape {
     ind_right: usize,
 }
 
+impl Default for Tape {
+    fn default() -> Self {
+        Tape::new()
+    }
+}
+
 impl Tape {
     /// Creates a new blank tape.
     pub fn new() -> Self {
@@ -61,7 +67,7 @@ impl Tape {
         Tape {
             tape,
             position: position + 1,
-            max_size: max_size,
+            max_size,
             ind_left: 0,
             ind_right: max_size - 1,
         }
