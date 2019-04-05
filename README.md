@@ -37,7 +37,28 @@ There are many ways to run this program see help for clarification :
 ./tm --help;
 ```
 
-## RUN SCRIPTS
+## RECREATE PLOTS IN ARTICLE
+To recreate the plots shown in the article (bellow example):
+
+```bash
+chmod +x run.sh;
+bash run.sh;
+```
+<b>Profile Plots:</b>
+
+![alt-text-1](icons/NormalProfilesArticle.png "Normal Profile" ) 
+![alt-text-2](icons/DynamicProfilesArticle.png "DynamicProfile")
+
+<b>TMs Plots:</b>
+
+
+<p align="center">
+<img src="icons/TMs.png" alt="TMs" width="200" border="0" /></p>
+<br>
+<p align="center">
+</p>
+
+## RUN OTHER SCRIPTS
 There are two main scripts:
 ```bash
 ./processResults.sh : "Plots graphics shown in Folder ./resultPlot"

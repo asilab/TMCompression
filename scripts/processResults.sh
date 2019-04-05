@@ -4,7 +4,7 @@
 #Verify if there are inputs
 # ==============================================================================
 if [ $# -ne 8 ]; then
-    echo "Not enough arguments arguments provided, you need to provide 6 arguments:";
+    echo "Not enough arguments arguments provided, you need to provide 8 arguments:";
     echo "All args are boolean (0 or 1)";
     echo "";
     echo "If 1st Argument == 1: Installs goose in your system, which is required for result processing";
@@ -209,7 +209,7 @@ if [[ "$STATE2_ALPH3_TMs" -eq "1" ]];
     #Amplitude
     awk '{ print $4;}' $results | ../goose/bin/goose-filter -w 80001 -d 10000 -1 > AmplitudeSt2Alp3.txt; 
     #nc
-    awk '{ print $6;}' $results | ../goose/bin/goose-filter -w 80001 -d 10000 -1 > NC_f3St2Alp3.txt;
+    awk '{ print $6;}' $results | ../goose/bin/goose-filter -w 80001 -d 10000 -1 > NC_fSt2Alp3.txt;
     
 gnuplot << EOF
     reset
@@ -233,7 +233,7 @@ gnuplot << EOF
     stats 'AmplitudeSt2Alp3.txt' using 1 name 'x' nooutput
     set xtics int(x_max/ntics)
     set style fill transparent solid 0.4 noborder
-    plot "AmplitudeSt2Alp3.txt" using 1:2 with boxes linecolor '#CFB53B' title "Amplitude of Tape", "NC_f3St2Alp3.txt" using 1:2  with boxes linecolor '#4169E1' title "Normalized Compression"
+    plot "AmplitudeSt2Alp3.txt" using 1:2 with boxes linecolor '#CFB53B' title "Amplitude of Tape", "NC_fSt2Alp3.txt" using 1:2  with boxes linecolor '#4169E1' title "Normalized Compression"
 EOF
     mv  2sts3alp.pdf ../resultPlots;
     rm  AmplitudeSt2Alp3.txt NC_fSt2Alp3.txt;
@@ -373,8 +373,8 @@ if [[ "$STATE6_ALPH2_TMs" -eq "1" ]];
     text=${var}.txt;
     results=${var}Results.txt;
 
-    tail -n +4 $text | head -n -3 | sort -k1 -n > new;
-    mv new $text
+    # tail -n +4 $text | head -n -3 | sort -k1 -n > new;
+    # mv new $text
     
     < $text ../ioStNormalize $text > $results;
     
