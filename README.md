@@ -53,7 +53,7 @@ bash run.sh;
 
 
 <p align="center">
-<img src="icons/TMs.png" alt="TMs" width="200" border="0" /></p>
+<img src="icons/TMs.png" alt="TMs" width="600" border="0" /></p>
 <br>
 <p align="center">
 </p>
