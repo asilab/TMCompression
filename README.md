@@ -51,12 +51,17 @@ bash run.sh;
 
 <b>TMs Plots:</b>
 
-
 <p align="center">
 <img src="icons/TMs.png" alt="TMs" width="600" border="0" /></p>
 <br>
 <p align="center">
 </p>
+
+Note: This downloads the files Containing the results from running all TMs for a given State and Alphabet Cardinality, since this can take from several minutes to several days. If you wish to recreate the Results use TM program. Example:
+
+```bash
+./tm --brief -s 2 -a 4 -i 50000 -k 2:10 -N 30000000 -j 20 -S monte_carlo > 2sts4alp.txt;
+```
 
 ## RUN OTHER SCRIPTS
 There are two main scripts:
