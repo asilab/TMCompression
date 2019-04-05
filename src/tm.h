@@ -16,6 +16,7 @@
 
 #include "traversal.h"
 #include "markovTable.h"
+#include "NormalizedCompressionMarkovTable.h"
 
 
 /** Evaluate all relative Turing machine programs with the given architecture.
@@ -86,7 +87,7 @@ void tm_print_state_matrix(
     unsigned int num_iterations,
     unsigned int k,
     TmId tm_number,
-    unsigned int divison=5);
+    unsigned int division=5);
 
 
 /** Evaluates a specific Turing machine program dynamically,analysing the time complexity.
@@ -103,7 +104,7 @@ void tm_print_state_matrix(
     unsigned int num_iterations,
     unsigned int k,
     TmId tm_number,
-    unsigned int divison=5);
+    unsigned int division=5);
 
 
 /** Evaluate all relative Turing machine programs with the given architecture,

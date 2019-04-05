@@ -10,6 +10,14 @@
 
 #include "metrics.h"
 
+void Metrics::print(){
+    std::cout << "amplitude = " << this->amplitude << std::endl;
+    std::cout << "k = " << this->k << std::endl;
+    std::cout << "normalized Compression = " << this->normalizedCompression << std::endl;
+    std::cout << "Self Compression = " << this->selfCompression << std::endl;
+}
+
+
     
 void CompressionResultsData::append(unsigned int k,
     TmId tmNumber,
@@ -74,7 +82,7 @@ void CompressionResultsData::print_profile_data(unsigned int divison){
 
 
     std::cout<< "iterations \t amplitude \t Self-Compression \t Normalized Compression " << std::endl; 
-    std::cout<< "-------------------------------------------------" <<std::endl;
+    std::cout<< "---------------------------------------------------" <<std::endl;
     for (auto i = 0u; i < this->amplitude.size(); ++i) {
         std::cout << ((i + 1) * divison) << "\t" << this->amplitude[i] << "\t" << std::setprecision(5) << std::showpoint <<  this->self_compression[i] 
                   << "\t" << std::setprecision(5) << std::showpoint << this->normalized_compression[i] << "\t" << std::endl;
@@ -89,13 +97,13 @@ void CompressionResultsData::print_data( unsigned int numIt){
     
     
     std::cout<< "TM \t k value \t iterations \t amplitude \t Self-Compression \t Normalized Compression " << std::endl; 
-    std::cout<< "-------------------------------------------------" <<std::endl;
+    std::cout<< "---------------------------------------------------" <<std::endl;
     for (auto i = 0u; i < this->amplitude.size(); ++i) {
     std::cout << this->tmNumber[i] << "\t" << this->kvalue[i] << "\t" << numIt << "\t" << this->amplitude[i] << "\t" 
     << std::setprecision(5)  << std::showpoint <<  this->self_compression[i] << "\t" << std::setprecision(5) 
     << std::showpoint << this->normalized_compression[i] << "\t" << std::endl;
     }
-    std::cout<< "-------------------------------------------------" <<std::endl;
+    std::cout<< "---------------------------------------------------" <<std::endl;
 }
 
 void CompressionResultsData::print_avg_metrics(AvgMetrics avgMetrics){

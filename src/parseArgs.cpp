@@ -27,7 +27,7 @@ Args parseArgs (int argc, char **argv){
     static int tm_print_flag;
     static int StMatrix_flag;
     char *end;
-    int correctInput;
+    long long int correctInput;
     while (1)
     {
         static struct option long_options[] =
@@ -160,7 +160,7 @@ Args parseArgs (int argc, char **argv){
                 exit(0);
             }
             else if (correctInput<=0){
-                fprintf (stderr, "-s/--number_states value was set to %d, must be an int larger than 0.\n",correctInput); 
+                fprintf (stderr, "-s/--number_states value was set to %lli, must be an int larger than 0.\n",correctInput); 
                 exit(0);
             }
             else argument.states = correctInput;
@@ -175,7 +175,7 @@ Args parseArgs (int argc, char **argv){
                 exit(0);
             }
             else if (correctInput<=0){
-                fprintf (stderr, "-a/--alphabet_size value was set to %d, must be an int larger than 0.\n",correctInput); 
+                fprintf (stderr, "-a/--alphabet_size value was set to %lli, must be an int larger than 0.\n",correctInput); 
                 exit(0);
             }
             else argument.alphabet_size = correctInput;
@@ -190,7 +190,7 @@ Args parseArgs (int argc, char **argv){
                 exit(0);
             }
             else if (correctInput<=0){
-                fprintf (stderr, "-i/--iterations value was set to %d, must be an int larger than 0.\n",correctInput); 
+                fprintf (stderr, "-i/--iterations value was set to %lli, must be an int larger than 0.\n",correctInput); 
                 exit(0);
             }
             else argument.numIt = correctInput;
@@ -220,7 +220,7 @@ Args parseArgs (int argc, char **argv){
                             exit(0);
                         }
                         else if (correctInput<=0){
-                            fprintf (stderr, "-k/--context value was set to %d, must be an int larger than 0.\n",correctInput); 
+                            fprintf (stderr, "-k/--context value was set to %lli, must be an int larger than 0.\n",correctInput); 
                             exit(0);
                         }
                         else {
@@ -239,7 +239,7 @@ Args parseArgs (int argc, char **argv){
                     exit(0);
                     }
                 else if (correctInput<=0){
-                    fprintf (stderr, "-k/--context value was set to %d, must be an int larger than 0.\n",correctInput); 
+                    fprintf (stderr, "-k/--context value was set to %lli, must be an int larger than 0.\n",correctInput); 
                     exit(0);
                 }
                 else {
@@ -259,12 +259,13 @@ Args parseArgs (int argc, char **argv){
         case 't':
         {
             correctInput = strtol(optarg, &end, 10);
+            
             if (*end != '\0') {
                 std::cerr << "Invalid input for -t/--tm.\n";
                 exit(0);
             }
             else if (correctInput<0){
-                fprintf (stderr, "-t/--tm value was set to %d, must be an int larger than 0.\n",correctInput); 
+                fprintf (stderr, "-t/--tm value was set to %lli, must be an int larger than 0.\n",correctInput); 
                 exit(0);
             }
             else{
@@ -282,7 +283,7 @@ Args parseArgs (int argc, char **argv){
                 exit(0);
             }
             else if (correctInput<=0){
-                fprintf (stderr, "-j/--jobs value was set to %d, must be an int larger than 0.\n",correctInput); 
+                fprintf (stderr, "-j/--jobs value was set to %lli, must be an int larger than 0.\n",correctInput); 
                 exit(0);
             }
             else argument.jobs = correctInput;

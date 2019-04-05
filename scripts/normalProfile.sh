@@ -8,7 +8,7 @@ if [ $# -ne 5 ]; then
     echo "Arg[2]: TM #States";
     echo "Arg[3]: TM #Alphabet";
     echo "Arg[4]: TM Number Iterations";
-    echo "Arg[4]: TM k Number";
+    echo "Arg[5]: TM k Number";
     exit 1;
 fi
 
@@ -44,8 +44,8 @@ fi
 # ==============================================================================
 
 ../tm --brief --profile -s $STATE -a $ALPHABET -i $NUMBERITERATION -k $K -t $Machine > $txtName;
-tail -n +3 $txtName | awk '{ print $4;}'  > nc_profile.txt;
-tail -n +3 $txtName | awk '{ print $2;}'> amp_profile.txt;
+tail -n +3 $txtName | awk '{ print $4;}' > nc_profile.txt;
+tail -n +3 $txtName | awk '{ print $2;}' > amp_profile.txt;
 paste amp_profile.txt nc_profile.txt > profile.txt;
 
 gnuplot << EOF
@@ -58,7 +58,7 @@ gnuplot << EOF
     set key outside horiz center top
     set tics nomirror out scale 0.75
     set xrange [0:]
-    set yrange [0:]
+    set yrange [0:1]
     set border 3 front ls 101
     set grid ytics lt -1
     set style fill solid

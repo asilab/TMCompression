@@ -15,6 +15,7 @@ struct Metrics{
   unsigned int amplitude;
   double selfCompression;
   double normalizedCompression;
+  void print();
 };
 
 struct IndexAndMetrics{
