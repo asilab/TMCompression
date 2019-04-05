@@ -1,0 +1,10 @@
+[package]
+name = "tm-compression-rs"
+description = "Testbed for TM Compression components written in Rust"
+version = "0.1.0"
+publish = false
+authors = ["Eduardo Pinho <eduardopinho@ua.pt>"]
+edition = "2018"
+
+[dependencies]
+rand = "0.6.5"
