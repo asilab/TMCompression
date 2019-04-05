@@ -50,7 +50,6 @@ bash run.sh;
 ![alt-text-2](icons/DynamicProfilesArticle.png "DynamicProfile")
 
 <b>TMs Plots:</b>
-
 <p align="center">
 <img src="icons/TMs.png" alt="TMs" width="600" border="0" /></p>
 <br>
