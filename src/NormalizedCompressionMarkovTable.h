@@ -21,6 +21,7 @@ struct NormalizedCompressionMarkovTable{
     Metrics update(const Tape& tape);
     CompressionResultsData profile_update_nc_mk_table(const Tape& tape, unsigned int divison);
     double normalization_base(unsigned int length_of_tape, unsigned int cardinality);
+    double normalization_profile(unsigned int cardinality);
     int sum_all_elements_vector(std::vector<unsigned int>& subvector_markovtable);
     double calculateLog(int index_value, int sum_all_line_elem);
     void reset();

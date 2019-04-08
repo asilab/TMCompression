@@ -53,14 +53,14 @@ gnuplot << EOF
     set key outside horiz center top
     set tics nomirror out scale 0.75
     set xrange [0:]
-    set yrange [0:0.1]
+    set yrange [0:5]
     set border 3 front ls 101
     set grid ytics lt -1
     set style fill solid
     set format '%g'
     set xtics font ", 4"
     set xlabel "Amplitude of Tape"
-    set ylabel "Normalized Compression"
+    set ylabel "Compression Profile"
     set datafile separator "\t"
     set style line 1 \
     linetype 1 linewidth 3 \
