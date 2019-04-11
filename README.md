@@ -46,8 +46,7 @@ bash run.sh;
 ```
 <b>Profile Plots:</b>
 
-![alt-text-1](icons/NormalProfilesArticle.png "Normal Profile" ) 
-![alt-text-2](icons/DynamicProfilesArticle.png "DynamicProfile")
+![alt-text-1](icons/desenho.png "Profiles" ) 
 
 <b>TMs Plots:</b>
 <p align="center">
