@@ -60,12 +60,12 @@ CompressionResultsData NormalizedCompressionMarkovTable::profile_update_nc_mk_ta
         if(diff_indexes<=5){       
             data.amplitude.push_back(counter);
             data.self_compression.push_back(logaritm);
-            data.normalized_compression.push_back(logaritm/normalization_base(diff_indexes, this->mrkvTable.alphSz));
+            data.normalized_compression.push_back(logaritm/normalization_profile(this->mrkvTable.alphSz));
         }
         else if (counter % division ==0){
             data.amplitude.push_back(counter);
             data.self_compression.push_back(logaritm);
-            data.normalized_compression.push_back(logaritm/normalization_base(diff_indexes, this->mrkvTable.alphSz));
+            data.normalized_compression.push_back(logaritm/normalization_profile(this->mrkvTable.alphSz));
         }
     }
     return  data; 
@@ -79,6 +79,10 @@ CompressionResultsData NormalizedCompressionMarkovTable::profile_update_nc_mk_ta
 */
 double NormalizedCompressionMarkovTable::normalization_base(unsigned int length_of_tape, unsigned int cardinality){
    return ( length_of_tape * log2(cardinality) ); 
+}
+
+double NormalizedCompressionMarkovTable::normalization_profile(unsigned int cardinality){
+    return log2(cardinality);
 }
 
 /**
