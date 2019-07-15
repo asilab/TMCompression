@@ -68,7 +68,7 @@ Mandatory  Arguments:
 
 -k, --context	k indexes to consider as a context to fill the Markov Table.
 
--t, --tm	Speciffy turing to obtain results, can only be activated with --profile flag.
+-t, --tm	Specifies turing to obtain results, can only be activated with --profile flag.
 
 Other Optional Arguments:
 

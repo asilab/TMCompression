@@ -242,3 +242,17 @@ void TuringMachine::reset_tape_and_state(){
 }
 
 
+/*Run the machine 1 iteration,
+ I give the tape, the input and the state as input and create a hash 
+ or a hashset when the same scene repeats, it means that there was a cycle
+
+    |   0  |   1 
+  ----------------
+  0 |   A  |   B
+  ----------------
+  1 |   C  |   D 
+
+  ABCD ABCD
+  ---- ----
+
+*/
