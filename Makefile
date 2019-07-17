@@ -4,7 +4,8 @@ CXX = g++ -std=c++14
 CXXFLAGS = -Wall -Wextra -O3 -m64 -g
 LFLAGS = -pthread
 
-objects = src/turingMachine.o \
+objects = src/tmId.o \
+		  src/turingMachine.o \
  		  src/metrics.o \
 		  src/markovTable.o \
 		  src/parseArgs.o \
@@ -28,6 +29,8 @@ clean:
 
 main.o: src/main.cpp src/tm.h src/parseArgs.h
 
+src/tmId.o: src/tmId.h src/tmId.cpp
+
 src/metrics.o: src/metrics.cpp src/metrics.h src/turingMachine.h
 
 src/tm.o: src/tm.cpp src/tm.h src/turingMachine.h src/markovTable.h src/util.h src/NormalizedCompressionMarkovTable.h
@@ -38,7 +41,7 @@ src/NormalizedCompressionMarkovTable.o: src/NormalizedCompressionMarkovTable.h s
 
 src/parseArgs.o: src/parseArgs.cpp src/parseArgs.h src/traversal.h src/util.h
 
-src/turingMachine.o: src/turingMachine.cpp src/turingMachine.h src/traversal.h
+src/turingMachine.o: src/turingMachine.cpp src/turingMachine.h src/traversal.h src/tmId.h
 
 src/util.o: src/util.cpp src/util.h
 
