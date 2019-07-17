@@ -422,7 +422,7 @@ Args parseArgs (int argc, char **argv){
     }
 
     for (auto kval: argument.k){
-        if(ipow<unsigned long long>(argument.alphabet_size, kval) >= ipow<unsigned long long>(2,28)){
+        if(ipow<TmId>(argument.alphabet_size, kval) >= ipow<TmId>(2,28)){
             fprintf (stderr, "k/context (%u) and Alphabet size/a (%zu) is too large..\n", kval, argument.alphabet_size);
             fprintf (stderr, " please consider a size of a^k (%zu^%u) smaller than 2^28..\n", argument.alphabet_size,kval);
             exit(0);
