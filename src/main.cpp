@@ -21,7 +21,10 @@
 */
 
 int main (int argc, char **argv){
-  
+  if (sizeof(__uint128_t) != 16){
+      throw std::runtime_error("unsupported __uint128_t");
+  } 
+
   Args argument = parseArgs(argc,argv);
   
 
