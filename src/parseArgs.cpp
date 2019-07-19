@@ -9,10 +9,12 @@
 #include <getopt.h>
 #include <cstring>
 #include <iostream>
-
+#include <sstream>
 #include "util.h"
 #include "parseArgs.h"
 #include "tm.h"
+#include "tmId.h"
+
 
 Args parseArgs (int argc, char **argv){
     Args argument {};    
@@ -27,7 +29,7 @@ Args parseArgs (int argc, char **argv){
     static int tm_print_flag;
     static int StMatrix_flag;
     char *end;
-    long long int correctInput;
+    TmId correctInput;
     while (1)
     {
         static struct option long_options[] =
@@ -160,7 +162,7 @@ Args parseArgs (int argc, char **argv){
                 exit(0);
             }
             else if (correctInput<=0){
-                fprintf (stderr, "-s/--number_states value was set to %lli, must be an int larger than 0.\n",correctInput); 
+                std::cerr << "-s/--number_states value was set to " << correctInput <<", must be an int larger than 0.\n";
                 exit(0);
             }
             else argument.states = correctInput;
@@ -175,7 +177,7 @@ Args parseArgs (int argc, char **argv){
                 exit(0);
             }
             else if (correctInput<=0){
-                fprintf (stderr, "-a/--alphabet_size value was set to %lli, must be an int larger than 0.\n",correctInput); 
+                std::cerr << "-a/--alphabet_size value was set to " << correctInput <<", must be an int larger than 0.\n";
                 exit(0);
             }
             else argument.alphabet_size = correctInput;
@@ -190,7 +192,7 @@ Args parseArgs (int argc, char **argv){
                 exit(0);
             }
             else if (correctInput<=0){
-                fprintf (stderr, "-i/--iterations value was set to %lli, must be an int larger than 0.\n",correctInput); 
+                std::cerr << "-i/--iterations value was set to " << correctInput <<", must be an int larger than 0.\n";
                 exit(0);
             }
             else argument.numIt = correctInput;
@@ -220,7 +222,7 @@ Args parseArgs (int argc, char **argv){
                             exit(0);
                         }
                         else if (correctInput<=0){
-                            fprintf (stderr, "-k/--context value was set to %lli, must be an int larger than 0.\n",correctInput); 
+                            std::cerr << "-k/--context value was set to " << correctInput <<", must be an int larger than 0.\n";
                             exit(0);
                         }
                         else {
@@ -239,7 +241,7 @@ Args parseArgs (int argc, char **argv){
                     exit(0);
                     }
                 else if (correctInput<=0){
-                    fprintf (stderr, "-k/--context value was set to %lli, must be an int larger than 0.\n",correctInput); 
+                    std::cerr << "-k/--context value was set to " << correctInput <<", must be an int larger than 0.\n";
                     exit(0);
                 }
                 else {
@@ -258,21 +260,10 @@ Args parseArgs (int argc, char **argv){
         }
         case 't':
         {
-            correctInput = strtol(optarg, &end, 10);
-            
-            if (*end != '\0') {
-                std::cerr << "Invalid input for -t/--tm.\n";
-                exit(0);
-            }
-            else if (correctInput<0){
-                fprintf (stderr, "-t/--tm value was set to %lli, must be an int larger than 0.\n",correctInput); 
-                exit(0);
-            }
-            else{
-                argument.tm.first = correctInput;
-                argument.tm.second = true;
-            } 
-
+          	std::string str(optarg);
+            TmId tmInput = string_to_uint128(str);
+            argument.tm.first = tmInput;
+            argument.tm.second = true;
             break;
         }
         case 'j':
@@ -283,7 +274,7 @@ Args parseArgs (int argc, char **argv){
                 exit(0);
             }
             else if (correctInput<=0){
-                fprintf (stderr, "-j/--jobs value was set to %lli, must be an int larger than 0.\n",correctInput); 
+                std::cerr << "-j/--jobs value was set to " << correctInput <<", must be an int larger than 0.\n";
                 exit(0);
             }
             else argument.jobs = correctInput;
