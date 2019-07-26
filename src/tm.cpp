@@ -449,7 +449,6 @@ void tm_print_tape(
   unsigned int num_iterations,
   TmId tm_number)
   {
-  
   TuringMachine machine(states, alphabet_size);    
   machine.stMatrix.set_by_index(tm_number); 
   machine.reset_tape_and_state();

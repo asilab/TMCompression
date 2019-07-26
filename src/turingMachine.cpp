@@ -205,7 +205,7 @@ void Tape::reserve_left(size_t amount) {
 
 /* prints written part of the tape.*/
 void Tape::print() const{
-  for (auto i = this->tape.begin() + this->ind_left - 8 + 1; i != this->tape.end(); ++i)
+  for (auto i = this->tape.begin() + this->ind_left + 1; i != this->tape.end(); ++i)
     std::cout << *i << ' ';
 //this->tape.begin() + this->ind_right
   std::cout<< std::endl;
