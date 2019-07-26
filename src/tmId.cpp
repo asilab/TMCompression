@@ -34,7 +34,6 @@ TmId string_to_uint128(std::string& s){
     }
     TmId number = 0;
     TmId base = 10;
-    std::cout << s << std::endl;
 
     TmId exponent_value = s.size();
     for (auto l:s) {
@@ -43,7 +42,6 @@ TmId string_to_uint128(std::string& s){
         number +=  a*ipow(base,exponent_value);
 
     }
-    std::cout << number << std::endl; //del later;
     return number; 
 }
 

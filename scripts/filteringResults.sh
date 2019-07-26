@@ -42,7 +42,7 @@ if [[ "$FILTER" -eq "1" ]];
       then
         if [ -f $FILENAME ]; 
         then
-            tail -n +4 $FILENAME | head -n -3 | sort -k 6,6 |awk '$4 < 100 { next } { print }' | tail -n 15 > "InterestingTM"$FILENAME;
+            tail -n +4 $FILENAME | head -n -3 | sort -k 6,6 |awk '$4 < 100 { next } { print }' | awk '$4 < 100 { next } { print }' |tail -n 16 > "InterestingTM"$FILENAME;
         else
             echo "File $FILENAME does not exist.";
         fi
@@ -72,7 +72,8 @@ if [[ "$PROFILE" -eq "1" ]];
             while read p; do
                 TM=$(echo $p | awk '{ print $1;}');
                 K=$(echo $p | awk '{ print $2;}');
-                NUMBERITERATION=$(echo $p | awk '{ print $3;}');
+                #NUMBERITERATION=$(echo $p | awk '{ print $3;}');
+                NUMBERITERATION=1001;
                 bash ../scripts/normalProfile.sh $TM $STATE $ALPHABET $NUMBERITERATION $K;
             done <$FILENAME
         
@@ -107,7 +108,7 @@ if [[ "$DYNAMICPROFILE" -eq "1" ]];
             while read p; do 
                 TM=$(echo $p | awk '{ print $1;}');
                 K=$(echo $p | awk '{ print $2;}');
-                NUMBERITERATION=$(echo $p | awk '{ print $3;}');
+                NUMBERITERATION=1001; # $(echo $p | awk '{ print $3;}');
                 bash ../scripts/dynamicProfile.sh $TM $STATE $ALPHABET $NUMBERITERATION $K;
             done <$FILENAME
         fi
