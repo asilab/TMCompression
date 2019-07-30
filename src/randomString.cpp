@@ -3,21 +3,20 @@
 #include "NormalizedCompressionMarkovTable.h"
 
 std::vector<unsigned int> mutate_vector(double mutationRate, std::vector<unsigned int>& input_vector, unsigned int cardinality_value){
-  unsigned int randomValue;
+  //unsigned int randomValue;
 
   std::vector<unsigned int> mutated_vector(input_vector);
   srand (time(NULL));
   std::vector<unsigned int> cardinality_vector(cardinality_value);
-  std::cerr<< cardinality_value <<std::endl;
-  exit(4);
+
   std::iota(cardinality_vector.begin(), cardinality_vector.end(), 0);
 
   for (auto it = mutated_vector.begin(); it !=  mutated_vector.end(); ++it){  
     
     if(rand() / (RAND_MAX + 1.0) < mutationRate){
-      while((randomValue = cardinality_vector[rand() % cardinality_value]) == *it )
-      ;
-      *it = randomValue;
+      //while((randomValue = cardinality_vector[rand() % cardinality_value]) == *it )
+      //;
+      *it = cardinality_vector[rand() % cardinality_value];
       continue;
     }
 
@@ -47,15 +46,10 @@ void nc_mutated_string(size_t alphabet_size){
   for (unsigned int i=0; i<=100; ++i){
     double mutationRate = static_cast<double>(i)/100;
     mutated_vector = mutate_vector(mutationRate,input_vector,alphabet_size);
-    if(i==100){
-    for (auto a:mutated_vector){
-        std::cerr << a << " ";
-    }
-    }
+
     auto metrics = string_metrics(mutated_vector, bestMkvTableCompression);
     
     std::cout << i << "\t" << metrics.amplitude << "\t" << metrics.k << "\t"
     << metrics.amplitude << "\t"<< metrics.normalizedCompression << "\t" << metrics.selfCompression << std::endl;
   } 
 }
-

@@ -280,7 +280,7 @@ if [[ "$NC" -eq "1" ]];
     gnuplot << EOF
     reset
     set terminal pdfcairo enhanced color font 'Verdana,8'
-    set output "Mutability.pdf"
+    set output "StringNCwithEdition.pdf"
     set boxwidth 0.5
     set size ratio 0.6
     set style line 101 lc rgb '#000000' lt 1 lw 3
@@ -293,16 +293,17 @@ if [[ "$NC" -eq "1" ]];
     set style fill solid
     set format '%g'
     set xtics font ", 4"
-    set xlabel "String Mutability %"
+    set xlabel "String Edition %"
     set ylabel "Normalized Compression"
     set datafile separator "\t"
     set style line 1 \
     linetype 1 linewidth 3 \
     pointtype 7 pointsize 0.01
     set style fill transparent solid 0.4 noborder
-    plot "mutate.txt" using 1:5 with linespoints linestyle 1 linecolor rgb '#0060ad' title "Mutation of string and its NC"
+    plot "mutate.txt" using 1:5 with linespoints linestyle 1 linecolor rgb '#0060ad' title "Variation of NC with increase edition String"
     
 EOF
 rm mutate.txt;
-xdg-open Mutability.pdf;
+mv StringNCwithEdition.pdf ../resultPlots;
+
 fi
