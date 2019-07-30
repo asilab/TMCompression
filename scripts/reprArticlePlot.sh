@@ -1,14 +1,17 @@
 #!/bin/bash
 #
-if [ $# -ne 2 ]; then
-    echo "Not enough arguments arguments provided, you need to provide 2 arguments:";
+if [ $# -ne 3 ]; then
+    echo "Not enough arguments arguments provided, you need to provide 3 arguments:";
     echo "All args are boolean (0 or 1)";
     echo "";
     echo "If 1st Argument == 1: Reproduce normal profile in article";
-    echo "bash reprArticlePlot.sh.sh 1 0";
+    echo "bash reprArticlePlot.sh.sh 1 0 0";
     echo "";
     echo "If 2nd Argument == 1:  Reproduce dynamic profile in article";
-    echo "bash reprArticlePlot.sh.sh 0 1";
+    echo "bash reprArticlePlot.sh.sh 0 1 0";
+    echo "";
+    echo "If 3nd Argument == 1:  Reproduce Mutability profile in article";
+    echo "bash reprArticlePlot.sh.sh 0 0 1";
     echo "";
     exit 1;
 fi
@@ -18,6 +21,7 @@ fi
 # ==============================================================================
 NP=$1;
 DP=$2;
+NC=$3;
 
 # ==============================================================================
 # Profile of TM in provided file
@@ -263,4 +267,42 @@ EOF
     rm profile4130363985567866121r.txt profile8223201221054750691960r.txt profile196105202546554444571317643r.txt;
     rm profile5247280021045053584652228990849r.txt profile197125200246148754014176544661820783r.txt;
     mv DynamicProfilesArticler.pdf ../profiles;
+fi
+
+# # ==============================================================================
+# # Mutability Profile in article
+# # ==============================================================================
+
+if [[ "$NC" -eq "1" ]];
+    then
+    
+    ../tm --mutate | tail -n +2 > mutate.txt;
+    gnuplot << EOF
+    reset
+    set terminal pdfcairo enhanced color font 'Verdana,8'
+    set output "Mutability.pdf"
+    set boxwidth 0.5
+    set size ratio 0.6
+    set style line 101 lc rgb '#000000' lt 1 lw 3
+    set key outside horiz center top
+    set tics nomirror out scale 0.75
+    set xrange [0:100]
+    set yrange [0:1.1]
+    set border 3 front ls 101
+    set grid ytics lt -1
+    set style fill solid
+    set format '%g'
+    set xtics font ", 4"
+    set xlabel "String Mutability %"
+    set ylabel "Normalized Compression"
+    set datafile separator "\t"
+    set style line 1 \
+    linetype 1 linewidth 3 \
+    pointtype 7 pointsize 0.01
+    set style fill transparent solid 0.4 noborder
+    plot "mutate.txt" using 1:5 with linespoints linestyle 1 linecolor rgb '#0060ad' title "Mutation of string and its NC"
+    
+EOF
+rm mutate.txt;
+xdg-open Mutability.pdf;
 fi

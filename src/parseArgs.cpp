@@ -14,12 +14,13 @@
 #include "parseArgs.h"
 #include "tm.h"
 #include "tmId.h"
+#include "randomString.h"
 
 
 Args parseArgs (int argc, char **argv){
     Args argument {};    
     opterr = 0;
-
+    static int mutate_flag;
     static int verbose_flag;
     static int replicate_flag;
     static int tm_verbose_flag;
@@ -43,6 +44,7 @@ Args parseArgs (int argc, char **argv){
             {"profile", no_argument, &tm_profile_flag,1},
             {"printTape", no_argument, &tm_print_flag,1},
             {"StMatrix", no_argument, &StMatrix_flag,1},
+            {"mutate", no_argument, &mutate_flag,1},
             {"help",      no_argument,      0, 'h'},
             {"version",      no_argument,      0, 'v'},
 
@@ -100,7 +102,9 @@ Args parseArgs (int argc, char **argv){
             std::cout << "--StMatrix" << "\t" 
             << "Indicates programs to print the StateMatrix of a given TMs" 
             << std::endl<< std::endl;
-
+            std::cout << "--mutate" << "\t" 
+            << "Indicates programs to print the nc of the mutation of a string starting with all zeros and performing mutations until its 100% mutated" 
+            << std::endl<< std::endl;
 
             std::cout << "Mandatory  Arguments:"<< std::endl << std::endl;
             std::cout << "-s" << ", " <<"--number_states" << "\t" << "Number of States the Turing Machine has."<< std::endl << std::endl;
@@ -326,7 +330,11 @@ Args parseArgs (int argc, char **argv){
         printf ("%s ", argv[optind++]);
         putchar ('\n');
     }
-
+    if (mutate_flag && argument.states==0 && argument.alphabet_size==0 && argument.numIt==0 && argument.k.empty() && argument.tm.second==false){
+        std::cerr << "Mutating string and obtaining NC results..." <<std::endl;
+        nc_mutated_string(2);
+        exit(0);
+    }
     if (tm_number_growth_flag && argument.states==0 && argument.alphabet_size==0 && argument.numIt==0 && argument.k.empty() && argument.tm.second==false){
         std::cerr << "TM growth for alphabet = 2 and Max number of states = 100" <<std::endl;
         tm_growth_with_cardinality(100);

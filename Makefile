@@ -12,6 +12,7 @@ objects = src/tmId.o \
 		  src/util.o \
 		  src/tm.o \
 		  src/NormalizedCompressionMarkovTable.o \
+		  src/randomString.o \
 		  src/main.o
 
 %.o: %.cpp
@@ -32,6 +33,8 @@ main.o: src/main.cpp src/tm.h src/parseArgs.h
 src/tmId.o: src/tmId.h src/tmId.cpp
 
 src/metrics.o: src/metrics.cpp src/metrics.h src/turingMachine.h
+
+src/randomString.o: src/randomString.cpp src/randomString.h
 
 src/tm.o: src/tm.cpp src/tm.h src/turingMachine.h src/markovTable.h src/util.h src/NormalizedCompressionMarkovTable.h
 
