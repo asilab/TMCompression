@@ -132,19 +132,19 @@ bash run.sh;
 ```
 <b>Profile Plots:</b>
 <p align="center">
-<img src="icons/profiles.png" alt="TMs" width="500" border="0" /></p>
+<img src="icons/profiles.png" alt="TMs" width="400" border="0" /></p>
 <br>
 <p align="center">
 </p>
 <p align="center">
-<img src="icons/string.png" alt="TMs" width="500" border="0" /></p>
+<img src="icons/string.png" alt="TMs" width="400" border="0" /></p>
 <br>
 <p align="center">
 </p>
 
 <b>TMs Plots:</b>
 <p align="center">
-<img src="icons/TMs.png" alt="TMs" width="500" border="0" /></p>
+<img src="icons/TMs.png" alt="TMs" width="400" border="0" /></p>
 <br>
 <p align="center">
 </p>
