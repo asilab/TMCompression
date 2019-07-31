@@ -25,7 +25,7 @@ std::vector<unsigned int> mutate_vector(double mutationRate, std::vector<unsigne
 }
 
 template <typename M>
-Metrics string_metrics(const std::vector<unsigned int> mutated_vector, M& compressionTable) {
+Metrics string_metrics(const std::vector<unsigned int>& mutated_vector, M& compressionTable) {
 
     Metrics metrics = compressionTable.update_string(mutated_vector);
     compressionTable.reset();
