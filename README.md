@@ -44,7 +44,7 @@ Arguments to set flags:
 
 --verbose	Indicates programs that will receive inputs in a verbose form.
 
---brief	Indicates programs that will receive inputs in a brief form.
+--brief	        Indicates programs that will receive inputs in a brief form.
 
 --tmverbose	Indicates programs that tm output will be send to the user.
 
@@ -55,6 +55,8 @@ Arguments to set flags:
 --profile	Indicates programs that will receive through the tm number through the flag tm and will create a profile of that turing
 
 --dynprofile	Indicates programs that will receive through the tm number through the flag tm and will create a dynamical temporal profile of that turing
+
+--mutate        Indicates programs to print the nc of the mutation of a string starting with all zeros and performing mutations until its 100% mutated
 
 --StMatrix	Indicates programs to print the StateMatrix of a given TMs
 
@@ -115,6 +117,9 @@ Run specific tm and print tape
 ./tm --brief --printTape -s 2 -a 2 -i 100 -t 1
 Run StMatrix of the tm
 ./tm --brief --StMatrix -s 2 -a 2 -t 1
+----------------
+Mutate (0-100%) string of all zeros specific tm and print tape
+./tm --mutate
 
 ```
 
@@ -126,8 +131,16 @@ chmod +x run.sh;
 bash run.sh;
 ```
 <b>Profile Plots:</b>
-
-![alt-text-1](icons/desenho.png "Profiles" ) 
+<p align="center">
+<img src="icons/desenho.png" alt="TMs" width="300" border="0" /></p>
+<br>
+<p align="center">
+</p>
+<p align="center">
+<img src="icons/string.png" alt="TMs" width="300" border="0" /></p>
+<br>
+<p align="center">
+</p>
 
 <b>TMs Plots:</b>
 <p align="center">
