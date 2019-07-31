@@ -132,7 +132,7 @@ bash run.sh;
 ```
 <b>Profile Plots:</b>
 <p align="center">
-<img src="icons/desenho.png" alt="TMs" width="300" border="0" /></p>
+<img src="icons/profiles.png" alt="TMs" width="300" border="0" /></p>
 <br>
 <p align="center">
 </p>
