@@ -1,17 +1,20 @@
 #!/bin/bash
 #
-if [ $# -ne 3 ]; then
+if [ $# -ne 4 ]; then
     echo "Not enough arguments arguments provided, you need to provide 3 arguments:";
     echo "All args are boolean (0 or 1)";
     echo "";
     echo "If 1st Argument == 1: Reproduce normal profile in article";
-    echo "bash reprArticlePlot.sh.sh 1 0 0";
+    echo "bash reprArticlePlot.sh.sh 1 0 0 0";
     echo "";
     echo "If 2nd Argument == 1:  Reproduce dynamic profile in article";
-    echo "bash reprArticlePlot.sh.sh 0 1 0";
+    echo "bash reprArticlePlot.sh.sh 0 1 0 0";
     echo "";
-    echo "If 3nd Argument == 1:  Reproduce Mutability profile in article";
-    echo "bash reprArticlePlot.sh.sh 0 0 1";
+    echo "If 3nd Argument == 1:  Reproduce Edition String profile in article";
+    echo "bash reprArticlePlot.sh.sh 0 0 1 0";
+    echo "";
+    echo "If 4nd Argument == 1:  Reproduce Edition/Permutation of Virus DNA sequence NC plot of the article";
+    echo "bash reprArticlePlot.sh.sh 0 0 0 1";
     echo "";
     exit 1;
 fi
@@ -22,6 +25,7 @@ fi
 NP=$1;
 DP=$2;
 NC=$3;
+VNC=$4;
 
 # ==============================================================================
 # Profile of TM in provided file
@@ -270,14 +274,17 @@ EOF
 fi
 
 # # ==============================================================================
-# # Mutability Profile in article
+# # Virus edition and  Profile in article
 # # ==============================================================================
 
 if [[ "$NC" -eq "1" ]];
     then
-    
-    ../tm --mutate | tail -n +2 > mutate.txt;
-    gnuplot << EOF
+    # cd .. ;
+    # ./tm --mutate | tail -n +2 > stringEdition.txt;
+    # mv stringEdition.txt ./scripts/stringEdition.txt;
+    # cd scripts;
+
+gnuplot << EOF
     reset
     set terminal pdfcairo enhanced color font 'Verdana,8'
     set output "StringNCwithEdition.pdf"
@@ -286,24 +293,73 @@ if [[ "$NC" -eq "1" ]];
     set style line 101 lc rgb '#000000' lt 1 lw 3
     set key outside horiz center top
     set tics nomirror out scale 0.75
-    set xrange [0:100]
-    set yrange [0:1.1]
-    set border 3 front ls 101
+    set xrange [100:0] 
+    set yrange [100:0]
+    set zrange [0:1]
+    set grid xtics lt -1
     set grid ytics lt -1
-    set style fill solid
-    set format '%g'
-    set xtics font ", 4"
-    set xlabel "String Edition %"
-    set ylabel "Normalized Compression"
+    set grid ztics lt -1
+
+    set yzeroaxis lt 1 lw 2 lc rgb "black"
+    set zzeroaxis lt 1 lw 2 lc rgb "black"
+    set border 3 front ls 101
+    set xyplane 0
+    set style data points
+    
+    set xlabel "Percentage of substitutions" rotate parallel
+    set ylabel "Fraction of block permutations" rotate parallel
+    set zlabel "Normalized Compression" rotate parallel
     set datafile separator "\t"
-    set style line 1 \
-    linetype 1 linewidth 3 \
-    pointtype 7 pointsize 0.01
-    set style fill transparent solid 0.4 noborder
-    plot "mutate.txt" using 1:5 with linespoints linestyle 1 linecolor rgb '#0060ad' title "Variation of NC with increase edition String"
+    splot "stringEdition.txt" using 1:2:6 with points pointsize 0.5 linecolor rgb '#0060ad' title "Variation of NC with increase edition String"
     
 EOF
-rm mutate.txt;
+#rm stringEdition.txt;
 mv StringNCwithEdition.pdf ../resultPlots;
+
+fi
+
+# # ==============================================================================
+# # virus Profile in article
+# # ==============================================================================
+
+if [[ "$VNC" -eq "1" ]];
+    then
+    cd .. ;
+    ./tm --mutateVirus | tail -n +2 > virus_var2.txt;
+    mv virus_var2.txt ./scripts/virus_var2.txt;
+    cd scripts;
+
+gnuplot << EOF
+    reset
+    set terminal pdfcairo enhanced color font 'Verdana,8'
+    set output "VirusEditionAndPermutations2.pdf"
+    set boxwidth 0.5
+    set size ratio 0.6
+    set style line 101 lc rgb '#000000' lt 1 lw 3
+    set key outside horiz center top
+    set tics nomirror out scale 0.75
+    set xrange [0:100] 
+    set yrange [0:156681]
+    set zrange [0:1.02]
+    set grid xtics lt -1
+    set grid ytics lt -1
+    set grid ztics lt -1
+
+    set yzeroaxis lt 1 lw 2 lc rgb "black"
+    set zzeroaxis lt 1 lw 2 lc rgb "black"
+    set border 3 front ls 101
+    set xyplane 0
+    set style data points
+    
+    set xlabel "Percentage of substitutions" rotate parallel
+    set ylabel "Fraction of block permutations" rotate parallel
+    set zlabel "Normalized Compression" rotate parallel
+    set datafile separator "\t"
+    splot "virus_var2.txt" using 1:2:6 with points pointsize 0.5 linecolor rgb '#0060ad' title "Virus DNA NC variation with \n Edition and Permutations"
+    
+EOF
+
+#rm virus_var2.txt;
+mv VirusEditionAndPermutations2.pdf ../resultPlots;
 
 fi

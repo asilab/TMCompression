@@ -29,6 +29,8 @@ Args parseArgs (int argc, char **argv){
     static int tm_dynamical_profile_flag;
     static int tm_print_flag;
     static int StMatrix_flag;
+    static int mutate_virus_flag;
+
     char *end;
     TmId correctInput;
     while (1)
@@ -45,6 +47,7 @@ Args parseArgs (int argc, char **argv){
             {"printTape", no_argument, &tm_print_flag,1},
             {"StMatrix", no_argument, &StMatrix_flag,1},
             {"mutate", no_argument, &mutate_flag,1},
+            {"mutateVirus", no_argument, &mutate_virus_flag,1},
             {"help",      no_argument,      0, 'h'},
             {"version",      no_argument,      0, 'v'},
 
@@ -104,6 +107,9 @@ Args parseArgs (int argc, char **argv){
             << std::endl<< std::endl;
             std::cout << "--mutate" << "\t" 
             << "Indicates programs to print the nc of the mutation of a string starting with all zeros and performing mutations until its 100% mutated" 
+            << std::endl<< std::endl;
+            std::cout << "--mutateVirus" << "\t" 
+            << "Indicates programs perform the edition/Permutation Human parvovirus B19 Virus DNA sequence and print NC results" 
             << std::endl<< std::endl;
 
             std::cout << "Mandatory  Arguments:"<< std::endl << std::endl;
@@ -330,9 +336,14 @@ Args parseArgs (int argc, char **argv){
         printf ("%s ", argv[optind++]);
         putchar ('\n');
     }
+    if (mutate_virus_flag && argument.states==0 && argument.alphabet_size==0 && argument.numIt==0 && argument.k.empty() && argument.tm.second==false){
+        std::cerr << "Editing/Permutating Virus DNA sequence and obtaining NC results..." <<std::endl;
+        nc_substitution_permutate_sequence(true);
+        exit(0);
+    }
     if (mutate_flag && argument.states==0 && argument.alphabet_size==0 && argument.numIt==0 && argument.k.empty() && argument.tm.second==false){
-        std::cerr << "Mutating string and obtaining NC results..." <<std::endl;
-        nc_mutated_string(2);
+        std::cerr << "Editing string and obtaining NC results..." <<std::endl;
+        nc_substitution_permutate_sequence(false);
         exit(0);
     }
     if (tm_number_growth_flag && argument.states==0 && argument.alphabet_size==0 && argument.numIt==0 && argument.k.empty() && argument.tm.second==false){
