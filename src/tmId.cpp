@@ -25,7 +25,7 @@ operator<<( std::ostream& dest, TmId value )
     return dest;
 } 
 
-TmId string_to_uint128(std::string& s){
+TmId string_to_uint128(const std::string& s){
     if(s.empty()){
         throw std::runtime_error("input string is empty");
     }
