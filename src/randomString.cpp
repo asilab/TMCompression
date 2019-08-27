@@ -55,10 +55,11 @@ std::pair<std::vector<unsigned int>,unsigned int>read_dna_file(std::string virus
 
 std::pair<std::vector<unsigned int>,unsigned int> getinputContent(const std::string& str){
   
-  int counter = -1;
+  
   std::map<char, unsigned int> mapping;
   std::pair <std::vector<unsigned int>,unsigned int> mapvector_cardinality_pair;
   if(str.size() > 0){
+    int counter = -1;
     for (auto it=str.begin(); it!=str.end(); ++it){
       if ( mapping.find(*it) == mapping.end()){
         mapping[*it] = ++counter;
@@ -137,7 +138,7 @@ std::vector <std::vector <unsigned int>> divide_to_chunks_vector(const std::vect
     return chunked_vector;
 }
 
-std::vector <unsigned int> shuffle_vector(const std::vector <std::vector <unsigned int>> chunked_vector){
+std::vector <unsigned int> shuffle_vector(const std::vector <std::vector <unsigned int>>& chunked_vector){
   
   std::vector <std::vector <unsigned int>> copy_chunked_vector(chunked_vector);
   
@@ -151,7 +152,7 @@ std::vector <unsigned int> shuffle_vector(const std::vector <std::vector <unsign
   return flattenedChunk;
 }
 
-void nc_substitution_permutate_sequence(bool natural_sequence, std::string virus_path){
+void nc_substitution_permutate_sequence(bool natural_sequence, const std::string& virus_path){
   
   std::cerr << "Performing NC calculation of input String" << std::endl;
 

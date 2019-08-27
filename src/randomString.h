@@ -16,6 +16,6 @@ std::pair<std::vector<unsigned int>,unsigned int>  getinputContent(const std::st
 //permutation of sequence:
 std::vector <std::vector <unsigned int>> permutate_vector(const std::vector <unsigned int>& edited_vector, const unsigned int& add_value);
 std::vector <std::vector <unsigned int>> divide_to_chunks_vector(const std::vector <unsigned int>& edited_vector, unsigned int& divisions);
-std::vector <unsigned int> shuffle_vector(const std::vector <std::vector <unsigned int>> chunked_vector);
+std::vector <unsigned int> shuffle_vector(const std::vector <std::vector <unsigned int>>& chunked_vector);
 //NC computation:
-void nc_substitution_permutate_sequence(bool natural_sequence, std::string virus_path);
+void nc_substitution_permutate_sequence(bool natural_sequence,const std::string& virus_path);
