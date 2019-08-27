@@ -15,14 +15,13 @@ mrkvTable(k, alphabet_size) {}
 
 Metrics NormalizedCompressionMarkovTable::update(const Tape& tape){
 
-    auto b = tape.ind_left - this->mrkvTable.k  + 1 ; // To have k context at the begining    
+    auto b = tape.ind_left - this->mrkvTable.k  + 1 ; // To have k context at the beginning    
     auto e = tape.ind_right - this->mrkvTable.k;
 
     Metrics metrics;
     metrics.k = this->mrkvTable.k;
 
     double value = 0;
-    
     
     for (auto it = b; it != e; ++it) {
         //tape.print();
@@ -56,7 +55,6 @@ Metrics NormalizedCompressionMarkovTable::update_string(const std::vector<unsign
     auto e = end(new_random_str) - this->mrkvTable.k;
 
     for (auto it = b; it != e; ++it) {
-        //tape.print();
         auto indxvalue = this->mrkvTable.at(&*it) + 1;
         auto subvectorOfMarkovTable = this->mrkvTable.getLine(&*it); 
         std::transform(subvectorOfMarkovTable.begin(), subvectorOfMarkovTable.end(), subvectorOfMarkovTable.begin(), bind2nd(std::plus<int>(), 1)); 

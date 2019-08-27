@@ -35,14 +35,13 @@ int randomfunc(unsigned int j)
   
 template <typename M>
 Metrics string_metrics(const std::vector<unsigned int>& mutated_vector, M& compressionTable) {
-
-    Metrics metrics = compressionTable.update_string(mutated_vector);
     compressionTable.reset();
+    Metrics metrics = compressionTable.update_string(mutated_vector);
   return metrics;
 }
 
-std::pair<std::vector<unsigned int>,unsigned int>read_dna_file(){
-  std::ifstream t("./resultText/virus2.txt");
+std::pair<std::vector<unsigned int>,unsigned int>read_dna_file(std::string virus_path){
+  std::ifstream t(virus_path); //"./resultText/virus2.txt"
   std::string str;
 
   t.seekg(0, std::ios::end);   
@@ -100,13 +99,12 @@ std::vector<unsigned int> edit_vector(double mutationRate,
   return mutated_vector;
 }
 
-std::vector <std::vector <unsigned int>> permutate_vector(const std::vector <unsigned int>& edited_vector){
+std::vector <std::vector <unsigned int>> permutate_vector(const std::vector <unsigned int>& edited_vector,const unsigned int& add_value){
   std::vector <std::vector <unsigned int>>permutations_vector;
-  //std::random_device rd;
-  //std::mt19937 g(rd());
-  for (auto divisions = 0u; divisions<=100; ++divisions){
+  unsigned int max_div = add_value * 100;
+  for (auto divisions = 0u; divisions<max_div; divisions+=add_value){
     auto chunked_subvectors = divide_to_chunks_vector(edited_vector, divisions);
-    permutations_vector.push_back(suffle_vector(chunked_subvectors));
+    permutations_vector.push_back(shuffle_vector(chunked_subvectors));
   }
   return permutations_vector;
 }
@@ -139,7 +137,7 @@ std::vector <std::vector <unsigned int>> divide_to_chunks_vector(const std::vect
     return chunked_vector;
 }
 
-std::vector <unsigned int> suffle_vector(const std::vector <std::vector <unsigned int>> chunked_vector){
+std::vector <unsigned int> shuffle_vector(const std::vector <std::vector <unsigned int>> chunked_vector){
   
   std::vector <std::vector <unsigned int>> copy_chunked_vector(chunked_vector);
   
@@ -149,10 +147,11 @@ std::vector <unsigned int> suffle_vector(const std::vector <std::vector <unsigne
     {a.insert(a.end(), b.begin(), b.end());
         return a;
     });
+  
   return flattenedChunk;
 }
 
-void nc_substitution_permutate_sequence( bool natural_sequence){
+void nc_substitution_permutate_sequence(bool natural_sequence, std::string virus_path){
   
   std::cerr << "Performing NC calculation of input String" << std::endl;
 
@@ -160,31 +159,33 @@ void nc_substitution_permutate_sequence( bool natural_sequence){
   std::vector<unsigned int> mutated_vector;
   std::vector <unsigned int> kvector(8);
   std::generate(kvector.begin(), kvector.end(),[n = 2] () mutable { return n++; });
-  
   if(natural_sequence){
-    vector_and_cardinality = read_dna_file();
+    vector_and_cardinality = read_dna_file(virus_path);
   }
   else{
-    std::vector<unsigned int> generated_vector(1000,0);
+
+    std::vector<unsigned int> generated_vector(500, 0);;
+    std::vector<unsigned int> vector2(500, 1);;
+    generated_vector.insert( generated_vector.end(), vector2.begin(), vector2.end() );
     vector_and_cardinality.first = generated_vector;
     vector_and_cardinality.second = 2;
   }
 
   BestKMarkovTables<NormalizedCompressionMarkovTable> bestMkvTableCompression(kvector, vector_and_cardinality.second);
-
+  unsigned int add_value = floor(static_cast<double>(vector_and_cardinality.first.size()) * 1.0 / 100.0) ;
+  
   for (unsigned int i=0; i<=100; ++i){
-    //unsigned int i = 50;
     double mutationRate = static_cast<double>(i)/100;
     auto edited_vector = edit_vector(mutationRate, vector_and_cardinality.first ,vector_and_cardinality.second, natural_sequence);
-    std::vector <std::vector <unsigned int>> permutations_vector = permutate_vector(edited_vector);
-    //std::cout << "-----------------------" << std::endl;
+    std::vector <std::vector <unsigned int>> permutations_vector = permutate_vector(edited_vector, add_value);
+    unsigned int counter = 0;
     for(unsigned int j=0; j<permutations_vector.size(); ++j){
 
       auto metrics = string_metrics(permutations_vector[j], bestMkvTableCompression); 
-     
-      std::cout << i << "\t" << j << "\t" << metrics.amplitude << "\t" << metrics.k << "\t"
-      << metrics.amplitude << "\t"<< metrics.normalizedCompression << "\t" << metrics.selfCompression << std::endl;
-    }   
-     
+      std::cout << i << "\t" << counter << "\t"<< metrics.normalizedCompression << std::endl;
+      counter+=add_value;
+    }
+    std::cout << std::endl;
   } 
+
 }

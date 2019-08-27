@@ -106,10 +106,10 @@ Args parseArgs (int argc, char **argv){
             << "Indicates programs to print the StateMatrix of a given TMs" 
             << std::endl<< std::endl;
             std::cout << "--mutate" << "\t" 
-            << "Indicates programs to print the nc of the mutation of a string starting with all zeros and performing mutations until its 100% mutated" 
+            << "Indicates programs to print the nc of the mutation of a string (starting with all zeros and ending with all ones) and performing mutations until its 100% mutated" 
             << std::endl<< std::endl;
             std::cout << "--mutateVirus" << "\t" 
-            << "Indicates programs perform the edition/Permutation Human parvovirus B19 Virus DNA sequence and print NC results" 
+            << "Indicates programs perform the edition and permutation of a virus DNA sequence and print NC results" 
             << std::endl<< std::endl;
 
             std::cout << "Mandatory  Arguments:"<< std::endl << std::endl;
@@ -157,8 +157,15 @@ Args parseArgs (int argc, char **argv){
             std::cout << "----------------" << std::endl;
             std::cout <<"Run specific tm and print tape" << std::endl;
             std::cout << "./tm --brief --printTape -s 2 -a 2 -i 100 -t 1"<< std::endl;
+            std::cout << "----------------" << std::endl;
             std::cout <<"Run StMatrix of the tm" << std::endl;
             std::cout << "./tm --brief --StMatrix -s 2 -a 2 -t 1"<< std::endl;
+            std::cout << "----------------" << std::endl;
+            std::cout <<"Obtain nc of the substitutions and permutations of a string " << std::endl;
+            std::cout <<"/tm --mutate" << std::endl;
+            std::cout << "----------------" << std::endl;
+            std::cout <<"Obtain nc of Virus genome sequence with substitutions and permutations" << std::endl;
+            std::cout <<"echo \"./resultText/Parvovirus_virus_genome.txt\" | ./tm --mutateVirus" << std::endl;
             exit (0);
 
         case 'v':
@@ -338,12 +345,16 @@ Args parseArgs (int argc, char **argv){
     }
     if (mutate_virus_flag && argument.states==0 && argument.alphabet_size==0 && argument.numIt==0 && argument.k.empty() && argument.tm.second==false){
         std::cerr << "Editing/Permutating Virus DNA sequence and obtaining NC results..." <<std::endl;
-        nc_substitution_permutate_sequence(true);
+        
+        std::string virus_file_path;
+        std::cout << "Insert path of genome sequence :"; std::cin >> virus_file_path;
+        nc_substitution_permutate_sequence(true, virus_file_path);
+
         exit(0);
     }
     if (mutate_flag && argument.states==0 && argument.alphabet_size==0 && argument.numIt==0 && argument.k.empty() && argument.tm.second==false){
         std::cerr << "Editing string and obtaining NC results..." <<std::endl;
-        nc_substitution_permutate_sequence(false);
+        nc_substitution_permutate_sequence(false, "");
         exit(0);
     }
     if (tm_number_growth_flag && argument.states==0 && argument.alphabet_size==0 && argument.numIt==0 && argument.k.empty() && argument.tm.second==false){
