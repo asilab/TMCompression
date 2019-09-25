@@ -120,7 +120,9 @@ Run StMatrix of the tm
 ----------------
 Mutate (0-100%) string of all zeros specific tm and print tape
 ./tm --mutate
-
+----------------
+Obtain nc of Virus genome sequence with substitutions and permutations
+echo "./resultText/Parvovirus_virus_genome.txt" | ./tm --mutateVirus
 ```
 
 ## RECREATE PLOTS IN ARTICLE
@@ -130,21 +132,21 @@ To recreate the plots shown in the article (bellow example):
 chmod +x run.sh;
 bash run.sh;
 ```
-<b>Profile Plots:</b>
+<b>Virus and String edition and Permutation Plots:</b>
 <p align="center">
-<img src="icons/profiles.png" alt="TMs" width="400" border="0" /></p>
+<img src="icons/Fig1.png" alt="TMs" width="400" border="0" /></p>
 <br>
 <p align="center">
 </p>
-<p align="center">
-<img src="icons/string.png" alt="TMs" width="400" border="0" /></p>
-<br>
-<p align="center">
-</p>
-
 <b>TMs Plots:</b>
 <p align="center">
-<img src="icons/TMs.png" alt="TMs" width="400" border="0" /></p>
+<img src="icons/Fig2.png" alt="TMs" width="400" border="0" /></p>
+<br>
+<p align="center">
+</p>
+<b>Profile Plots:</b>
+<p align="center">
+<img src="icons/Fig3.png" alt="TMs" width="400" border="0" /></p>
 <br>
 <p align="center">
 </p>
