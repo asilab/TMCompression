@@ -350,11 +350,9 @@ void tm_profile(
   NormalizedCompressionMarkovTable normalizedCompressionMarkovTable(k , alphabet_size);
   machine.stMatrix.set_by_index(tm_number); 
   machine.reset_tape_and_state();
-  auto i=0u;
   while( (machine.turingTape.ind_right - machine.turingTape.ind_left)< num_iterations ){
     normalizedCompressionMarkovTable.mrkvTable.reset();
     machine.act(); //importante ser antes
-    ++i;
   }
   data = normalizedCompressionMarkovTable.profile_update_nc_mk_table(machine.turingTape, division);
   data.print_profile_data(division);
