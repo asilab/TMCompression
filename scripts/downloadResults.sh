@@ -1,3 +1,4 @@
+mv *.txt ../resultText
 #!/bin/bash
 #
 # ==============================================================================
@@ -26,5 +27,14 @@ gdrive_download 1s-5oiE76VDzcQTh7rHpzBfN1lmZjyFRE InterestingTM7sts2alp.txt;
 gdrive_download 1pO8eCGOEflaOYMf8EvMgnWMhOLLgJQ5M InterestingTM8sts2alp.txt;
 gdrive_download 1H--3xn98XFr0-Cm25TZIwj41jDfAw0i- InterestingTM9sts2alp.txt;
 gdrive_download 1HezUZMZe4mrB-7oClmpLNLDelFHqHWmX InterestingTM10sts2alp.txt;
+
+
+# Genome Sequences and NC of the sequences
+gdrive_download 1h05197Ol3XjL9Sp-y8c1Lz3gfGbiLdxZ Parvovirus_virus_nc.txt;
+gdrive_download 1v-vPH_vQIRqc_9WaiNSPnraYOFzehwC9 Parvovirus_virus_genome.txt;
+gdrive_download 1mp3DibTheUpP5r-FGh97lT_37hZhmTuD Microplitis_demolitor_virus_nc.txt;
+gdrive_download 15d3mo-0ujvax_01Z1GUlZD5l5lYLgOYn Microplitis_demolitor_virus_genome.txt;
+gdrive_download 1Jyv5SoD2X8jV6C8c74tR80iqTp2c-AFw Herpes_simplex_virus_genome.txt;
+gdrive_download 11I-iRgFzfpJ3rCL-ymrB2wfU16fHoBz- Herpes_simplex_virus_nc.txt;
 
 mv *.txt ../resultText
