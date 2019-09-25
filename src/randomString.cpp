@@ -41,7 +41,7 @@ Metrics string_metrics(const std::vector<unsigned int>& mutated_vector, M& compr
 }
 
 std::pair<std::vector<unsigned int>,unsigned int>read_dna_file(std::string virus_path){
-  std::ifstream t(virus_path); //"./resultText/virus2.txt"
+  std::ifstream t(virus_path);
   std::string str;
 
   t.seekg(0, std::ios::end);   
@@ -50,6 +50,10 @@ std::pair<std::vector<unsigned int>,unsigned int>read_dna_file(std::string virus
 
   str.assign((std::istreambuf_iterator<char>(t)),
               std::istreambuf_iterator<char>());
+
+  str.erase(std::remove(str.begin(), str.end(), '\n'), str.end());
+  str.erase(std::remove(str.begin(), str.end(), 'N'), str.end());
+  
 	return getinputContent(str);
 }
 
@@ -100,23 +104,27 @@ std::vector<unsigned int> edit_vector(double mutationRate,
   return mutated_vector;
 }
 
-std::vector <std::vector <unsigned int>> permutate_vector(const std::vector <unsigned int>& edited_vector,const unsigned int& add_value){
+std::vector <std::vector <unsigned int>> permutate_vector(const std::vector <unsigned int>& edited_vector){
   std::vector <std::vector <unsigned int>>permutations_vector;
-  unsigned int max_div = add_value * 100;
-  for (auto divisions = 0u; divisions<max_div; divisions+=add_value){
-    auto chunked_subvectors = divide_to_chunks_vector(edited_vector, divisions);
+  unsigned int seq_size = edited_vector.size();
+  double x = 0;
+  unsigned int  y = 0;  
+
+  while (y < seq_size){
+    auto chunked_subvectors = divide_to_chunks_vector(edited_vector, y);
     permutations_vector.push_back(shuffle_vector(chunked_subvectors));
+    y = pow(x,3.0);
+    ++x;
   }
   return permutations_vector;
 }
 
 std::vector <std::vector <unsigned int>> divide_to_chunks_vector(const std::vector <unsigned int>& edited_vector, unsigned int& divisions){
     std::vector <unsigned int>copyofVector(edited_vector);
-    unsigned int seq_size = edited_vector.size();
     unsigned int chunks = divisions + 1;
+    unsigned int seq_size = edited_vector.size();
     unsigned int size_of_chunks = round((double)seq_size/(double)chunks); 
     std::vector <std::vector <unsigned int>>  chunked_vector((seq_size + size_of_chunks) / size_of_chunks);
-
     for(unsigned int i = 0; i < seq_size; i += size_of_chunks) {
       auto last = std::min(seq_size, i + size_of_chunks);
       auto index = i / size_of_chunks;
@@ -173,18 +181,17 @@ void nc_substitution_permutate_sequence(bool natural_sequence, const std::string
   }
 
   BestKMarkovTables<NormalizedCompressionMarkovTable> bestMkvTableCompression(kvector, vector_and_cardinality.second);
-  unsigned int add_value = floor(static_cast<double>(vector_and_cardinality.first.size()) * 1.0 / 100.0) ;
   
   for (unsigned int i=0; i<=100; ++i){
     double mutationRate = static_cast<double>(i)/100;
     auto edited_vector = edit_vector(mutationRate, vector_and_cardinality.first ,vector_and_cardinality.second, natural_sequence);
-    std::vector <std::vector <unsigned int>> permutations_vector = permutate_vector(edited_vector, add_value);
+    std::vector <std::vector <unsigned int>> permutations_vector = permutate_vector(edited_vector);
     unsigned int counter = 0;
     for(unsigned int j=0; j<permutations_vector.size(); ++j){
 
       auto metrics = string_metrics(permutations_vector[j], bestMkvTableCompression); 
-      std::cout << i << "\t" << counter << "\t"<< metrics.normalizedCompression << std::endl;
-      counter+=add_value;
+      std::cout << i << "\t" <<  pow(counter,3.0) << "\t"<< metrics.normalizedCompression << std::endl;
+      counter+=1;
     }
     std::cout << std::endl;
   } 

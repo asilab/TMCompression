@@ -1,23 +1,26 @@
 #!/bin/bash
 #
-if [ $# -ne 5 ]; then
+if [ $# -ne 6 ]; then
     echo "Not enough arguments arguments provided, you need to provide 3 arguments:";
     echo "All args are boolean (0 or 1)";
     echo "";
     echo "If 1st Argument == 1: Reproduce normal profile in article";
-    echo "bash reprArticlePlot.sh.sh 1 0 0 0 0";
+    echo "bash reprArticlePlot.sh.sh 1 0 0 0 0 0";
     echo "";
     echo "If 2nd Argument == 1:  Reproduce dynamic profile in article";
-    echo "bash reprArticlePlot.sh.sh 0 1 0 0 0";
+    echo "bash reprArticlePlot.sh.sh 0 1 0 0 0 0";
     echo "";
-    echo "If 3nd Argument == 1:  Reproduce Edition String profile in article";
-    echo "bash reprArticlePlot.sh.sh 0 0 1 0 0";
+    echo "If 3rd Argument == 1:  Reproduce Edition String profile in article";
+    echo "bash reprArticlePlot.sh.sh 0 0 1 0 0 0";
     echo "";
-    echo "If 4nd Argument == 1:  Reproduce Edition/Permutation of Parvovirus Virus DNA sequence NC plot of the article";
-    echo "bash reprArticlePlot.sh.sh 0 0 0 1 0";
+    echo "If 4th Argument == 1:  Reproduce Edition/Permutation of Parvovirus Virus DNA sequence NC plot of the article";
+    echo "bash reprArticlePlot.sh.sh 0 0 0 1 0 0";
     echo "";
-    echo "If 4nd Argument == 1:  Reproduce Edition/Permutation of Herpes Virus DNA sequence NC plot of the article";
-    echo "bash reprArticlePlot.sh.sh 0 0 0 0 1";
+    echo "If 5th Argument == 1:  Reproduce Edition/Permutation of Herpes Virus DNA sequence NC plot of the article";
+    echo "bash reprArticlePlot.sh.sh 0 0 0 0 1 0";
+    echo "";
+    echo "If 6th Argument == 1:  Reproduce Edition/Permutation of Microplitis demolitor Virus DNA sequence NC plot of the article";
+    echo "bash reprArticlePlot.sh.sh 0 0 0 0 0 1";
     echo "";
     exit 1;
 fi
@@ -30,6 +33,7 @@ DP=$2;
 NC=$3;
 PVNC=$4;
 HVNC=$5;
+MVNC=$6;
 
 # ==============================================================================
 # Profile of TM in provided file
@@ -300,7 +304,7 @@ gnuplot << EOF
     set style line 101 lc rgb '#000000' lt 1 lw 3
     set key outside horiz center top
     set tics nomirror out scale 0.75
-    set xrange [100:0] 
+    set xrange [0:100] 
     set yrange [0:1000]
     set zrange [0:1.1]
     set cbrange [0:1]
@@ -315,17 +319,18 @@ gnuplot << EOF
     set xzeroaxis lt 1 lw 2 lc rgb "black"
 
     set xyplane 0
-
-    set xlabel "Percentage of substitutions" rotate parallel font "Verdana-Bold,12" offset 0,-1,0
-    set ylabel "Fraction of block permutations" rotate parallel font "Verdana-Bold,12" offset 1
+    set xlabel "Percentage of Substitutions \n to Random Alphabet Char" rotate parallel font "Verdana-Bold,12" offset 0,-1,0
+    set ylabel "Number of Blocks \n\n Permuted" rotate parallel font "Verdana-Bold,12" offset 1
     set zlabel "Normalized Compression" rotate parallel font "Verdana-Bold,12" offset -2
     set cblabel 'NC Variation' font "Verdana-Bold,12"
     set xtics font "Verdana-Bold,10" offset 0,-1,0
     set ztics font "Verdana-Bold,10" offset -1
     set ytics font "Verdana-Bold,9" offset -1
     set cbtics font "Verdana-Bold,10" offset -1
+    set view 60,10
 
     set datafile separator "\t"
+    set title noenhanced
     set title "Variation of NC with increase edition and Permutation of a String" font "Verdana-Bold,12"
     set palette defined (0 "#0048ff",30 "#00ffff",55 "#ffff00", 70 "#ffcc00",90 "#ff8000",100 "#ff0000",101 "#b50000")    
     splot "stringEdition.txt" with pm3d notitle
@@ -343,11 +348,6 @@ if [[ "$PVNC" -eq "1" ]];
     then
     cp ../resultText/Parvovirus_virus_nc.txt ./Parvovirus_virus_nc.txt
 
-    # cd .. ;
-    # ./tm --mutateVirus | tail -n +2 > virus_var2.txt;
-    # mv virus_var2.txt ./scripts/virus_var2.txt;
-    # cd scripts;
-
 gnuplot << EOF
 reset
     set terminal pdfcairo enhanced color font 'Verdana,8'
@@ -360,7 +360,7 @@ reset
     set key outside horiz center top
     set tics nomirror out scale 0.75
     set xrange [0:100] 
-    set yrange [0:6000]
+    set yrange [1:7000]
     set zrange [0:1.1]
     set cbrange [0:1]
 
@@ -374,17 +374,19 @@ reset
     set xzeroaxis lt 1 lw 2 lc rgb "black"
 
     set xyplane 0
-    
-    set xlabel "Percentage of substitutions" rotate parallel font "Verdana-Bold,12" offset 0,-1,0
-    set ylabel "Fraction of block permutations" rotate parallel font "Verdana-Bold,12" offset 1
-    set zlabel "Normalized Compression" rotate parallel font "Verdana-Bold,12" offset -2
-    set cblabel 'NC Variation' font "Verdana-Bold,12"
+    set logscale y 2
+    set view 60,10
+    set xlabel "Percentage of Substitutions \n to Fixed Nucleotide" rotate parallel font "Verdana-Bold,10" offset 0,-1,0
+    set ylabel "Number of Blocks \n\n Permuted" rotate parallel font "Verdana-Bold,10" offset 0
+    set zlabel "Normalized Compression" rotate parallel font "Verdana-Bold,10" offset -2
+    set cblabel 'NC Variation' font "Verdana-Bold,10"
     set xtics font "Verdana-Bold,10" offset 0,-1,0
     set ztics font "Verdana-Bold,10" offset -1
     set ytics font "Verdana-Bold,9" offset -1
     set cbtics font "Verdana-Bold,10" offset -1
     set datafile separator "\t"
     set palette defined (0 "#0048ff",30 "#00ffff",55 "#ffff00", 70 "#ffcc00",90 "#ff8000",100 "#ff0000",101 "#b50000") 
+    set title noenhanced
     set title "MH201455.1 Human parvovirus B19 isolate BX1, complete genome \n NC variation with Edition and Permutations" font "Verdana-Bold,12"
     splot "Parvovirus_virus_nc.txt"  with pm3d notitle
 
@@ -395,7 +397,7 @@ rm Parvovirus_virus_nc.txt;
 fi
 
 # # ==============================================================================
-# # Herpes virus Profile in article
+# # Herpes simplex virus Profile in article
 # # ==============================================================================
 
 if [[ "$HVNC" -eq "1" ]];
@@ -414,7 +416,7 @@ reset
     set key outside horiz center top
     set tics nomirror out scale 0.75
     set xrange [0:100] 
-    set yrange [0:160000]
+    set yrange [1:160000]
     set zrange [0:1.1]
     set cbrange [0:1]
     set rmargin 10
@@ -426,20 +428,23 @@ reset
     
     set yzeroaxis lt 1 lw 2 lc rgb "black"
     set xzeroaxis lt 1 lw 2 lc rgb "black"
-
-    set xyplane 0
     
-    set xlabel "Percentage of substitutions" rotate parallel font "Verdana-Bold,12" offset 0,-1,0
-    set ylabel "Fraction of block permutations" rotate parallel font "Verdana-Bold,12" offset 1
-    set zlabel "Normalized Compression" rotate parallel font "Verdana-Bold,12" offset -2
-    set cblabel 'NC Variation' font "Verdana-Bold,12"
+    set logscale y 2
+    set xyplane 0
+    set view 60,10
+    set xlabel "Percentage of Substitutions \n to Fixed Nucleotide" rotate parallel font "Verdana-Bold,10" offset 0,-1,0
+    set ylabel "Number of Blocks \n\n Permuted" rotate parallel font "Verdana-Bold,10" offset 0
+    set zlabel "Normalized Compression" rotate parallel font "Verdana-Bold,10" offset -2
+    set cblabel 'NC Variation' font "Verdana-Bold,10"
+    set cblabel 'NC Variation' font "Verdana-Bold,10"
     set xtics font "Verdana-Bold,10" offset 0,-1,0
     set ztics font "Verdana-Bold,10" offset -1
     set ytics font "Verdana-Bold,9" offset -1
     set cbtics font "Verdana-Bold,10" offset -1
 
     set datafile separator "\t"
-    set palette defined (0 "#0048ff",30 "#00ffff",55 "#ffff00", 70 "#ffcc00",90 "#ff8000",100 "#ff0000",101 "#b50000") 
+    set palette defined (0 "#0048ff",30 "#00ffff",55 "#ffff00", 70 "#ffcc00",90 "#ff8000",100 "#ff0000",101 "#b50000")
+    set title noenhanced
     set title "Z86099.2 Herpes simplex virus type 2 (strain HG52), complete genome \n NC variation with Edition and Permutations" font "Verdana-Bold,12"
     splot "Herpes_simplex_virus_nc.txt"  with pm3d notitle
 
@@ -448,4 +453,61 @@ EOF
 mv Herpes.pdf ../resultPlots;
 rm Herpes_simplex_virus_nc.txt;
 
+fi
+
+# # ==============================================================================
+# # Microplitis demolitor virus Profile in article
+# # ==============================================================================
+
+if [[ "$MVNC" -eq "1" ]];
+    then
+    cp ../resultText/Microplitis_demolitor_virus_nc.txt ./Microplitis_demolitor_virus_nc.txt
+
+
+gnuplot << EOF
+reset
+    set terminal pdfcairo enhanced color font 'Verdana,8'
+    set size 0.98,1
+    set output "Microplitis.pdf"
+    set boxwidth 1
+    set size ratio 0.6
+    
+    set style line 101 lc rgb '#000000' lt 1 lw 3
+    set key outside horiz center top
+    set tics nomirror out scale 0.75
+    set xrange [0:100] 
+    set yrange [1:35000]
+    set zrange [0:1.1]
+    set cbrange [0:1]
+
+    set grid xtics lt -1 
+    set grid ytics lt -1
+    set grid ztics lt -1
+    set grid cbtics lt -1
+    set border 3 front ls 101    
+    
+    set yzeroaxis lt 1 lw 2 lc rgb "black"
+    set xzeroaxis lt 1 lw 2 lc rgb "black"
+    
+    set logscale y 2
+    set xyplane 0
+    set view 60,10
+    set xlabel "Percentage of Substitutions \n to Fixed Nucleotide" rotate parallel font "Verdana-Bold,10" offset 0,-1,0
+    set ylabel "Number of Blocks \n\n Permuted" rotate parallel font "Verdana-Bold,10" offset 0
+    set zlabel "Normalized Compression" rotate parallel font "Verdana-Bold,10" offset -2
+    set cblabel 'NC Variation' font "Verdana-Bold,10"
+    set xtics font "Verdana-Bold,10" offset 0,-1,0
+    set ztics font "Verdana-Bold,10" offset -1
+    set ytics font "Verdana-Bold,9" offset -1
+    set cbtics font "Verdana-Bold,10" offset -1
+    set datafile separator "\t"
+    set palette defined (0 "#0048ff",30 "#00ffff",55 "#ffff00", 70 "#ffcc00",90 "#ff8000",100 "#ff0000",101 "#b50000") 
+    set title noenhanced
+    set title "NC_007044.1 Microplitis demolitor bracovirus segment O, complete genome \n NC variation with Edition and Permutations" font "Verdana-Bold,12"
+    splot "Microplitis_demolitor_virus_nc.txt"  with pm3d notitle
+
+EOF
+
+mv Microplitis.pdf ../resultPlots;
+rm Microplitis_demolitor_virus_nc.txt;
 fi

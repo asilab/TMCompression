@@ -347,7 +347,7 @@ Args parseArgs (int argc, char **argv){
         std::cerr << "Editing/Permutating Virus DNA sequence and obtaining NC results..." <<std::endl;
         
         std::string virus_file_path;
-        std::cout << "Insert path of genome sequence :"; std::cin >> virus_file_path;
+        std::cerr << "Insert path of genome sequence :"; std::cin >> virus_file_path;
         nc_substitution_permutate_sequence(true, virus_file_path);
 
         exit(0);

@@ -14,7 +14,7 @@ std::pair<std::vector<unsigned int>,unsigned int> read_virus_file(std::string vi
 std::pair<std::vector<unsigned int>,unsigned int>  getinputContent(const std::string& str);
 
 //permutation of sequence:
-std::vector <std::vector <unsigned int>> permutate_vector(const std::vector <unsigned int>& edited_vector, const unsigned int& add_value);
+std::vector <std::vector <unsigned int>> permutate_vector(const std::vector <unsigned int>& edited_vector);
 std::vector <std::vector <unsigned int>> divide_to_chunks_vector(const std::vector <unsigned int>& edited_vector, unsigned int& divisions);
 std::vector <unsigned int> shuffle_vector(const std::vector <std::vector <unsigned int>>& chunked_vector);
 //NC computation:
