@@ -12,11 +12,12 @@
 #include <iostream>
 #include <algorithm>
 #include <random>
+
 #include "traversal.h"
+#include "tmId.h"
 
 using std::uniform_int_distribution;
 
-using TmId = unsigned long long;
 using RecordId = unsigned int;
 using State = unsigned int;
 using Char = unsigned int;

@@ -83,8 +83,8 @@ CompressionResultsData tm(
     unsigned int num_iterations,
     const std::vector <unsigned int>& kvector,
     TraversalStrategy strategy,
-    unsigned long long traversal_len,
-    unsigned long long traversal_offset,
+    TmId traversal_len,
+    TmId traversal_offset,
     bool verbose) {
       
 
@@ -103,7 +103,7 @@ CompressionResultsData tm(
         traversal_len = tm_cardinality(states, alphabet_size);
       }
 
-      unsigned int counter = 0;
+      TmId counter = 0;
       do {
         
         auto indAndmetrics = run_machine(machine, bestMkvTableCompression, num_iterations);
@@ -208,8 +208,8 @@ CompressionResultsData multicore_monte_carlo(
 template <typename F>
 CompressionResultsData multicore_sequential_partition(
       F f,
-      unsigned long long traversal_len,
-      unsigned long long traversal_offset,
+      TmId traversal_len,
+      TmId traversal_offset,
       unsigned int threads,
       bool verbose) {
   // split work in partitions
@@ -265,8 +265,8 @@ CompressionResultsData tm_multicore(
     unsigned int num_iterations,
     const std::vector<unsigned int> &kvector,
     TraversalStrategy strategy,
-    unsigned long long traversal_len,
-    unsigned long long traversal_offset,
+    TmId traversal_len,
+    TmId traversal_offset,
     bool verbose,
     unsigned int threads){
     if (threads < 2) {
@@ -314,15 +314,17 @@ void tm_dynamical_profile(
   
   machine.stMatrix.set_by_index(tm_number);    
   machine.reset_tape_and_state();
-  
-  for (auto i = 0u; i < num_iterations -1 ; ++i){
+  auto i=0u;
+  while( (machine.turingTape.ind_right - machine.turingTape.ind_left)< num_iterations ){
     normalizedCompressionMarkovTable.mrkvTable.reset();
     machine.act(); //importante ser antes
     if(i%division==0){
       indxMetrics.metrics = normalizedCompressionMarkovTable.update(machine.turingTape);
       data.append_metrics(indxMetrics);
     }
+    ++i;
   }
+
   data.print_profile_data(division);
 }  
 
@@ -348,11 +350,10 @@ void tm_profile(
   NormalizedCompressionMarkovTable normalizedCompressionMarkovTable(k , alphabet_size);
   machine.stMatrix.set_by_index(tm_number); 
   machine.reset_tape_and_state();
-  for (auto i = 0u; i < num_iterations -1 ; ++i){
+  while( (machine.turingTape.ind_right - machine.turingTape.ind_left)< num_iterations ){
     normalizedCompressionMarkovTable.mrkvTable.reset();
     machine.act(); //importante ser antes
   }
-
   data = normalizedCompressionMarkovTable.profile_update_nc_mk_table(machine.turingTape, division);
   data.print_profile_data(division);
 }
@@ -446,7 +447,6 @@ void tm_print_tape(
   unsigned int num_iterations,
   TmId tm_number)
   {
-  
   TuringMachine machine(states, alphabet_size);    
   machine.stMatrix.set_by_index(tm_number); 
   machine.reset_tape_and_state();

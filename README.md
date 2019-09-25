@@ -6,7 +6,7 @@
 
 # Simple Turing Machines, Statistic Complexity vs Algorithmic Complexity
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/9d4bb3ca2a0b4dd7a44503fc405b5b1c)](https://app.codacy.com/app/jorgeMFS/TMCompression?utm_source=github.com&utm_medium=referral&utm_content=jorgeMFS/TMCompression&utm_campaign=Badge_Grade_Dashboard)
-[![Build Status](https://travis-ci.org/jorgeMFS/TMCompression.svg?branch=master)](https://travis-ci.org/jorgeMFS/TMCompression)
+[![Build Status](https://travis-ci.org/asilab/TMCompression.svg?branch=master)](https://travis-ci.org/asilab/TMCompression)
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](LICENSE)
 
 ## INSTALL
@@ -44,7 +44,7 @@ Arguments to set flags:
 
 --verbose	Indicates programs that will receive inputs in a verbose form.
 
---brief	Indicates programs that will receive inputs in a brief form.
+--brief	        Indicates programs that will receive inputs in a brief form.
 
 --tmverbose	Indicates programs that tm output will be send to the user.
 
@@ -55,6 +55,8 @@ Arguments to set flags:
 --profile	Indicates programs that will receive through the tm number through the flag tm and will create a profile of that turing
 
 --dynprofile	Indicates programs that will receive through the tm number through the flag tm and will create a dynamical temporal profile of that turing
+
+--mutate        Indicates programs to print the nc of the mutation of a string starting with all zeros and performing mutations until its 100% mutated
 
 --StMatrix	Indicates programs to print the StateMatrix of a given TMs
 
@@ -68,7 +70,7 @@ Mandatory  Arguments:
 
 -k, --context	k indexes to consider as a context to fill the Markov Table.
 
--t, --tm	Speciffy turing to obtain results, can only be activated with --profile flag.
+-t, --tm	Specifies turing to obtain results, can only be activated with --profile flag.
 
 Other Optional Arguments:
 
@@ -115,7 +117,12 @@ Run specific tm and print tape
 ./tm --brief --printTape -s 2 -a 2 -i 100 -t 1
 Run StMatrix of the tm
 ./tm --brief --StMatrix -s 2 -a 2 -t 1
-
+----------------
+Mutate (0-100%) string of all zeros specific tm and print tape
+./tm --mutate
+----------------
+Obtain nc of Virus genome sequence with substitutions and permutations
+echo "./resultText/Parvovirus_virus_genome.txt" | ./tm --mutateVirus
 ```
 
 ## RECREATE PLOTS IN ARTICLE
@@ -125,13 +132,21 @@ To recreate the plots shown in the article (bellow example):
 chmod +x run.sh;
 bash run.sh;
 ```
-<b>Profile Plots:</b>
-
-![alt-text-1](icons/desenho.png "Profiles" ) 
-
+<b>Virus and String edition and Permutation Plots:</b>
+<p align="center">
+<img src="icons/Fig1.png" alt="TMs" width="400" border="0" /></p>
+<br>
+<p align="center">
+</p>
 <b>TMs Plots:</b>
 <p align="center">
-<img src="icons/TMs.png" alt="TMs" width="600" border="0" /></p>
+<img src="icons/Fig2.png" alt="TMs" width="400" border="0" /></p>
+<br>
+<p align="center">
+</p>
+<b>Profile Plots:</b>
+<p align="center">
+<img src="icons/Fig3.png" alt="TMs" width="400" border="0" /></p>
 <br>
 <p align="center">
 </p>

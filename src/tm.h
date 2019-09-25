@@ -35,8 +35,8 @@ CompressionResultsData tm(
     unsigned int num_iterations,
     const std::vector <unsigned int>& kvector,
     TraversalStrategy strategy = TraversalStrategy::SEQUENTIAL,
-    unsigned long long traversal_len = 0,
-    unsigned long long traversal_offset = 0,
+    TmId traversal_len = 0,
+    TmId traversal_offset = 0,
     bool verbose = false);
 
 
@@ -127,8 +127,8 @@ CompressionResultsData tm_multicore(
     unsigned int num_iterations,
     const std::vector<unsigned int> &kvector,
     TraversalStrategy strategy = TraversalStrategy::SEQUENTIAL,
-    unsigned long long traversal_len = 0,
-    unsigned long long traversal_offset = 0,
+    TmId traversal_len = 0,
+    TmId traversal_offset = 0,
     bool verbose = false,
     unsigned int threads = 2);
 

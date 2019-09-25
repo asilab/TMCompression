@@ -21,9 +21,8 @@
 */
 
 int main (int argc, char **argv){
-
   Args argument = parseArgs(argc,argv);
-
+  
   auto data = tm_multicore(
     argument.states,
     argument.alphabet_size,

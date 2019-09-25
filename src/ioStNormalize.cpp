@@ -18,12 +18,12 @@
 int main(int argc, char *argv[])
 {   
     const std::string& input= argv[1];
-
+    
     std::ifstream in;
     in.open(input);
     std::string line;
     
-    std::vector <unsigned long long> tmVector;
+    std::vector <TmId> tmVector;
     std::vector <unsigned int> kVector;
     std::vector <unsigned int> itVector;
     std::vector <unsigned int> ampVector;
@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
 
         while(std::getline(in, line)) //get 1 row as a string
         {
-            unsigned long long tm;
+            _uint128_t tm;
             unsigned int k;
             unsigned int iterations;
             unsigned int amplitude;

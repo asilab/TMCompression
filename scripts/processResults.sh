@@ -28,7 +28,7 @@ if [ $# -ne 8 ]; then
     echo "If 7th Argument == 1:Creates plot of all TM with #Alphabet=2, #States=5 with MonteCarlo Algorithm";
     echo "bash processResults.sh 0 0 0 0 0 0 1 0";
     echo "";
-    echo "If 8th Argument == 1:Creates plot of all TM with #Alphabet=2, #States=5 with MonteCarlo Algorithm";
+    echo "If 8th Argument == 1:Creates plot of all TM with #Alphabet=2, #States=6 with MonteCarlo Algorithm";
     echo "bash processResults.sh 0 0 0 0 0 0 0 1";
     echo "";
     exit 1;

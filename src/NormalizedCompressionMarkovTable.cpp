@@ -15,14 +15,13 @@ mrkvTable(k, alphabet_size) {}
 
 Metrics NormalizedCompressionMarkovTable::update(const Tape& tape){
 
-    auto b = tape.ind_left - this->mrkvTable.k  + 1 ; // To have k context at the begining    
+    auto b = tape.ind_left - this->mrkvTable.k  + 1 ; // To have k context at the beginning    
     auto e = tape.ind_right - this->mrkvTable.k;
 
     Metrics metrics;
     metrics.k = this->mrkvTable.k;
 
     double value = 0;
-    
     
     for (auto it = b; it != e; ++it) {
         //tape.print();
@@ -41,13 +40,86 @@ Metrics NormalizedCompressionMarkovTable::update(const Tape& tape){
     return  metrics; 
 }
 
+
+Metrics NormalizedCompressionMarkovTable::update_string(const std::vector<unsigned int>& string_vector){
+    CompressionResultsData data;
+    Metrics metrics;
+    double value = 0;
+    unsigned int diff_indexes = string_vector.size();
+    auto new_random_str(string_vector);
+    
+    for (auto i = 0u; i < this->mrkvTable.k; i++)
+        new_random_str.insert(new_random_str.begin(),0);
+    
+    auto b = begin(new_random_str) + 1 ; // To have k context at the beginning    
+    auto e = end(new_random_str) - this->mrkvTable.k;
+
+    for (auto it = b; it != e; ++it) {
+        auto indxvalue = this->mrkvTable.at(&*it) + 1;
+        auto subvectorOfMarkovTable = this->mrkvTable.getLine(&*it); 
+        std::transform(subvectorOfMarkovTable.begin(), subvectorOfMarkovTable.end(), subvectorOfMarkovTable.begin(), bind2nd(std::plus<int>(), 1)); 
+        double logaritm = calculateLog(indxvalue, sum_all_elements_vector(subvectorOfMarkovTable));
+        value += logaritm;
+        this->mrkvTable.at(&*it)+=1;
+    }
+    metrics.k = this->mrkvTable.k;
+    metrics.selfCompression = value;
+    metrics.amplitude = diff_indexes;
+    metrics.normalizedCompression = (value/normalization_base(diff_indexes, this->mrkvTable.alphSz));
+    return  metrics;
+}
+
+
+
+
+
+
+
 //obtain all values of specific table
 CompressionResultsData NormalizedCompressionMarkovTable::profile_update_nc_mk_table(const Tape& tape, unsigned int division){
     auto b = begin(tape.tape) + tape.ind_left- this->mrkvTable.k  + 1 ; // To have k context at the beginning    
     auto e = begin(tape.tape) + tape.ind_right - this->mrkvTable.k;
     CompressionResultsData data;
 
-    unsigned int diff_indexes= (tape.ind_right) - (tape.ind_left + 1);
+    unsigned int diff_indexes = (tape.ind_right) - (tape.ind_left + 1);
+    unsigned int counter=0;
+
+    for (auto it = b; it != e; ++it) {
+        ++counter;
+        auto indxvalue = this->mrkvTable.at(&*it) + 1;
+        auto subvectorOfMarkovTable = this->mrkvTable.getLine(&*it); 
+        std::transform(subvectorOfMarkovTable.begin(), subvectorOfMarkovTable.end(), subvectorOfMarkovTable.begin(), bind2nd(std::plus<int>(), 1)); 
+        double logaritm = calculateLog(indxvalue    ,   sum_all_elements_vector(subvectorOfMarkovTable));
+        this->mrkvTable.at(&*it)+=1;
+        if(diff_indexes<=5){       
+            data.amplitude.push_back(counter);
+            data.self_compression.push_back(logaritm);
+            data.normalized_compression.push_back(logaritm/normalization_profile(this->mrkvTable.alphSz));
+        }
+        else if (counter % division ==0){
+            data.amplitude.push_back(counter);
+            data.self_compression.push_back(logaritm);
+            data.normalized_compression.push_back(logaritm/normalization_profile(this->mrkvTable.alphSz));
+        }
+    }
+    return  data; 
+}
+
+
+
+
+
+
+CompressionResultsData NormalizedCompressionMarkovTable::profile_update_nc_mk_table_random_string(const std::vector<unsigned int>& random_str, unsigned int division){
+    auto new_random_str(random_str);
+    for (auto i = 0u; i < this->mrkvTable.k; i++)
+        new_random_str.insert(new_random_str.begin(),0);
+
+    auto b = begin(new_random_str) + 1 ; // To have k context at the beginning    
+    auto e = end(new_random_str) - this->mrkvTable.k;
+    CompressionResultsData data;
+
+    unsigned int diff_indexes = new_random_str.size();
     unsigned int counter=0;
 
     for (auto it = b; it != e; ++it) {

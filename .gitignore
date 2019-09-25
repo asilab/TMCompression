@@ -39,7 +39,10 @@ tm
 AC
 ioStNormalize
 TMsimulator
+goose
+ac
 
 #Other Dependencies installed
 goose/*
 ac/*
+resultText/*

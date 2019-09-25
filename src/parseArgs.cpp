@@ -9,15 +9,18 @@
 #include <getopt.h>
 #include <cstring>
 #include <iostream>
-
+#include <sstream>
 #include "util.h"
 #include "parseArgs.h"
 #include "tm.h"
+#include "tmId.h"
+#include "randomString.h"
+
 
 Args parseArgs (int argc, char **argv){
     Args argument {};    
     opterr = 0;
-
+    static int mutate_flag;
     static int verbose_flag;
     static int replicate_flag;
     static int tm_verbose_flag;
@@ -26,8 +29,10 @@ Args parseArgs (int argc, char **argv){
     static int tm_dynamical_profile_flag;
     static int tm_print_flag;
     static int StMatrix_flag;
+    static int mutate_virus_flag;
+
     char *end;
-    long long int correctInput;
+    TmId correctInput;
     while (1)
     {
         static struct option long_options[] =
@@ -41,6 +46,8 @@ Args parseArgs (int argc, char **argv){
             {"profile", no_argument, &tm_profile_flag,1},
             {"printTape", no_argument, &tm_print_flag,1},
             {"StMatrix", no_argument, &StMatrix_flag,1},
+            {"mutate", no_argument, &mutate_flag,1},
+            {"mutateVirus", no_argument, &mutate_virus_flag,1},
             {"help",      no_argument,      0, 'h'},
             {"version",      no_argument,      0, 'v'},
 
@@ -98,7 +105,12 @@ Args parseArgs (int argc, char **argv){
             std::cout << "--StMatrix" << "\t" 
             << "Indicates programs to print the StateMatrix of a given TMs" 
             << std::endl<< std::endl;
-
+            std::cout << "--mutate" << "\t" 
+            << "Indicates programs to print the nc of the mutation of a string (starting with all zeros and ending with all ones) and performing mutations until its 100% mutated" 
+            << std::endl<< std::endl;
+            std::cout << "--mutateVirus" << "\t" 
+            << "Indicates programs perform the edition and permutation of a virus DNA sequence and print NC results" 
+            << std::endl<< std::endl;
 
             std::cout << "Mandatory  Arguments:"<< std::endl << std::endl;
             std::cout << "-s" << ", " <<"--number_states" << "\t" << "Number of States the Turing Machine has."<< std::endl << std::endl;
@@ -145,8 +157,15 @@ Args parseArgs (int argc, char **argv){
             std::cout << "----------------" << std::endl;
             std::cout <<"Run specific tm and print tape" << std::endl;
             std::cout << "./tm --brief --printTape -s 2 -a 2 -i 100 -t 1"<< std::endl;
+            std::cout << "----------------" << std::endl;
             std::cout <<"Run StMatrix of the tm" << std::endl;
             std::cout << "./tm --brief --StMatrix -s 2 -a 2 -t 1"<< std::endl;
+            std::cout << "----------------" << std::endl;
+            std::cout <<"Obtain nc of the substitutions and permutations of a string " << std::endl;
+            std::cout <<"/tm --mutate" << std::endl;
+            std::cout << "----------------" << std::endl;
+            std::cout <<"Obtain nc of Virus genome sequence with substitutions and permutations" << std::endl;
+            std::cout <<"echo \"./resultText/Parvovirus_virus_genome.txt\" | ./tm --mutateVirus" << std::endl;
             exit (0);
 
         case 'v':
@@ -160,7 +179,7 @@ Args parseArgs (int argc, char **argv){
                 exit(0);
             }
             else if (correctInput<=0){
-                fprintf (stderr, "-s/--number_states value was set to %lli, must be an int larger than 0.\n",correctInput); 
+                std::cerr << "-s/--number_states value was set to " << correctInput <<", must be an int larger than 0.\n";
                 exit(0);
             }
             else argument.states = correctInput;
@@ -175,7 +194,7 @@ Args parseArgs (int argc, char **argv){
                 exit(0);
             }
             else if (correctInput<=0){
-                fprintf (stderr, "-a/--alphabet_size value was set to %lli, must be an int larger than 0.\n",correctInput); 
+                std::cerr << "-a/--alphabet_size value was set to " << correctInput <<", must be an int larger than 0.\n";
                 exit(0);
             }
             else argument.alphabet_size = correctInput;
@@ -190,7 +209,7 @@ Args parseArgs (int argc, char **argv){
                 exit(0);
             }
             else if (correctInput<=0){
-                fprintf (stderr, "-i/--iterations value was set to %lli, must be an int larger than 0.\n",correctInput); 
+                std::cerr << "-i/--iterations value was set to " << correctInput <<", must be an int larger than 0.\n";
                 exit(0);
             }
             else argument.numIt = correctInput;
@@ -220,7 +239,7 @@ Args parseArgs (int argc, char **argv){
                             exit(0);
                         }
                         else if (correctInput<=0){
-                            fprintf (stderr, "-k/--context value was set to %lli, must be an int larger than 0.\n",correctInput); 
+                            std::cerr << "-k/--context value was set to " << correctInput <<", must be an int larger than 0.\n";
                             exit(0);
                         }
                         else {
@@ -239,7 +258,7 @@ Args parseArgs (int argc, char **argv){
                     exit(0);
                     }
                 else if (correctInput<=0){
-                    fprintf (stderr, "-k/--context value was set to %lli, must be an int larger than 0.\n",correctInput); 
+                    std::cerr << "-k/--context value was set to " << correctInput <<", must be an int larger than 0.\n";
                     exit(0);
                 }
                 else {
@@ -258,21 +277,10 @@ Args parseArgs (int argc, char **argv){
         }
         case 't':
         {
-            correctInput = strtol(optarg, &end, 10);
-            
-            if (*end != '\0') {
-                std::cerr << "Invalid input for -t/--tm.\n";
-                exit(0);
-            }
-            else if (correctInput<0){
-                fprintf (stderr, "-t/--tm value was set to %lli, must be an int larger than 0.\n",correctInput); 
-                exit(0);
-            }
-            else{
-                argument.tm.first = correctInput;
-                argument.tm.second = true;
-            } 
-
+          	std::string str(optarg);
+            TmId tmInput = string_to_uint128(str);
+            argument.tm.first = tmInput;
+            argument.tm.second = true;
             break;
         }
         case 'j':
@@ -283,7 +291,7 @@ Args parseArgs (int argc, char **argv){
                 exit(0);
             }
             else if (correctInput<=0){
-                fprintf (stderr, "-j/--jobs value was set to %lli, must be an int larger than 0.\n",correctInput); 
+                std::cerr << "-j/--jobs value was set to " << correctInput <<", must be an int larger than 0.\n";
                 exit(0);
             }
             else argument.jobs = correctInput;
@@ -335,7 +343,20 @@ Args parseArgs (int argc, char **argv){
         printf ("%s ", argv[optind++]);
         putchar ('\n');
     }
+    if (mutate_virus_flag && argument.states==0 && argument.alphabet_size==0 && argument.numIt==0 && argument.k.empty() && argument.tm.second==false){
+        std::cerr << "Editing/Permutating Virus DNA sequence and obtaining NC results..." <<std::endl;
+        
+        std::string virus_file_path;
+        std::cerr << "Insert path of genome sequence :"; std::cin >> virus_file_path;
+        nc_substitution_permutate_sequence(true, virus_file_path);
 
+        exit(0);
+    }
+    if (mutate_flag && argument.states==0 && argument.alphabet_size==0 && argument.numIt==0 && argument.k.empty() && argument.tm.second==false){
+        std::cerr << "Editing string and obtaining NC results..." <<std::endl;
+        nc_substitution_permutate_sequence(false, "");
+        exit(0);
+    }
     if (tm_number_growth_flag && argument.states==0 && argument.alphabet_size==0 && argument.numIt==0 && argument.k.empty() && argument.tm.second==false){
         std::cerr << "TM growth for alphabet = 2 and Max number of states = 100" <<std::endl;
         tm_growth_with_cardinality(100);
@@ -422,7 +443,7 @@ Args parseArgs (int argc, char **argv){
     }
 
     for (auto kval: argument.k){
-        if(ipow<unsigned long long>(argument.alphabet_size, kval) >= ipow<unsigned long long>(2,28)){
+        if(ipow<TmId>(argument.alphabet_size, kval) >= ipow<TmId>(2,28)){
             fprintf (stderr, "k/context (%u) and Alphabet size/a (%zu) is too large..\n", kval, argument.alphabet_size);
             fprintf (stderr, " please consider a size of a^k (%zu^%u) smaller than 2^28..\n", argument.alphabet_size,kval);
             exit(0);
