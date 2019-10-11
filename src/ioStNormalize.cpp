@@ -14,7 +14,7 @@
 #include <algorithm>
 #include <cmath>
 #include <iomanip>
-
+#include"tmId.h"
 int main(int argc, char *argv[])
 {   
     const std::string& input= argv[1];
