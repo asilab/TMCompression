@@ -8,11 +8,10 @@ using Rng = std::minstd_rand;
 bool is_string_char_number(const std::string& s);
 StateMatrix string_to_state_matrix(std::string string_state_matrix, unsigned int number_of_states, unsigned int alphabet_size);
 StateMatrix splitString(const std::string& str, int splitLength, unsigned int number_of_states, unsigned int alphabet_size);
-std::vector<Metrics> mutate_state_matrix(std::string state_matrix_string,unsigned int states, unsigned int  alphabet_size,unsigned int numIt, bool print);
+std::vector<Metrics> mutate_state_matrix(const std::string& state_matrix_string,unsigned int states, unsigned int  alphabet_size,unsigned int numIt, bool print);
 TuringRecord mutateRule(TuringRecord &rule);
 std::vector<unsigned int> recreate_tm(StateMatrix stM, unsigned int states, unsigned int  alphabet_size, unsigned int numIt);
-void test();
-std::vector<Metrics> permutate_state_matrix(std::string state_matrix_string,unsigned int states, unsigned int  alphabet_size,unsigned int numIt, bool print );
+std::vector<Metrics> permutate_state_matrix(const std::string& state_matrix_string,unsigned int states, unsigned int  alphabet_size,unsigned int numIt, bool print );
 std::pair<std::vector<unsigned int>,StateMatrix>random_tm(Rng rng, unsigned int states, unsigned int  alphabet_size, unsigned int numIt);
 std::pair<std::vector<double>,StateMatrix> mutate_rules_once_at_a_time(StateMatrix stM, unsigned int states, unsigned int  alphabet_size, unsigned int numIt,
                                                                         BestKMarkovTables<NormalizedCompressionMarkovTable>& bestMkvTableCompression);

@@ -8,7 +8,7 @@
 
 
 
-std::vector<Metrics> mutate_state_matrix(std::string state_matrix_string,unsigned int states, unsigned int  alphabet_size,unsigned int numIt, bool print ){
+std::vector<Metrics> mutate_state_matrix(const std::string & state_matrix_string,unsigned int states, unsigned int  alphabet_size,unsigned int numIt, bool print ){
     StateMatrix stM = string_to_state_matrix(state_matrix_string,states,alphabet_size);
     std::vector<unsigned int> kvector{2,3,4,5,6,7,8,9};
     BestKMarkovTables<NormalizedCompressionMarkovTable> bestMkvTableCompression(kvector, alphabet_size);
@@ -47,7 +47,7 @@ std::vector<Metrics> mutate_state_matrix(std::string state_matrix_string,unsigne
     return m_vector;
 }
 
-std::vector<Metrics> permutate_state_matrix(std::string state_matrix_string,unsigned int states, unsigned int  alphabet_size,unsigned int numIt, bool print ){
+std::vector<Metrics> permutate_state_matrix(const std::string& state_matrix_string,unsigned int states, unsigned int  alphabet_size,unsigned int numIt, bool print ){
   StateMatrix stM = string_to_state_matrix(state_matrix_string,states,alphabet_size);
   std::vector<unsigned int> kvector{2,3,4,5,6,7,8,9};
   BestKMarkovTables<NormalizedCompressionMarkovTable> bestMkvTableCompression(kvector, alphabet_size);
@@ -199,9 +199,8 @@ Metrics real_nc_evolution(unsigned int number_tm_it,unsigned int tm_tape_iterati
   bestMkvTableCompression.reset();
 
   auto rules = uniform_int_distribution<unsigned int>(0, (alphabet_size * states)- 1);
-  unsigned int rule_index;
   for (auto counter = 0u; counter < number_tm_it; ++counter){
-    rule_index = rules(rng);
+    unsigned int rule_index = rules(rng);
     auto tr_original = stMatrix.get_element(rule_index);
     auto tr_random = set_random(rng, states, alphabet_size);
     while(tr_original==tr_random){
@@ -245,63 +244,6 @@ Metrics real_nc_evolution(unsigned int number_tm_it,unsigned int tm_tape_iterati
 // 7) print tape and state matrix;
 }
 
-
-void test(){
-  //evolve_multiple_tms_graph(3200,8000,10,2);
-  real_nc_evolution(200000,5000, 10, 2,false);
-  exit(55);
-  evolve_multiple_tms2(2000,5000,10,2);
-  exit(11);
-  //
-  //
-  evolve_multiple_tms(200,100,10,2);
-  exit(42);
-  //iterations_tape=5000;
-  //number_of_tm_improves = 1000;
-  //instantiations=2000;
-
-  // 334591263821204809254187140655293821    126123103124019023001102002002105026017008120104021105009009
-  // 132033080438182743357672637402056928    024109027011118114108109107126008013028027129020010110026113
-  // 358241904339147102318412945770129347    127109125021124117120002123102015027002012022116125123127029
-  // 221047099777928027565085204255597710    005011106129106002127120024026020023123001103107120105022006
-  std::vector<std::string> state_matrices{"126123103124019023001102002002105026017008120104021105009009",
-                                          "024109027011118114108109107126008013028027129020010110026113",
-                                          "127109125021124117120002123102015027002012022116125123127029",
-                                          "005011106129106002127120024026020023123001103107120105022006" };
-  std::vector<std::vector<Metrics>> list_tm_rules_metrics;
-
-  unsigned int s = 10;
-  unsigned int  alph = 2;
-  unsigned int iterations = 50000;
-
-  for (auto st:state_matrices){
-      list_tm_rules_metrics.push_back(mutate_state_matrix(st, s, alph, iterations,false));
-  }
-
-  std::vector<unsigned int> bestRules;
-  
-  for (auto index =0u; index< list_tm_rules_metrics[0].size();++index){
-    double nc = 1.5;
-
-    unsigned int tm_rule;
-    for (auto index2=0u;index2< list_tm_rules_metrics.size();++index2){
-        if (list_tm_rules_metrics[index2][index].normalizedCompression < nc){
-          tm_rule=index2;
-          nc = list_tm_rules_metrics[index2][index].normalizedCompression;
-        }
-    }
-    bestRules.push_back(tm_rule);
-  }
-  unsigned int index=0;
-  std::string str_new_state_matrix="";
-  for (unsigned int letter=0u; letter < state_matrices[0].size(); letter = letter+3){
-    str_new_state_matrix+= state_matrices[bestRules[index]].substr(letter,3);
-    ++index;
-  }
-  std::cout << "string state matrix : " << str_new_state_matrix << std::endl;
-  mutate_state_matrix(str_new_state_matrix, s, alph, iterations,false);
-  permutate_state_matrix(str_new_state_matrix, s, alph, iterations,true);
-}
 
 StateMatrix string_to_state_matrix(std::string string_state_matrix, unsigned int number_of_states, unsigned int alphabet_size){
     if(!(is_string_char_number(string_state_matrix) && (string_state_matrix.size()%(3*number_of_states*alphabet_size)==0) )){
@@ -415,10 +357,8 @@ std::pair<std::vector<double>,StateMatrix> mutate_rules_once_at_a_time(StateMatr
     stM.set_rule(index,element_tr);
   }
   std::vector<double> rule_relevance_vector;
-  double rule_relevance;
-
   for (auto other_rules_avg:all_other_permutation_metrics_avg_per_rule){
-    rule_relevance = baselineTM.normalizedCompression - other_rules_avg.normalizedCompression;
+    double rule_relevance = baselineTM.normalizedCompression - other_rules_avg.normalizedCompression;
     rule_relevance_vector.push_back(rule_relevance); 
   }
   bestMkvTableCompression.reset();
