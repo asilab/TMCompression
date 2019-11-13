@@ -158,12 +158,26 @@ bash run.sh;
 <br>
 <p align="center">
 </p>
+
+```bash
+# Command to create list:
+echo "./resultText/Parvovirus_virus_genome.txt" | ./tm --mutateVirus;
+# Recreate Edition and permutation plots...";
+bash reprArticlePlot.sh 0 0 1 1 1 1;
+```
+
 <b>TMs Plots:</b>
 <p align="center">
 <img src="icons/Fig2.png" alt="TMs" width="400" border="0" /></p>
 <br>
 <p align="center">
 </p>
+
+```bash
+# Recreating plots of Cardinality Growth and TMs...;
+bash processResults.sh 0 1 1 1 1 1 1 1;
+```
+
 <b>Profile Plots:</b>
 <p align="center">
 <img src="icons/Fig3.png" alt="TMs" width="400" border="0" /></p>
@@ -171,11 +185,58 @@ bash run.sh;
 <p align="center">
 </p>
 
+```bash
+# Recreate Plots of Normal and Dynamic Profiles...";
+bash reprArticlePlot.sh 1 1 0 0 0 0;
+```
+<b>Inside and outside Region Plots:</b>
+<p align="center">
+<img src="icons/Fig4.png" alt="TMs" width="400" border="0" /></p>
+<br>
+<p align="center">
+</p>
+
+```bash
+# Recreate Plot of Inside vs Outside region...";
+bash getSampledRegion.sh;
+```
+<b>Method I and II plots:</b>
+<p align="center">
+<img src="icons/Fig5.png" alt="TMs" width="400" border="0" /></p>
+<br>
+<p align="center">
+</p>
+
+```bash
+# Command to create list:
+./tm  --MethodI;
+./tm  --MethodII;
+# Recreate Plots of Method I and II.
+bash evolve_tm_plot.sh Method_I_200;
+bash evolve_tm_plot.sh Method_II_2000;
+```
+
+<b>3D Method II Plots:</b>
+<p align="center">
+<img src="icons/Fig6.png" alt="TMs" width="400" border="0" /></p>
+<br>
+<p align="center">
+</p>
+
+```bash
+# Command to create list:
+./tm  --3DgraphMethodII;
+# Recreate 3D Plot of Method II...
+bash 3d_evolve_graph.sh;
+```
+
+
 Note: This downloads the files Containing the results from running all TMs for a given State and Alphabet Cardinality, since this can take from several minutes to several days. If you wish to recreate the Results use TM program. Example:
 
 ```bash
 ./tm --brief -s 2 -a 4 -i 50000 -k 2:10 -N 30000000 -j 20 -S monte_carlo > 2sts4alp.txt;
 ```
+
 
 ## RUN OTHER SCRIPTS
 There are two main scripts:
