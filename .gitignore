@@ -37,6 +37,7 @@
 #Executable
 tm
 AC
+ioAverage
 ioStNormalize
 TMsimulator
 goose

@@ -17,7 +17,7 @@ struct Args{
     unsigned int numIt = 0;
     std::vector <unsigned int> k; 
     std::pair < TmId,bool> tm = std::make_pair(0ull, false);
-
+    std::string state_matrix_string;
     TraversalStrategy strategy = TraversalStrategy::SEQUENTIAL;
     TmId n = 0;
     unsigned int jobs = 1;

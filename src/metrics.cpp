@@ -18,6 +18,30 @@ void Metrics::print(){
 }
 
 
+Metrics avg_metrics(std::vector<Metrics> vector_metrics){
+    Metrics metrics;
+    unsigned int sum_k = 0;
+    unsigned int sum_amplitude = 0;
+    double sum_selfCompression = 0;
+    double sum_normalizedCompression = 0;
+
+    for (auto a:vector_metrics){
+        sum_k+=a.k;
+        sum_amplitude+=a.amplitude;
+        sum_normalizedCompression+=a.normalizedCompression;
+        sum_selfCompression+=a.selfCompression;
+    }
+    metrics.amplitude = sum_amplitude/vector_metrics.size(); //truncated unsigned int
+    metrics.k = sum_amplitude/vector_metrics.size(); //truncated unsigned int
+    metrics.normalizedCompression= sum_normalizedCompression/vector_metrics.size();
+    metrics.selfCompression= sum_selfCompression/vector_metrics.size();
+    return metrics;
+}
+
+
+
+
+
     
 void CompressionResultsData::append(unsigned int k,
     TmId tmNumber,

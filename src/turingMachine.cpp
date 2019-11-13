@@ -7,7 +7,8 @@
 */
 
 #include "turingMachine.h"
-
+#include <map>
+#include <stdexcept>
 bool TuringRecord::next(unsigned int number_of_states, unsigned int alphabet_size) {
   if (write < alphabet_size - 1) {
     write += 1;
@@ -33,6 +34,19 @@ std::ostream& operator<<( std::ostream& o, const TuringRecord& r) {
   o << "(" << r.write << "," << r.move << "," << r.state << ")";
   return o;
 }
+bool TuringRecord::operator==(const TuringRecord& tr) const {
+    return ((this->move == tr.move) && (this->state==tr.state) && (this->write && tr.write));
+}
+
+
+bool TuringRecord::operator<(const TuringRecord& tr) const {
+    return (this->move + this->state + this->write) < (tr.move + tr.state + tr.write);
+}
+
+std::string TuringRecord::tr_to_string() const{
+  return std::to_string(this->write) + std::to_string(this->move) + std::to_string(this->state);
+}
+
 
 TuringRecord TuringRecord::by_index(RecordId id, unsigned int number_of_states, unsigned int alphabet_size) {
   // order of significance (least to most): character_write -> tape_move -> state
@@ -46,7 +60,19 @@ TuringRecord TuringRecord::by_index(RecordId id, unsigned int number_of_states, 
   auto state = static_cast<State>(rest % nstates);
   return TuringRecord { write, move, state };
 }
+//-----------------------------------------------------------------------------
+TuringRecord set_random(Rng rng,unsigned int number_of_states, unsigned int alphabet_size) {
+  auto write_dist = uniform_int_distribution<Char>(0, alphabet_size - 1);
+  auto state_dist = uniform_int_distribution<State>(0, number_of_states - 1);
+  auto move_dist = uniform_int_distribution<Move>{0, 2};
+  TuringRecord tr;
+  tr.write = write_dist(rng);
+  tr.move = move_dist(rng);
+  tr.state = state_dist(rng);
+  return tr;
+}
 
+//-----------------------------------------------------------------------------
 StateMatrix::StateMatrix(unsigned int number_of_states, unsigned int alphabet_size):
   v(alphabet_size * number_of_states, TuringRecord{0, 0, 0}), nbStates(number_of_states), alphSz(alphabet_size){}
 
@@ -72,6 +98,30 @@ TmId StateMatrix::calculate_index() const {
   return id;
 }
 
+std::vector<TuringRecord> StateMatrix::get_vector() const{
+  return this->v;
+}
+
+std::string StateMatrix::get_state_matrix_string(){
+  std::string state_matrix_string = "";
+  for (auto tr :this->v){
+    state_matrix_string+=tr.tr_to_string();
+  }
+  return state_matrix_string;
+}
+
+TuringRecord StateMatrix::get_element(unsigned int index) const{
+  if (index > this->v.size() - 1){
+    fprintf (stderr,"Invalid index for TM State Matrix : %u\n ", index);
+    exit(1);
+  }
+  return v[index];
+}
+  unsigned int StateMatrix::get_size()const{
+    return this->v.size();
+  }
+
+
 TuringRecord& StateMatrix::at(Char alph, State state){
   return this->v.at(   (   (alph + 1) * this->nbStates   )   -   (   this->nbStates - state  )   );
 }
@@ -87,6 +137,10 @@ bool StateMatrix::next(){
     }
   }
   return false;
+}
+
+void StateMatrix::set_rule(unsigned int index, TuringRecord& tr ) {
+ this->v[index] = tr;
 }
 
 void StateMatrix::print() const{
@@ -211,6 +265,33 @@ void Tape::print() const{
   std::cout<< std::endl;
 } 
 
+
+std::string Tape::print_written_tape(bool print_to_console) const{
+   if(print_to_console){
+     std::cout << "Written  Tape" << std::endl;
+     }
+  std::string written_tape= "";
+  for (auto j = this->tape.begin() + this->ind_left + 1; j != this->tape.begin() + this->ind_right; ++j){    
+      if(print_to_console){
+        std::cout << *j << ' ';
+        }
+      written_tape += std::to_string(*j);
+  }
+  if(print_to_console){
+    std::cout << std::endl;
+  }
+  return written_tape;
+}
+
+std::vector<unsigned int> Tape::get_written_tape() const{
+   std::vector<unsigned int> written_tape;
+  for (auto j = this->tape.begin() + this->ind_left + 1; j != this->tape.begin() + this->ind_right; ++j){    
+     written_tape.push_back(*j);
+  }
+
+  return written_tape;
+}
+
 std::ostream& operator<<( std::ostream& o, const Tape& t) {
   auto start = std::find_if(t.tape.begin(), t.tape.end(), [](auto c) { return c != 0; });
   auto end = std::find_if(t.tape.rbegin(), t.tape.rend(), [](auto c) { return c != 0; }).base() + 1;
@@ -227,6 +308,10 @@ std::ostream& operator<<( std::ostream& o, const Tape& t) {
 TuringMachine::TuringMachine(unsigned int number_of_states, unsigned int alphabet_size):
   state(0), turingTape(), stMatrix(number_of_states,alphabet_size){}
 
+StateMatrix TuringMachine::get_state_matrix() const{
+  return this->stMatrix;
+}
+
 TapeMoves TuringMachine::act(){
   TapeMoves tpMove;
   Char alphValue = turingTape.getvalue();
@@ -239,6 +324,63 @@ TapeMoves TuringMachine::act(){
 void TuringMachine::reset_tape_and_state(){
  this->turingTape.resetTape();
  this->state=0;
+}
+
+void TuringMachine::set_state_matrix(const StateMatrix& ruleMatrix){
+    if (this->stMatrix.alphSz == ruleMatrix.alphSz &&    this->stMatrix.nbStates == ruleMatrix.nbStates){
+
+      this->stMatrix = ruleMatrix;
+
+    }
+}
+
+
+std::string TuringMachine::print_written_tape(bool print_to_console) const {
+  return this->turingTape.print_written_tape(print_to_console);
+}
+  std::vector<unsigned int> TuringMachine::get_written_tape() const{
+    return this->turingTape.get_written_tape();
+  }
+
+std::string TuringMachine::print_written_tape_genomic_alphabet() const {
+  std::string written_tape = this->turingTape.print_written_tape(false);
+
+  std::map<std::string,char> tapeLetter;
+  tapeLetter["00"] = 'A';
+  tapeLetter["10"] = 'C';
+  tapeLetter["01"] = 'G';
+  tapeLetter["11"] = 'T';
+  
+  
+  if ((written_tape.size()%2) > 0 ){
+    written_tape+=std::to_string(0);
+  }
+  unsigned int str_size = written_tape.size(); 
+  
+  std::vector<std::string> substring_vector;
+  std::string block; 
+  for (auto i = 0u; i< str_size; i++) 
+  {  
+      block += written_tape[i]; 
+      if (i % 2 > 0) {
+        substring_vector.push_back(block);
+        block="";
+        }   
+  } 
+ 
+
+  std::string mapped_string="";
+  for (auto str:substring_vector){
+      auto search2 = tapeLetter.find(str);
+      if (search2 != tapeLetter.end()){
+        mapped_string +=search2->second;
+      }
+    }
+  if (mapped_string.size() < (written_tape.size()/2) ){
+      throw function_malfunction_exception{};
+  }
+
+  return mapped_string;
 }
 
 

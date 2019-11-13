@@ -453,7 +453,8 @@ void tm_print_tape(
   for (auto i = 0u; i < num_iterations -1 ; ++i){
           machine.act(); //importante ser antes
   }
-  machine.turingTape.print();
+  // std::cout << tm_number <<  "\t" << machine.print_written_tape(false) << std::endl;
+  std::cout << tm_number <<  "\t" << machine.print_written_tape_genomic_alphabet() << std::endl;
 }
 
 /**Print State matrix of a Turing machine
@@ -469,5 +470,5 @@ void tm_print_state_matrix(
 
   TuringMachine machine(states, alphabet_size);    
   machine.stMatrix.set_by_index(tm_number); 
-  machine.stMatrix.print();
+  std::cout << tm_number <<  "\t" << machine.stMatrix.get_state_matrix_string() << std::endl;
 }

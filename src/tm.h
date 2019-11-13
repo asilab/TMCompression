@@ -4,7 +4,7 @@
     - Profile of TM
     - Dynamical Profile of TM
     - Test various k
-    - Mutithread TM
+    - Multi-thread TM
     - Cardinality of TM
 
     @author Jorge Miguel Ferreira da Silva
@@ -60,13 +60,12 @@ void tm_print_tape(
     unsigned int num_iterations,
     TmId tm_number);
 
-/**Print State matrix of a Turing machine
+/** Print State matrix of a Turing machine
  * 
  * @param states
  * @param alphabet_size
  * @param tm_number
  */
-
 void tm_print_state_matrix(
   size_t states,
   size_t alphabet_size,

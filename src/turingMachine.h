@@ -15,13 +15,20 @@
 
 #include "traversal.h"
 #include "tmId.h"
-
+using Rng = std::minstd_rand;
 using std::uniform_int_distribution;
 
 using RecordId = unsigned int;
 using State = unsigned int;
 using Char = unsigned int;
 using Move = unsigned int;
+
+struct function_malfunction_exception: public std::exception {
+    virtual const char* what() {
+        return "error in function";
+    }
+};
+
 
 struct TapeMoves{
   size_t previousValue;
@@ -35,10 +42,13 @@ struct TuringRecord{
   State state;
 
   bool next(unsigned int number_of_states, unsigned int alphabet_size);
-
+  std::string tr_to_string() const;
   static TuringRecord by_index(RecordId id, unsigned int number_of_states, unsigned int alphabet_size);
+  bool operator<(const TuringRecord& tr) const;
+  bool operator==(const TuringRecord& tr) const;
 };
 
+TuringRecord set_random(Rng rng, unsigned int number_of_states, unsigned int alphabet_size);
 std::ostream& operator<<( std::ostream& o, const TuringRecord& r);
 
 struct StateMatrix{
@@ -49,8 +59,12 @@ struct StateMatrix{
   StateMatrix(unsigned int number_of_states, unsigned int alphabet_size);
 
   void set_by_index(TmId id);
+  void set_rule(unsigned int index, TuringRecord& tr);
   TmId calculate_index() const;
-
+  std::string get_state_matrix_string();
+  TuringRecord get_element(unsigned int index) const;
+  unsigned int get_size()const;
+  std::vector<TuringRecord> get_vector() const;
   /// Reset the state matrix into a uniformly random position.
   template<typename R>
   void set_random(R& rng) {
@@ -81,10 +95,13 @@ struct Tape {
   Tape();
 
   Char getvalue();
+  std::vector<unsigned int> get_written_tape() const;
   TapeMoves setandmove(Move relativePos, Char value);
   void resetTape();
   size_t getposition();
   void print() const;
+  std::string print_written_tape(bool print_to_console) const;
+
   private:
     void reserve_right(size_t amount);
     void reserve_left(size_t amount);
@@ -98,6 +115,12 @@ struct TuringMachine {
   StateMatrix stMatrix;
 
   TuringMachine(unsigned int number_of_states, unsigned int alphabet_size);
+  StateMatrix get_state_matrix() const;
   void reset_tape_and_state();
+  std::vector<unsigned int> get_written_tape() const;
+  std::string print_written_tape(bool print_to_console) const; 
+  std::string print_written_tape_genomic_alphabet() const;
   TapeMoves act();
+  void set_state_matrix(const StateMatrix& ruleMatrix);
+  
 };

@@ -1,18 +1,7 @@
 #!/bin/bash
 #
 
-find ../virus_genomes/ -type f -name "*genome.txt" | while read txt; do
-   a=$(wc $txt | awk '{ print $3;}');
-
-   if [ $a -lt 100000 ]
-    then
-    filename=$(basename -- "$txt");
-    extension="${filename##*.}";
-    name="${filename%.*}";
-    filename2="${filename%.*}_nc.txt ";
-    title="${name//_/ }";
-    pdfFile="${name}.pdf";
-    cd ../virus_genomes/
+file=
 
 gnuplot << EOF
     reset
@@ -57,8 +46,4 @@ gnuplot << EOF
     splot "${filename2}"  with pm3d notitle
 
 EOF
-    echo ${title}
-    mv ${pdfFile} ../resultPlots;
-    cd ../scripts/
-    fi
-done
+

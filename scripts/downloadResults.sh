@@ -37,4 +37,11 @@ gdrive_download 15d3mo-0ujvax_01Z1GUlZD5l5lYLgOYn Microplitis_demolitor_virus_ge
 gdrive_download 1Jyv5SoD2X8jV6C8c74tR80iqTp2c-AFw Herpes_simplex_virus_genome.txt;
 gdrive_download 11I-iRgFzfpJ3rCL-ymrB2wfU16fHoBz- Herpes_simplex_virus_nc.txt;
 
-mv *.txt ../resultText
+# Method I and II 
+gdrive_download 1Yz4WxoJccjtyVF-q2KCRo7naOyaXjVQc Avg_results_tm_evolution.txt; 
+gdrive_download 1_EZ8Q_A08cXhDgcvAI1tz3U0F0TN1kRB Method_I_200; 
+gdrive_download 1erNDEJKhFsBKR8pRg_osHSVrhEMSG6Rp Method_II_2000; 
+
+mv *.txt ../resultText/
+mv Method_I_200 ../resultText/
+mv Method_II_2000 ../resultText/
