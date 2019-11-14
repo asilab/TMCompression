@@ -29,7 +29,6 @@ gnuplot << EOF
     set yrange [1:${a}]
     set zrange [0:1.1]
     set cbrange [0:1]
-
     set grid xtics lt -1 
     set grid ytics lt -1
     set grid ztics lt -1
@@ -38,7 +37,6 @@ gnuplot << EOF
     
     set yzeroaxis lt 1 lw 2 lc rgb "black"
     set xzeroaxis lt 1 lw 2 lc rgb "black"
-
     set xyplane 0
     set logscale y 2
     set view 60,10
@@ -55,7 +53,6 @@ gnuplot << EOF
     set title noenhanced
     set title "${title} \n NC variation with Edition and Permutation" font "Verdana-Bold,12"
     splot "${filename2}"  with pm3d notitle
-
 EOF
     echo ${title}
     mv ${pdfFile} ../resultPlots;

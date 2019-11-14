@@ -17,6 +17,9 @@ struct Metrics{
   double normalizedCompression;
   void print();
 };
+Metrics avg_metrics(std::vector<Metrics> vector_metrics);
+
+
 
 struct IndexAndMetrics{
   TmId tmNumber;

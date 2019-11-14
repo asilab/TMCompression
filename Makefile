@@ -13,6 +13,7 @@ objects = src/tmId.o \
 		  src/tm.o \
 		  src/NormalizedCompressionMarkovTable.o \
 		  src/randomString.o \
+		  src/stateMatrixParser.o \
 		  src/main.o
 
 %.o: %.cpp
@@ -48,8 +49,13 @@ src/turingMachine.o: src/turingMachine.cpp src/turingMachine.h src/traversal.h s
 
 src/util.o: src/util.cpp src/util.h
 
+src/stateMatrixParser.o: src/stateMatrixParser.cpp src/stateMatrixParser.h src/turingMachine.h
+
 ioStNormalize: src/ioStNormalize.cpp
-	 g++ -std=c++14 -o ioStNormalize src/ioStNormalize.cpp
+	g++ -std=c++14 -o ioStNormalize src/ioStNormalize.cpp src/tmId.h
+
+ioAverage: src/ioAverage.cpp
+	g++ -std=c++14 -o ioAverage src/ioAverage.cpp 
 
 TMsimulator: val/TMsimulator.c 
 	g++ -o TMsimulator val/TMsimulator.c -lgmpxx -lgmp

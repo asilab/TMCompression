@@ -15,6 +15,7 @@
 #include "tm.h"
 #include "tmId.h"
 #include "randomString.h"
+#include "stateMatrixParser.h"
 
 
 Args parseArgs (int argc, char **argv){
@@ -30,7 +31,9 @@ Args parseArgs (int argc, char **argv){
     static int tm_print_flag;
     static int StMatrix_flag;
     static int mutate_virus_flag;
-
+    static int method_I_plot_flag;
+    static int method_II_plot_flag;
+    static int graph_method_II;
     char *end;
     TmId correctInput;
     while (1)
@@ -46,6 +49,9 @@ Args parseArgs (int argc, char **argv){
             {"profile", no_argument, &tm_profile_flag,1},
             {"printTape", no_argument, &tm_print_flag,1},
             {"StMatrix", no_argument, &StMatrix_flag,1},
+            {"MethodI", no_argument, &method_I_plot_flag,1},
+            {"MethodII", no_argument, &method_II_plot_flag,1},
+            {"3DgraphMethodII", no_argument, &graph_method_II,1},
             {"mutate", no_argument, &mutate_flag,1},
             {"mutateVirus", no_argument, &mutate_virus_flag,1},
             {"help",      no_argument,      0, 'h'},
@@ -59,11 +65,12 @@ Args parseArgs (int argc, char **argv){
             {"strategy", optional_argument, 0, 'S'},
             {"n", optional_argument, 0, 'N'},
             {"jobs", optional_argument, 0, 'j'},
+            {"state_matrix",     required_argument,      0 , 'm'},
             {NULL, 0, NULL, 0}
         };
         int option_index = 0;
 
-        int c = getopt_long (argc, argv, "s:a:i:k:t:S:N:j:hv",
+        int c = getopt_long (argc, argv, "s:a:i:k:t:S:N:j:m:hv",
                         long_options, &option_index);
 
         if (c == -1)
@@ -111,7 +118,16 @@ Args parseArgs (int argc, char **argv){
             std::cout << "--mutateVirus" << "\t" 
             << "Indicates programs perform the edition and permutation of a virus DNA sequence and print NC results" 
             << std::endl<< std::endl;
-
+            std::cout << "--MethodI" << "\t" 
+            << "Indicates programs to recreate similar list of results used in plots of the article using MethodI" 
+            << std::endl<< std::endl;
+            std::cout << "--MethodII" << "\t" 
+            << "Indicates programs to recreate similar list of results used in plots of the article using MethodII" 
+            << std::endl<< std::endl;
+            std::cout << "--3DgraphMethodII" << "\t" 
+            << "Indicates programs to recreate similar list of results used in 3D plots of the article using MethodII" 
+            << std::endl<< std::endl;
+            
             std::cout << "Mandatory  Arguments:"<< std::endl << std::endl;
             std::cout << "-s" << ", " <<"--number_states" << "\t" << "Number of States the Turing Machine has."<< std::endl << std::endl;
             std::cout << "-a" << ", " << "--alphabet_size" << "\t" << "Alphabet size the Turing Machine considers." << std::endl<<std::endl;
@@ -162,10 +178,23 @@ Args parseArgs (int argc, char **argv){
             std::cout << "./tm --brief --StMatrix -s 2 -a 2 -t 1"<< std::endl;
             std::cout << "----------------" << std::endl;
             std::cout <<"Obtain nc of the substitutions and permutations of a string " << std::endl;
-            std::cout <<"/tm --mutate" << std::endl;
+            std::cout <<"./tm --mutate" << std::endl;
             std::cout << "----------------" << std::endl;
             std::cout <<"Obtain nc of Virus genome sequence with substitutions and permutations" << std::endl;
             std::cout <<"echo \"./resultText/Parvovirus_virus_genome.txt\" | ./tm --mutateVirus" << std::endl;
+            std::cout << "----------------" << std::endl;
+            std::cout <<"Obtain list of graph of Method I" << std::endl;
+            std::cout <<"./tm --MethodI" << std::endl;
+            std::cout << "----------------" << std::endl;
+            std::cout <<"Obtain list of graph of Method II" << std::endl;
+            std::cout <<"./tm --MethodII" << std::endl;
+            std::cout << "----------------" << std::endl;
+            std::cout <<"Obtain list of 3d graphs of Method II" << std::endl;
+            std::cout <<"./tm --3DgraphMethodII" << std::endl;
+            std::cout << "----------------" << std::endl;
+
+
+
             exit (0);
 
         case 'v':
@@ -228,7 +257,7 @@ Args parseArgs (int argc, char **argv){
                     if (counter>1){
                         std::cerr << "Invalid input for -k/--context." << std::endl <<
                         "If you want to provide a range for k " <<
-                         "please provide -k/--context with 2 elements separeted by \":\".\n" <<
+                         "please provide -k/--context with 2 elements separated by \":\".\n" <<
                          "Example: -k 2:4"<< std::endl;
                         exit(0);
                     }
@@ -297,6 +326,11 @@ Args parseArgs (int argc, char **argv){
             else argument.jobs = correctInput;
             break;
         }
+        case 'm':
+        {   std::string srt(optarg);
+            argument.state_matrix_string = srt;
+            break;
+        }
         case 'S':
         {
             if (std::strcmp(optarg, "sequential") == 0) {
@@ -336,6 +370,21 @@ Args parseArgs (int argc, char **argv){
         argument.verbose = true;
     }
 
+    if(graph_method_II){
+        evolve_multiple_tms_graph(3200,8000,10,2);
+        exit(0);
+    }
+
+    if(method_I_plot_flag){//change graph_method_II,method_I_flag
+        evolve_multiple_tms(200,100,10,2);
+        exit(0);
+
+    }
+    if(method_II_plot_flag){//change
+        evolve_multiple_tms2(2000,5000,10,2);
+        exit(0);
+    }
+
     if (optind < argc)
     {
         printf ("non-option ARGV-elements: ");
@@ -344,7 +393,7 @@ Args parseArgs (int argc, char **argv){
         putchar ('\n');
     }
     if (mutate_virus_flag && argument.states==0 && argument.alphabet_size==0 && argument.numIt==0 && argument.k.empty() && argument.tm.second==false){
-        std::cerr << "Editing/Permutating Virus DNA sequence and obtaining NC results..." <<std::endl;
+        std::cerr << "Editing/Permutation Virus DNA sequence and obtaining NC results..." <<std::endl;
         
         std::string virus_file_path;
         std::cerr << "Insert path of genome sequence :"; std::cin >> virus_file_path;
@@ -457,8 +506,9 @@ void printArgs(Args arguments){
     std::cout<<"states = " << arguments.states << std::endl;
     std::cout<<"alphabet_size = " << arguments.alphabet_size<< std::endl;
     std::cout<<"threshold = " << arguments.threshold << std::endl;
-    std::cout<<"numIt = " << arguments.numIt << std::endl;
-    
+    std::cout<<"number Iterations = " << arguments.numIt << std::endl;
+    std::cout<<"State Matrix String = " << arguments.state_matrix_string << std::endl;
+
     if (arguments.k.size()>1){
         std::cout<<"k = " << arguments.k.front()<<  ":" << arguments.k.back() << std::endl;
     }

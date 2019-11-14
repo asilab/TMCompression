@@ -69,7 +69,7 @@ if [[ "$CARDINALITY" -eq "1" ]];
     then
     cd ..;
     echo "Creating plot of Turing Machine Cardinality Growth with the increase in number of states.. ";
-    ./tm --tmgrowth | head -n +80 |tail -n 79 > Cardinality.txt;
+    ./tm --tmgrowth | head -n +80 | tail -n 79 > Cardinality.txt;
     gnuplot << EOF
     reset
     set terminal pdfcairo enhanced color font 'Verdana,8'
@@ -183,7 +183,7 @@ gnuplot << EOF
     ntics = 20
     stats 'Amplitude3.txt' using 1 name 'x' nooutput
     set xtics int(x_max/ntics)
-    set style fill transparent solid 0.4 noborder
+    set style fill transparent solid 0.8 noborder
     plot "Amplitude3.txt" using 1:2 with boxes linecolor '#CFB53B' title "Amplitude of Tape", "NC_f3.txt" using 1:2  with boxes linecolor '#4169E1' title "Normalized Compression"
 EOF
     mv 3sts2alp.pdf ../resultPlots;
