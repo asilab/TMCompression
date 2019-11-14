@@ -31,27 +31,27 @@ ENDst6="4450000000000000000";
 #==============================================================================
 #   Extract
 #==============================================================================
-cat ../resultText/2sts2alp.txt | awk -v b="$INITst2" -v e="$ENDst2" ' {if ( $1 >= b && $1 <= e ) print $1,$4,$5,$6 }'> Region2sts2alph.txt;
+< ../resultText/2sts2alp.txt awk -v b="$INITst2" -v e="$ENDst2" ' {if ( $1 >= b && $1 <= e ) print $1,$4,$5,$6 }'> Region2sts2alph.txt;
 a=$(wc -l Region2sts2alph.txt | awk '{print $1}');
 shuf -n $a ../resultText/2sts2alp.txt | awk -v a="$INIT2st2" -v b="$INITst2" -v e="$ENDst2" ' {if ( ($1 > a && $1 < b) || $1 > e ) print $1,$4,$5,$6 }' > Region_Outside_2sts2alph.txt;
 
-cat ../resultText/2sts3alp.txt | awk -v b="$INITst2alp3" -v e="$ENDst2alp3" ' {if ( $1 >= b && $1 <= e ) print $1,$4,$5,$6}' > Region2sts3alph.txt;
+< ../resultText/2sts3alp.txt awk -v b="$INITst2alp3" -v e="$ENDst2alp3" ' {if ( $1 >= b && $1 <= e ) print $1,$4,$5,$6}' > Region2sts3alph.txt;
 a=$(wc -l Region2sts3alph.txt | awk '{print $1}');
 shuf -n $a ../resultText/2sts3alp.txt | awk -v a="$INIT2st2alp3" -v b="$INITst2alp3" -v e="$ENDst2alp3" ' {if ( ($1 > a && $1 < b) || $1 > e ) print $1,$4,$5,$6 }' > Region_Outside_2sts3alph.txt;
 
-cat ../resultText/3sts2alp.txt | awk -v b="$INITst3" -v e="$ENDst3" ' {if ( $1 >= b && $1 <= e ) print $1,$4,$5,$6}' > Region3sts2alph.txt;
+< ../resultText/3sts2alp.txt  awk -v b="$INITst3" -v e="$ENDst3" ' {if ( $1 >= b && $1 <= e ) print $1,$4,$5,$6}' > Region3sts2alph.txt;
 a=$(wc -l Region3sts2alph.txt | awk '{print $1}');
 shuf -n $a ../resultText/3sts2alp.txt | awk -v a="$INIT2st3" -v b="$INITst3" -v e="$ENDst3" ' {if ( ($1 > a && $1 < b) || $1 > e ) print $1,$4,$5,$6 }' > Region_Outside_3sts2alph.txt;
 
-cat ../resultText/4sts2alp.txt | awk -v b="$INITst4" -v e="$ENDst4" ' {if ( $1 >= b && $1 <= e ) print $1,$4,$5,$6}' > Region4sts2alph.txt;
+< ../resultText/4sts2alp.txt awk -v b="$INITst4" -v e="$ENDst4" ' {if ( $1 >= b && $1 <= e ) print $1,$4,$5,$6}' > Region4sts2alph.txt;
 a=$(wc -l Region4sts2alph.txt | awk '{print $1}');
 shuf -n $a ../resultText/4sts2alp.txt | awk -v a="$INIT2st4" -v b="$INITst4" -v e="$ENDst4" ' {if ( ($1 > a && $1 < b) || $1 > e ) print $1,$4,$5,$6 }' > Region_Outside_4sts2alph.txt;
 
-cat ../resultText/5sts2alp.txt | awk -v b="$INITst5" -v e="$ENDst5" ' {if ( $1 >= b && $1 <= e ) print $1,$4,$5,$6}' > Region5sts2alph.txt;
+< ../resultText/5sts2alp.txt awk -v b="$INITst5" -v e="$ENDst5" ' {if ( $1 >= b && $1 <= e ) print $1,$4,$5,$6}' > Region5sts2alph.txt;
 a=$(wc -l Region5sts2alph.txt | awk '{print $1}');
 shuf -n $a ../resultText/5sts2alp.txt | awk -v a="$INIT2st5" -v b="$INITst5" -v e="$ENDst5" ' {if ( ($1 > a && $1 < b) || $1 > e ) print $1,$4,$5,$6 }' > Region_Outside_5sts2alph.txt;
 
-cat ../resultText/6sts2alp.txt | awk -v b="$INITst6" -v e="$ENDst6" ' {if ( $1 >= b && $1 <= e ) print $1,$4,$5,$6}' > Region6sts2alph.txt;
+< ../resultText/6sts2alp.txt  awk -v b="$INITst6" -v e="$ENDst6" ' {if ( $1 >= b && $1 <= e ) print $1,$4,$5,$6}' > Region6sts2alph.txt;
 a=$(wc -l Region6sts2alph.txt | awk '{print $1}');
 shuf -n $a ../resultText/6sts2alp.txt | awk -v a="$INIT2st6" -v b="$INITst6" -v e="$ENDst6" ' {if ( ($1 > a && $1 < b) || $1 > e ) print $1,$4,$5,$6 }'> Region_Outside_6sts2alph.txt;
 
@@ -112,14 +112,14 @@ paste Index2 OUT1 > OUT;
 #==============================================================================
 
 
-cat IN | awk '{print $1,"\t",$2}' > AMPIN;
-cat OUT | awk '{print $1,"\t",$2}' > AMPOUT;
+< IN  awk '{print $1,"\t",$2}' > AMPIN;
+< OUT awk '{print $1,"\t",$2}' > AMPOUT;
 
-cat IN | awk '{print $1,"\t",$3}' > SCIN;
-cat OUT | awk '{print $1,"\t",$3}' > SCOUT;
+< IN  awk '{print $1,"\t",$3}' > SCIN;
+< OUT awk '{print $1,"\t",$3}' > SCOUT;
 
-cat IN | awk '{print $1,"\t",$4}' > NCIN;
-cat OUT | awk '{print $1,"\t",$4}' > NCOUT;
+< IN awk '{print $1,"\t",$4}' > NCIN;
+< OUT awk '{print $1,"\t",$4}' > NCOUT;
 
 rm OUT* IN*
 

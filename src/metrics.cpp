@@ -32,7 +32,7 @@ Metrics avg_metrics(std::vector<Metrics> vector_metrics){
         sum_selfCompression+=a.selfCompression;
     }
     metrics.amplitude = sum_amplitude/vector_metrics.size(); //truncated unsigned int
-    metrics.k = sum_amplitude/vector_metrics.size(); //truncated unsigned int
+    metrics.k = sum_k/vector_metrics.size(); //truncated unsigned int
     metrics.normalizedCompression= sum_normalizedCompression/vector_metrics.size();
     metrics.selfCompression= sum_selfCompression/vector_metrics.size();
     return metrics;
