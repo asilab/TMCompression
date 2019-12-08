@@ -22,7 +22,20 @@ StateMatrix artificial_selection(std::pair<std::vector<double>,StateMatrix> stat
 bool machine_filter(StateMatrix state_matrix, unsigned int states,unsigned int alphabet_size, unsigned int numIt, unsigned int amplitude_criteria,
                     BestKMarkovTables<NormalizedCompressionMarkovTable>& bestMkvTableCompression);
 void evolve_multiple_tms(unsigned int repeats, unsigned int number_of_tms,unsigned int states,unsigned int alphabet_size);
-void evolve_multiple_tms2(unsigned int repeats , unsigned int number_of_iterations,unsigned int states,unsigned int alphabet_size);
-Metrics real_nc_evolution(unsigned int number_tm_it,unsigned int tm_tape_iterations, unsigned int states, unsigned int alphabet_size, bool print);
+void evolve_multiple_tms2(unsigned int repeats ,  unsigned int iterations, unsigned int tape_iterations,unsigned int states,unsigned int alphabet_size);
+Metrics real_nc_evolution(unsigned int number_tm_it,unsigned int tm_tape_iterations, unsigned int states, unsigned int alphabet_size, bool print, bool print2);
 Metrics avg_real_tm_nc_evolution(unsigned int number_tms, unsigned int tm_improve_repeats , unsigned int tm_iterations,unsigned int states,unsigned int alphabet_size);
 void evolve_multiple_tms_graph(unsigned int max_number_tm_improve_repeats , unsigned int max_number_tm_tape_iterations, unsigned int states,unsigned int alphabet_size);
+//Algorithm 
+//Best of the best 
+// Random matrix
+// NC of all
+//Best of the Best
+//Chose the best
+void growth_plot_tms3(unsigned int repeats,unsigned int iterations, unsigned int tape_iterations, unsigned int states, unsigned int alphabet_size);
+void growth_plot_tms2(unsigned int repeats , unsigned int iterations,unsigned int tape_iterations,unsigned int states,unsigned int alphabet_size);
+void evolve_multiple_tms3(unsigned int repeats,unsigned int iterations, unsigned int tape_iterations, unsigned int states, unsigned int alphabet_size);
+Metrics evolve_bb_tm(unsigned int states, unsigned int alphabet,unsigned int iterations, unsigned int tape_iterations, bool print, bool print2);
+
+Rng generate_seed();
+StateMatrix get_tm_nc_ranking(StateMatrix& state_matrix,unsigned int &tape_iterations);

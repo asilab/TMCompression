@@ -18,6 +18,7 @@ void Metrics::print(){
 }
 
 
+
 Metrics avg_metrics(std::vector<Metrics> vector_metrics){
     Metrics metrics;
     unsigned int sum_k = 0;
@@ -38,8 +39,16 @@ Metrics avg_metrics(std::vector<Metrics> vector_metrics){
     return metrics;
 }
 
+std::vector<Metrics> ranking(std::vector<Metrics> vector_metrics, unsigned int amplitude_criteria){
+    std::sort(vector_metrics.begin(),vector_metrics.end(), [](const Metrics &x, const Metrics &y){ return (x.normalizedCompression > y.normalizedCompression);});
+    vector_metrics.erase(
+    std::remove_if( vector_metrics.begin(), vector_metrics.end(), [amplitude_criteria](const Metrics& x) { return x.amplitude < amplitude_criteria;   }), vector_metrics.end());
+    return vector_metrics;
+}
 
-
+Metrics get_first(std::vector<Metrics> vector_metrics){
+    return vector_metrics.front();
+}
 
 
     

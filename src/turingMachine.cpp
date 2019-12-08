@@ -98,6 +98,13 @@ TmId StateMatrix::calculate_index() const {
   return id;
 }
 
+unsigned int StateMatrix::get_number_alphabet() const{
+  return this->alphSz;
+}
+unsigned int StateMatrix::get_number_states() const{
+  return this->nbStates;
+}
+
 std::vector<TuringRecord> StateMatrix::get_vector() const{
   return this->v;
 }
@@ -128,6 +135,11 @@ TuringRecord& StateMatrix::at(Char alph, State state){
 
 const TuringRecord& StateMatrix::at(Char alph, State state) const {
   return this->v.at(   (   (alph + 1) * this->nbStates   )   -   (   this->nbStates - state  )   );
+}
+
+// retrieve index of StateMatrix;
+unsigned int StateMatrix::get_index(Char alph, State state) const{
+  return   (   (alph + 1) * this->nbStates   )   -   (   this->nbStates - state  )   ;
 }
 
 bool StateMatrix::next(){
@@ -206,7 +218,7 @@ size_t Tape::getposition() {
 */
 TapeMoves Tape::setandmove(Move relativePos, Char value) {
 
-  TapeMoves tapeMove{0,false,false};
+  TapeMoves tapeMove{0,0,false,false,0,value};
   this->tape[this->position] = value;
   int replace_pos = relativePos - 1;
   
@@ -320,6 +332,23 @@ TapeMoves TuringMachine::act(){
   this->state = tr.state;
   return tpMove;
 }
+
+TapeMoves TuringMachine::act(bool rule){
+  TapeMoves tpMove;
+  Char alphValue = turingTape.getvalue();
+  auto tr = stMatrix.at(alphValue, this->state);
+  
+  tpMove = turingTape.setandmove(tr.move, tr.write);
+
+  if (rule) {
+      auto ruleIndex = stMatrix.get_index(alphValue, this->state);
+      tpMove.indexRule = ruleIndex;
+  }
+  this->state = tr.state;
+  return tpMove;
+}
+
+
 
 void TuringMachine::reset_tape_and_state(){
  this->turingTape.resetTape();

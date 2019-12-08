@@ -472,3 +472,52 @@ void tm_print_state_matrix(
   machine.stMatrix.set_by_index(tm_number); 
   std::cout << tm_number <<  "\t" << machine.stMatrix.get_state_matrix_string() << std::endl;
 }
+
+
+void tm_rules_metrics(
+  size_t states,
+  size_t alphabet_size,
+  unsigned int num_iterations,
+  TmId tm_number)
+  {
+  std::vector<unsigned int> kvector{2,3,4,5,6,7,8,9};;
+  BestKMarkovTables<NormalizedCompressionMarkovTable> bestMkvTableCompression(kvector, states*alphabet_size);
+  TuringMachine machine(states, alphabet_size);
+  std::vector<unsigned int> vector_written_rules;
+  machine.stMatrix.set_by_index(tm_number); 
+  machine.reset_tape_and_state();
+  for (auto i = 0u; i < num_iterations -1 ; ++i){
+          vector_written_rules.push_back(machine.act(true).indexRule); //importante ser antes
+  }
+  Metrics metrics = bestMkvTableCompression.update_string(vector_written_rules);
+  std::cout << tm_number <<  "\t" << metrics.k <<  "\t" << num_iterations << "\t" <<  metrics.amplitude
+  << "\t" << metrics.selfCompression << std::setprecision(5) << std::showpoint
+  << "\t" << metrics.normalizedCompression << std::setprecision(5) << std::showpoint
+  << std::endl;
+}
+
+
+
+void tm_profile_rules(size_t states,
+    size_t alphabet_size,
+    unsigned int num_iterations,
+    unsigned int k,
+    TmId tm_number,
+    unsigned int division)
+    {
+
+  TuringMachine machine(states, alphabet_size);
+  CompressionResultsData data;
+  NormalizedCompressionMarkovTable normalizedCompressionMarkovTable(k , states*alphabet_size);
+
+  machine.stMatrix.set_by_index(tm_number); 
+  machine.reset_tape_and_state();
+  std::vector<unsigned int> rule_vector;
+  normalizedCompressionMarkovTable.mrkvTable.reset();
+
+  while( (machine.turingTape.ind_right - machine.turingTape.ind_left)< num_iterations ){
+   rule_vector.push_back(machine.act(true).indexRule);
+  }
+  data = normalizedCompressionMarkovTable.profile_update_nc_mk_table_random_string(rule_vector, division);
+  data.print_profile_data(division);
+}

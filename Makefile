@@ -57,5 +57,8 @@ ioStNormalize: src/ioStNormalize.cpp
 ioAverage: src/ioAverage.cpp
 	g++ -std=c++14 -o ioAverage src/ioAverage.cpp 
 
+ioGrowthAverage: src/ioGrowthAverage.cpp
+	g++ -std=c++14 -o ioGrowthAverage src/ioGrowthAverage.cpp
+
 TMsimulator: val/TMsimulator.c 
 	g++ -o TMsimulator val/TMsimulator.c -lgmpxx -lgmp

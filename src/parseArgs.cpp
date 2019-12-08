@@ -23,6 +23,7 @@ Args parseArgs (int argc, char **argv){
     opterr = 0;
     static int mutate_flag;
     static int verbose_flag;
+    static int best_flag;
     static int replicate_flag;
     static int tm_verbose_flag;
     static int tm_profile_flag;
@@ -33,6 +34,12 @@ Args parseArgs (int argc, char **argv){
     static int mutate_virus_flag;
     static int method_I_plot_flag;
     static int method_II_plot_flag;
+    static int method_III_plot_flag;
+    static int method_II_growth_plot_flag;
+    static int method_III_growth_plot_flag;
+    static int tm_rule_profile_flag;
+    static int tm_rule_flag;
+
     static int graph_method_II;
     char *end;
     TmId correctInput;
@@ -47,21 +54,31 @@ Args parseArgs (int argc, char **argv){
             {"tmgrowth",      no_argument,      &tm_number_growth_flag, 1},
             {"dynprofile",      no_argument,      &tm_dynamical_profile_flag, 1},
             {"profile", no_argument, &tm_profile_flag,1},
+            {"ruleProfile",no_argument, &tm_rule_profile_flag, 1},
+            {"ruleMetrics",no_argument, &tm_rule_flag, 1},
             {"printTape", no_argument, &tm_print_flag,1},
             {"StMatrix", no_argument, &StMatrix_flag,1},
+            
             {"MethodI", no_argument, &method_I_plot_flag,1},
             {"MethodII", no_argument, &method_II_plot_flag,1},
+            {"MethodIII", no_argument, &method_III_plot_flag,1},
+            {"MethodIIGrowth", no_argument, &method_II_growth_plot_flag,1},
+            {"MethodIIIGrowth", no_argument, &method_III_growth_plot_flag,1},
+            
+
+            {"best", no_argument, &best_flag,1},
             {"3DgraphMethodII", no_argument, &graph_method_II,1},
             {"mutate", no_argument, &mutate_flag,1},
             {"mutateVirus", no_argument, &mutate_virus_flag,1},
             {"help",      no_argument,      0, 'h'},
             {"version",      no_argument,      0, 'v'},
-
+            
             {"number_states",     required_argument,      0 , 's'},
             {"alphabet_size",  required_argument, 0, 'a'},
             {"iterations",  required_argument, 0, 'i'},
             {"context",  required_argument, 0, 'k'},
             {"tm", optional_argument, 0, 't'},
+            {"tm_it", optional_argument, 0, 'g'},
             {"strategy", optional_argument, 0, 'S'},
             {"n", optional_argument, 0, 'N'},
             {"jobs", optional_argument, 0, 'j'},
@@ -70,7 +87,7 @@ Args parseArgs (int argc, char **argv){
         };
         int option_index = 0;
 
-        int c = getopt_long (argc, argv, "s:a:i:k:t:S:N:j:m:hv",
+        int c = getopt_long (argc, argv, "s:a:i:k:t:S:N:j:m:g:hv",
                         long_options, &option_index);
 
         if (c == -1)
@@ -112,6 +129,14 @@ Args parseArgs (int argc, char **argv){
             std::cout << "--StMatrix" << "\t" 
             << "Indicates programs to print the StateMatrix of a given TMs" 
             << std::endl<< std::endl;
+            std::cout << "--ruleMetrics" << "\t" 
+            << "Indicates programs to compute the rule metrics of a given TMs" 
+            << std::endl<< std::endl;
+
+            std::cout << "--ruleProfile" << "\t" 
+            << "Indicates programs to create a Compression profile of the rules for a given Turing Machine" 
+            << std::endl<< std::endl;
+
             std::cout << "--mutate" << "\t" 
             << "Indicates programs to print the nc of the mutation of a string (starting with all zeros and ending with all ones) and performing mutations until its 100% mutated" 
             << std::endl<< std::endl;
@@ -123,6 +148,9 @@ Args parseArgs (int argc, char **argv){
             << std::endl<< std::endl;
             std::cout << "--MethodII" << "\t" 
             << "Indicates programs to recreate similar list of results used in plots of the article using MethodII" 
+            << std::endl<< std::endl;
+            std::cout << "--MethodIII" << "\t" 
+            << "Indicates programs to recreate similar list of results used in plots of the article using MethodIII" 
             << std::endl<< std::endl;
             std::cout << "--3DgraphMethodII" << "\t" 
             << "Indicates programs to recreate similar list of results used in 3D plots of the article using MethodII" 
@@ -165,6 +193,9 @@ Args parseArgs (int argc, char **argv){
             std::cout << "Run specific tm and obtain dynamical temporal profile:" << std::endl;
             std::cout << "./tm --brief --dynprofile -s 2 -a 2 -i 100 -k 2 -t 5 "<< std::endl;
             std::cout << "----------------" << std::endl;
+            std::cout << "Run specific tm and obtain their Rule Compression Profile:" << std::endl;
+            std::cout << "./tm --brief --ruleMetrics -s 2 -a 2 -i 100 -t 5" << std::endl;
+            std::cout << "----------------" << std::endl;
             std::cout << "Replicate k and it determination:" << std::endl;
             std::cout << "./tm --brief --replicate -s 2 -a 2 -j 10" << std::endl;
             std::cout << "----------------" << std::endl;
@@ -189,12 +220,20 @@ Args parseArgs (int argc, char **argv){
             std::cout <<"Obtain list of graph of Method II" << std::endl;
             std::cout <<"./tm --MethodII" << std::endl;
             std::cout << "----------------" << std::endl;
+            std::cout <<"Obtain list of graph of Method III" << std::endl;
+            std::cout <<"./tm --MethodIII" << std::endl;
+            std::cout << "----------------" << std::endl;
             std::cout <<"Obtain list of 3d graphs of Method II" << std::endl;
             std::cout <<"./tm --3DgraphMethodII" << std::endl;
             std::cout << "----------------" << std::endl;
-
-
-
+            std::cout <<"Obtain list of graph growth for Method II" << std::endl;
+            std::cout <<"./tm --MethodIIGrowth" << std::endl;
+            std::cout << "----------------" << std::endl;
+            std::cout <<"Obtain list of graph growth for Method III" << std::endl;
+            std::cout <<"./tm --MethodIIGrowth" << std::endl;
+            std::cout << "----------------" << std::endl;
+            std::cout <<"Apply Method III for a given state, alphabet,tm iterations and tape iterations" << std::endl;
+            std::cout <<"./tm --best -s 2 -a 2 -i 1000 -g 1000"<< std::endl;
             exit (0);
 
         case 'v':
@@ -242,6 +281,20 @@ Args parseArgs (int argc, char **argv){
                 exit(0);
             }
             else argument.numIt = correctInput;
+            break;
+        }
+        case 'g':
+            {
+            correctInput = strtol(optarg, &end, 10);
+            if (*end != '\0') {
+                std::cerr << "Invalid input for -g/--tm_it.\n";
+                exit(0);
+            }
+            else if (correctInput<=0){
+                std::cerr << "-g/--tm_it value was set to " << correctInput <<", must be an int larger than 0.\n";
+                exit(0);
+            }
+            else argument.tmIt = correctInput;
             break;
         }
         case 'k':
@@ -375,15 +428,38 @@ Args parseArgs (int argc, char **argv){
         exit(0);
     }
 
-    if(method_I_plot_flag){//change graph_method_II,method_I_flag
+    if(method_I_plot_flag){
         evolve_multiple_tms(200,100,10,2);
         exit(0);
 
     }
     if(method_II_plot_flag){//change
-        evolve_multiple_tms2(2000,5000,10,2);
+        evolve_multiple_tms2(200,1200000,5000,10,2);
+        //evolve_multiple_tms2(2000,1000, 5000,10,2);
         exit(0);
     }
+    if(method_III_plot_flag){ //change
+        //repeats, tmit, tapeit, states, alphabet
+        evolve_multiple_tms3(200,1000,5000,10,2);
+        exit(0);
+    }
+
+    if(method_II_growth_plot_flag){ //change
+        //repeats, tmit, tapeit, states, alphabet
+        growth_plot_tms2(200,1200000,5000,10,2);
+        exit(0);
+    }
+    if(method_III_growth_plot_flag){ //change
+        //repeats, tmit, tapeit, states, alphabet
+        growth_plot_tms3(200,1000,5000,10,2);
+        exit(0);
+    }
+
+    if(best_flag && argument.states!=0 && argument.alphabet_size!=0 && argument.numIt!=0 && argument.tmIt!=0){
+        evolve_bb_tm(argument.states, argument.alphabet_size,argument.tmIt, argument.numIt, true, false);
+         exit(0);
+    }
+
 
     if (optind < argc)
     {
@@ -419,7 +495,13 @@ Args parseArgs (int argc, char **argv){
             exit(0);
 
     }
-    
+    else if((argument.states!=0 && argument.alphabet_size!=0 && argument.numIt!=0 && argument.k.empty() && argument.tm.second) && tm_rule_flag==1 && tm_profile_flag==0 && replicate_flag==0 && tm_number_growth_flag==0){
+            tm_rules_metrics(argument.states,
+                     argument.alphabet_size,
+                     argument.numIt,
+                     argument.tm.first);
+            exit(0);
+    }
     else if ( (argument.states!=0 || argument.alphabet_size!=0 || argument.numIt!=0 || (!argument.k.empty()) || argument.jobs!=0 ) && tm_number_growth_flag ){
         std::cerr << "Please fill all the required arguments in order to perform the tm growth" <<std::endl;
         std::cerr << "Example: ./tm --tmgrowth" << std::endl;
@@ -431,10 +513,13 @@ Args parseArgs (int argc, char **argv){
         std::cerr << "Please fill all the required arguments" <<std::endl;
         exit(0);
     }
-    else if(argument.tm.second && tm_profile_flag==0 && tm_dynamical_profile_flag==0 && StMatrix_flag==0 && tm_print_flag==0 && replicate_flag==0 ){
-        std::cerr << "You can only provide tm with the --profile or --dynprofile " <<std::endl;
+    else if(argument.tm.second && tm_rule_profile_flag==0 && tm_profile_flag==0 && tm_dynamical_profile_flag==0 && StMatrix_flag==0 && tm_print_flag==0 && replicate_flag==0 ){
+        std::cerr << "You can only provide tm with the --profile / --dynprofile / --ruleProfile / --ruleMetrics" <<std::endl;
         std::cerr << "Example: ./tm --brief --profile -s 2 -a 2 -i 100 -k 2 -t 5" << std::endl;
         std::cerr << "Example: ./tm --brief --dynprofile -s 2 -a 2 -i 100 -k 2 -t 5" << std::endl;
+        std::cerr << "Example: ./tm --brief --ruleProfile -s 2 -a 2 -i 100 -k 2 -t 5" << std::endl;
+        std::cerr << "Example: ./tm --brief --ruleMetrics -s 2 -a 2 -i 100 -t 5" << std::endl;
+
         exit(0);
     }
 
@@ -456,6 +541,14 @@ Args parseArgs (int argc, char **argv){
     }
     else if ( (argument.states!=0 || argument.alphabet_size!=0 || argument.numIt!=0 || (argument.k.size()==1 ) || argument.tm.second ) && tm_profile_flag==1 && replicate_flag==0 && tm_dynamical_profile_flag==0){
         tm_profile(argument.states,
+                argument.alphabet_size,
+                argument.numIt,
+                argument.k.front(),
+                argument.tm.first, 5);
+        exit(0);
+    }
+    else if ( (argument.states!=0 || argument.alphabet_size!=0 || argument.numIt!=0 || (argument.k.size()==1 ) || argument.tm.second ) && tm_rule_profile_flag==1 && replicate_flag==0 && tm_dynamical_profile_flag==0){
+        tm_profile_rules(argument.states,
                 argument.alphabet_size,
                 argument.numIt,
                 argument.k.front(),
@@ -503,26 +596,26 @@ Args parseArgs (int argc, char **argv){
 }
 
 void printArgs(Args arguments){
-    std::cout<<"states = " << arguments.states << std::endl;
-    std::cout<<"alphabet_size = " << arguments.alphabet_size<< std::endl;
-    std::cout<<"threshold = " << arguments.threshold << std::endl;
-    std::cout<<"number Iterations = " << arguments.numIt << std::endl;
-    std::cout<<"State Matrix String = " << arguments.state_matrix_string << std::endl;
+    std::cout << "states = " << arguments.states << std::endl;
+    std::cout << "alphabet_size = " << arguments.alphabet_size << std::endl;
+    std::cout << "threshold = " << arguments.threshold << std::endl;
+    std::cout << "number Iterations = " << arguments.numIt << std::endl;
+    std::cout << "State Matrix String = " << arguments.state_matrix_string << std::endl;
 
     if (arguments.k.size()>1){
-        std::cout<<"k = " << arguments.k.front()<<  ":" << arguments.k.back() << std::endl;
+        std::cout << "k = " << arguments.k.front() <<  ":" << arguments.k.back() << std::endl;
     }
     else if (arguments.k.size()==1){
-        std::cout<<"k = " << arguments.k.front() << std::endl;
+        std::cout << "k = " << arguments.k.front() << std::endl;
     }
-    std::cout<<"tm = " << arguments.tm.first << std::endl;
+    std::cout << "tm = " << arguments.tm.first << std::endl;
     if(arguments.strategy == TraversalStrategy::SEQUENTIAL){
         std::cout << "strategy = " << "Sequential"  << std::endl; //might require twerks
     }
     else if(arguments.strategy == TraversalStrategy::MONTE_CARLO){
         std::cout << "strategy = " << "Monte Carlo"  << std::endl;
     }
-    std::cout<<"n = " << arguments.n << std::endl;
-    std::cout<<"jobs = " << arguments.jobs << std::endl;
-    std::cout<<"verbose = " << arguments.verbose << std::endl;
+    std::cout << "n = " << arguments.n << std::endl;
+    std::cout << "jobs = " << arguments.jobs << std::endl;
+    std::cout << "verbose = " << arguments.verbose << std::endl;
 }

@@ -89,6 +89,8 @@ void tm_print_state_matrix(
     unsigned int division=5);
 
 
+
+
 /** Evaluates a specific Turing machine program dynamically,analysing the time complexity.
  * @param states
  * @param alphabet_size
@@ -96,7 +98,6 @@ void tm_print_state_matrix(
  * @param k
  * @param tm_number
  */
-
  void tm_dynamical_profile(
     size_t states,
     size_t alphabet_size,
@@ -118,8 +119,6 @@ void tm_print_state_matrix(
  * @param threads the number of threads to run in parallel
  * @return a vector of normalized compression values, one per Turing machine
  */
-
-
 CompressionResultsData tm_multicore(
     size_t states,
     size_t alphabet_size,
@@ -142,3 +141,32 @@ void ktm_multicore(
     size_t states,
     size_t alphabet_size,
     unsigned int threads);
+
+/** Evaluates a specific Turing machine Profile.
+ *
+ * @param states
+ * @param alphabet_size
+ * @param num_iterations
+ * @param k
+ * @param tm_number
+ */
+ void tm_profile_rules(
+    size_t states,
+    size_t alphabet_size,
+    unsigned int num_iterations,
+    unsigned int k,
+    TmId tm_number,
+    unsigned int division=5);
+
+/** Evaluates a specific Turing machine Profile.
+ *
+ * @param states
+ * @param alphabet_size
+ * @param num_iterations
+ * @param tm_number
+ */
+void tm_rules_metrics(
+  size_t states,
+  size_t alphabet_size,
+  unsigned int num_iterations,
+  TmId tm_number);
