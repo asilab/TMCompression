@@ -46,7 +46,7 @@ std::vector<Metrics> ranking(std::vector<Metrics> vector_metrics, unsigned int a
     return vector_metrics;
 }
 
-Metrics get_first(std::vector<Metrics> vector_metrics){
+Metrics get_first(const std::vector<Metrics>& vector_metrics){
     return vector_metrics.front();
 }
 
@@ -147,5 +147,4 @@ void CompressionResultsData::print_avg_metrics(AvgMetrics avgMetrics){
                                               << std::endl;
 
 }
-
 
