@@ -32,7 +32,7 @@ function getprofile {
     while read line; do
         #get k
         #get Machine
-        TM=`echo $line | awk '{ print $1;}'`;
+        TM=$(echo $line | awk '{ print $1;}');
         K=2;
         ../tm --brief --ruleProfile -s $2 -a $3 -i $4 -k $K -t $TM | tail -n +3
     done < $1;

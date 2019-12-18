@@ -66,9 +66,9 @@ if [[ "$BDM" -eq "1" ]];
     function getBDM {
         while read p; do
             ../tm --brief --printTape -s $2 -a $3 -i 50000 -t $p > Index_tape;
-            a=`awk '{ print $1;}' Index_tape`;
+            a=$(awk '{ print $1;}' Index_tape);
             awk '{ print $2;}' Index_tape > tape;
-            bdm=`python bdm.py tape`;
+            bdm=$(python bdm.py tape);
             if [ -z "$bdm" ]
             then
                 bdm=0.0;

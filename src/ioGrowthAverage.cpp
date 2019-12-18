@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
 
     std::vector <AverageGrowth> results_vector;
     auto counter = 0;
-    for (auto a = 0u; a<=vector_results.size(); ++a){
+    for (auto a = 0u; a<vector_results.size(); ++a){
         if(vector_results[a].index==value){   
             growth.index = vector_results[a].index;
             growth.amp += vector_results[a].amp;
