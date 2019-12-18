@@ -20,7 +20,7 @@ struct Metrics{
 };
 Metrics avg_metrics(std::vector<Metrics> vector_metrics);
 std::vector<Metrics> ranking(std::vector<Metrics> vector_metrics, unsigned int amplitude_criteria);
-Metrics get_first(std::vector<Metrics> vector_metrics);
+Metrics get_first(const std::vector<Metrics>& vector_metrics);
 struct IndexAndMetrics{
   TmId tmNumber;
   Metrics metrics;

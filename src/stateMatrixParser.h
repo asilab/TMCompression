@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include "turingMachine.h"
+#include "metrics.h"
 
 /// The RNG engine for sampling random numbers in Monte Carlo.
 using Rng = std::minstd_rand;
