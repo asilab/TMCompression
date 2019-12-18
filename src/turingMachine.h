@@ -105,7 +105,7 @@ struct Tape {
   void resetTape();
   size_t getposition();
   void print() const;
-  std::string print_written_tape(bool print_to_console) const;
+  std::string print_written_tape(bool print_to_console, std::string separator) const;
 
   private:
     void reserve_right(size_t amount);
@@ -123,7 +123,7 @@ struct TuringMachine {
   StateMatrix get_state_matrix() const;
   void reset_tape_and_state();
   std::vector<unsigned int> get_written_tape() const;
-  std::string print_written_tape(bool print_to_console) const; 
+  std::string print_written_tape(bool print_to_console, std::string separator) const; 
   std::string print_written_tape_genomic_alphabet() const;
   TapeMoves act();
   TapeMoves act(bool rule);

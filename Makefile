@@ -52,13 +52,19 @@ src/util.o: src/util.cpp src/util.h
 src/stateMatrixParser.o: src/stateMatrixParser.cpp src/stateMatrixParser.h src/turingMachine.h
 
 ioStNormalize: src/ioStNormalize.cpp
-	g++ -std=c++14 -o ioStNormalize src/ioStNormalize.cpp src/tmId.h
+	g++ -std=c++14 -o ioStNormalize src/ioStNormalize.cpp src/tmId.h src/tmId.cpp
 
 ioAverage: src/ioAverage.cpp
 	g++ -std=c++14 -o ioAverage src/ioAverage.cpp 
 
+ioAverage2: src/ioAverage2.cpp
+	g++ -std=c++14 -o ioAverage2 src/ioAverage2.cpp 
+
 ioGrowthAverage: src/ioGrowthAverage.cpp
 	g++ -std=c++14 -o ioGrowthAverage src/ioGrowthAverage.cpp
 
+bdmAvg: src/bdmAvg.cpp
+	g++ -std=c++14 -o bdmAvg src/bdmAvg.cpp
+	
 TMsimulator: val/TMsimulator.c 
 	g++ -o TMsimulator val/TMsimulator.c -lgmpxx -lgmp

@@ -453,8 +453,8 @@ void tm_print_tape(
   for (auto i = 0u; i < num_iterations -1 ; ++i){
           machine.act(); //importante ser antes
   }
-  // std::cout << tm_number <<  "\t" << machine.print_written_tape(false) << std::endl;
-  std::cout << tm_number <<  "\t" << machine.print_written_tape_genomic_alphabet() << std::endl;
+  std::cout << tm_number <<  "\t" << machine.print_written_tape(false,"-") << std::endl;
+  //std::cout << tm_number <<  "\t" << machine.print_written_tape_genomic_alphabet() << std::endl;
 }
 
 /**Print State matrix of a Turing machine
@@ -480,12 +480,13 @@ void tm_rules_metrics(
   unsigned int num_iterations,
   TmId tm_number)
   {
-  std::vector<unsigned int> kvector{2,3,4,5,6,7,8,9};;
+  std::vector<unsigned int> kvector{2,3,4,5,6,7};;
   BestKMarkovTables<NormalizedCompressionMarkovTable> bestMkvTableCompression(kvector, states*alphabet_size);
   TuringMachine machine(states, alphabet_size);
   std::vector<unsigned int> vector_written_rules;
   machine.stMatrix.set_by_index(tm_number); 
   machine.reset_tape_and_state();
+  
   for (auto i = 0u; i < num_iterations -1 ; ++i){
           vector_written_rules.push_back(machine.act(true).indexRule); //importante ser antes
   }
@@ -509,15 +510,31 @@ void tm_profile_rules(size_t states,
   TuringMachine machine(states, alphabet_size);
   CompressionResultsData data;
   NormalizedCompressionMarkovTable normalizedCompressionMarkovTable(k , states*alphabet_size);
-
-  machine.stMatrix.set_by_index(tm_number); 
+  machine.stMatrix.set_by_index(tm_number);   
   machine.reset_tape_and_state();
   std::vector<unsigned int> rule_vector;
   normalizedCompressionMarkovTable.mrkvTable.reset();
-
-  while( (machine.turingTape.ind_right - machine.turingTape.ind_left)< num_iterations ){
-   rule_vector.push_back(machine.act(true).indexRule);
+  
+  for (auto i = 0u; i < num_iterations -1 ; ++i){
+    rule_vector.push_back(machine.act(true).indexRule);
   }
+  //for (auto a:rule_vector){std::cout<< a;} std::cout<<std::endl;
   data = normalizedCompressionMarkovTable.profile_update_nc_mk_table_random_string(rule_vector, division);
   data.print_profile_data(division);
+}
+
+void tm_print_rules(size_t states,
+      size_t alphabet_size,
+      unsigned int num_iterations,
+      TmId tm_number){
+
+  TuringMachine machine(states, alphabet_size);
+  machine.stMatrix.set_by_index(tm_number);   
+  machine.reset_tape_and_state();
+  std::vector<unsigned int> rule_vector;
+  
+  for (auto i = 0u; i < num_iterations -1 ; ++i){
+    rule_vector.push_back(machine.act(true).indexRule);
+  }
+  for (auto a:rule_vector){std::cout<< a;} std::cout << std::endl << ">x" <<std::endl;
 }

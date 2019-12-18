@@ -5,22 +5,22 @@ if [ $# -ne 6 ]; then
     echo "All args are boolean (0 or 1)";
     echo "";
     echo "If 1st Argument == 1: Reproduce normal profile in article";
-    echo "bash reprArticlePlot.sh.sh 1 0 0 0 0 0";
+    echo "bash reprArticlePlot.sh 1 0 0 0 0 0";
     echo "";
     echo "If 2nd Argument == 1:  Reproduce dynamic profile in article";
-    echo "bash reprArticlePlot.sh.sh 0 1 0 0 0 0";
+    echo "bash reprArticlePlot.sh 0 1 0 0 0 0";
     echo "";
     echo "If 3rd Argument == 1:  Reproduce Edition String profile in article";
-    echo "bash reprArticlePlot.sh.sh 0 0 1 0 0 0";
+    echo "bash reprArticlePlot.sh 0 0 1 0 0 0";
     echo "";
     echo "If 4th Argument == 1:  Reproduce Edition/Permutation of Parvovirus Virus DNA sequence NC plot of the article";
-    echo "bash reprArticlePlot.sh.sh 0 0 0 1 0 0";
+    echo "bash reprArticlePlot.sh 0 0 0 1 0 0";
     echo "";
     echo "If 5th Argument == 1:  Reproduce Edition/Permutation of Herpes Virus DNA sequence NC plot of the article";
-    echo "bash reprArticlePlot.sh.sh 0 0 0 0 1 0";
+    echo "bash reprArticlePlot.sh 0 0 0 0 1 0";
     echo "";
     echo "If 6th Argument == 1:  Reproduce Edition/Permutation of Microplitis demolitor Virus DNA sequence NC plot of the article";
-    echo "bash reprArticlePlot.sh.sh 0 0 0 0 0 1";
+    echo "bash reprArticlePlot.sh 0 0 0 0 0 1";
     echo "";
     exit 1;
 fi

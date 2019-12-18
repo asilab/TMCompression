@@ -170,3 +170,16 @@ void tm_rules_metrics(
   size_t alphabet_size,
   unsigned int num_iterations,
   TmId tm_number);
+
+/** Prints Rule vector used in a specific Turing machine running n iterations.
+ *
+ * @param states
+ * @param alphabet_size
+ * @param num_iterations
+ * @param tm_number
+ */
+
+  void tm_print_rules(size_t states,
+      size_t alphabet_size,
+      unsigned int num_iterations,
+      TmId tm_number);

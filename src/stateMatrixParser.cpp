@@ -495,7 +495,7 @@ StateMatrix get_tm_nc_ranking(StateMatrix& state_matrix,unsigned int &tape_itera
       
       state_matrix.set_rule(index,original_rule);
 
-      if(best_metrics.normalizedCompression > (nc + 0.01)){
+      if(best_metrics.normalizedCompression > (nc + 0.1)){
         nc=best_metrics.normalizedCompression;
         indx = index;
         best_option = best_metrics;

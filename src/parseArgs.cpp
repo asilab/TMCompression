@@ -39,7 +39,7 @@ Args parseArgs (int argc, char **argv){
     static int method_III_growth_plot_flag;
     static int tm_rule_profile_flag;
     static int tm_rule_flag;
-
+    static int tm_print_rule_flag;
     static int graph_method_II;
     char *end;
     TmId correctInput;
@@ -57,6 +57,7 @@ Args parseArgs (int argc, char **argv){
             {"ruleProfile",no_argument, &tm_rule_profile_flag, 1},
             {"ruleMetrics",no_argument, &tm_rule_flag, 1},
             {"printTape", no_argument, &tm_print_flag,1},
+            {"ruleTape", no_argument, &tm_print_rule_flag,1},
             {"StMatrix", no_argument, &StMatrix_flag,1},
             
             {"MethodI", no_argument, &method_I_plot_flag,1},
@@ -459,7 +460,8 @@ Args parseArgs (int argc, char **argv){
         evolve_bb_tm(argument.states, argument.alphabet_size,argument.tmIt, argument.numIt, true, false);
          exit(0);
     }
-
+    
+    
 
     if (optind < argc)
     {
@@ -500,6 +502,13 @@ Args parseArgs (int argc, char **argv){
                      argument.alphabet_size,
                      argument.numIt,
                      argument.tm.first);
+            exit(0);
+    }
+    else if((argument.states!=0 && argument.alphabet_size!=0 && argument.numIt!=0 && argument.k.empty() && argument.tm.second) && tm_print_rule_flag==1 && tm_rule_flag==0 && tm_profile_flag==0 && replicate_flag==0 && tm_number_growth_flag==0){
+            tm_print_rules(argument.states,
+                argument.alphabet_size,
+                argument.numIt,
+                argument.tm.first);
             exit(0);
     }
     else if ( (argument.states!=0 || argument.alphabet_size!=0 || argument.numIt!=0 || (!argument.k.empty()) || argument.jobs!=0 ) && tm_number_growth_flag ){

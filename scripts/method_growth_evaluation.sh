@@ -1,6 +1,7 @@
 #!/bin/bash
 #
 #################################################
+
 file="MethodIIGrowth";
 file2="MethodIIIGrowth"; #Change
 tail -n +2 ../resultText/$file > A;
@@ -26,8 +27,8 @@ gnuplot << EOF
     set key left top
     set grid ytics lt -1
     set style fill solid
-    set xlabel "Normalized Compression"
-    set ylabel "Number iterations"
+    set xlabel "Number iterations"
+    set ylabel "Amplitude of Tape"
     set datafile separator "\t"
     set xtics
     set style fill transparent solid 0.5 noborder
@@ -46,8 +47,8 @@ gnuplot << EOF
     set key left top
     set grid ytics lt -1
     set style fill solid
-    set xlabel "Bits"
-    set ylabel "Number iterations"
+    set xlabel "Number iterations"
+    set ylabel "Bits"
     set datafile separator "\t"
     set xtics
     set style fill transparent solid 0.5 noborder
@@ -66,8 +67,8 @@ gnuplot << EOF
     set key left top
     set grid ytics lt -1
     set style fill solid
-    set xlabel "Normalized Compression"
-    set ylabel "Number iterations"
+    set xlabel "Number iterations"
+    set ylabel "Normalized Compressions"
     set datafile separator "\t"
     set xtics
     set style fill transparent solid 0.5 noborder
@@ -76,5 +77,7 @@ gnuplot << EOF
 EOF
 
 pdfunite Growth_*.pdf Growth.pdf;
+mv Growth.pdf ../resultPlots/
 rm Growth_*.pdf;
+rm Average_MethodIIGrowth Average_MethodIIIGrowth;
 rm A B Amplitude_m2 Amplitude_m3 NC_m2 NC_m3 Bits_m2 Bits_m3;

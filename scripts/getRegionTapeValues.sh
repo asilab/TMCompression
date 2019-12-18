@@ -107,6 +107,8 @@ cat IN2sts2alph IN2sts3alph IN3sts2alph IN4sts2alph IN5sts2alph IN6sts2alph > IN
 cat OUT2sts3alph OUT2sts3alph OUT3sts2alph OUT4sts2alph OUT5sts2alph OUT6sts2alph > OUT1;
 paste Index1 IN1 > IN;
 paste Index2 OUT1 > OUT;
+
+rm Index1 Index2;
 #==============================================================================
 #   Plots
 #==============================================================================
@@ -196,6 +198,6 @@ EOF
 #   Remove
 #==============================================================================
 
-pdfunite AMP.pdf SC.pdf NC.pdf AverageInsidevsOUtside.pdf;
+pdfunite AMP.pdf SC.pdf NC.pdf AverageInsidevsOutsideTape.pdf;
 mv AverageInsidevsOUtside.pdf ../resultPlots/
 rm AMP* NC* SC* Index* Region*

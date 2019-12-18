@@ -278,7 +278,7 @@ void Tape::print() const{
 } 
 
 
-std::string Tape::print_written_tape(bool print_to_console) const{
+std::string Tape::print_written_tape(bool print_to_console, std::string separator) const{
    if(print_to_console){
      std::cout << "Written  Tape" << std::endl;
      }
@@ -287,10 +287,19 @@ std::string Tape::print_written_tape(bool print_to_console) const{
       if(print_to_console){
         std::cout << *j << ' ';
         }
+      if (separator.empty()){
       written_tape += std::to_string(*j);
+      }
+      else{
+      written_tape += std::to_string(*j);
+      written_tape += separator;
+      }
   }
   if(print_to_console){
     std::cout << std::endl;
+  }
+  if (!separator.empty()){
+    written_tape = written_tape.substr(0, written_tape.size()-1);
   }
   return written_tape;
 }
@@ -364,15 +373,15 @@ void TuringMachine::set_state_matrix(const StateMatrix& ruleMatrix){
 }
 
 
-std::string TuringMachine::print_written_tape(bool print_to_console) const {
-  return this->turingTape.print_written_tape(print_to_console);
+std::string TuringMachine::print_written_tape(bool print_to_console, std::string separator) const {
+  return this->turingTape.print_written_tape(print_to_console,separator);
 }
   std::vector<unsigned int> TuringMachine::get_written_tape() const{
     return this->turingTape.get_written_tape();
   }
 
 std::string TuringMachine::print_written_tape_genomic_alphabet() const {
-  std::string written_tape = this->turingTape.print_written_tape(false);
+  std::string written_tape = this->turingTape.print_written_tape(false,"");
 
   std::map<std::string,char> tapeLetter;
   tapeLetter["00"] = 'A';
