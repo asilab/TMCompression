@@ -133,11 +133,9 @@ Args parseArgs (int argc, char **argv){
             std::cout << "--ruleMetrics" << "\t" 
             << "Indicates programs to compute the rule metrics of a given TMs" 
             << std::endl<< std::endl;
-
             std::cout << "--ruleProfile" << "\t" 
             << "Indicates programs to create a Compression profile of the rules for a given Turing Machine" 
             << std::endl<< std::endl;
-
             std::cout << "--mutate" << "\t" 
             << "Indicates programs to print the nc of the mutation of a string (starting with all zeros and ending with all ones) and performing mutations until its 100% mutated" 
             << std::endl<< std::endl;
@@ -238,7 +236,7 @@ Args parseArgs (int argc, char **argv){
             exit (0);
 
         case 'v':
-            std::cout << "Relative Turing Machine Version 0.1" << std::endl<<std::endl;
+            std::cout << "Relative Turing Machine Version 0.9" << std::endl<<std::endl;
             exit (0);
         case 's':
             {
