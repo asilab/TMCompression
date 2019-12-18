@@ -55,14 +55,14 @@ int main(int argc, char *argv[])
 
     std::vector <AverageGrowth> results_vector;
     auto counter = 0;
-    for (auto a = 0u; a<vector_results.size(); ++a){
-        if(vector_results[a].index==value){   
-            growth.index = vector_results[a].index;
-            growth.amp += vector_results[a].amp;
-            growth.nc += vector_results[a].nc;
-            growth.nmvc += vector_results[a].nmvc;
+    for (auto& result: vector_results) {
+        if(result.index == value){
+            growth.index = result.index;
+            growth.amp += result.amp;
+            growth.nc += result.nc;
+            growth.nmvc += result.nmvc;
             ++counter;
-        } 
+        }
         else{
         average_growth.index = growth.index;
         average_growth.amp = growth.amp/counter;
@@ -74,7 +74,7 @@ int main(int argc, char *argv[])
         growth.nmvc = 0;
         growth.nc = 0;
         counter = 1;
-        value = vector_results[a].index;
+        value = result.index;
         }
     }
     for (auto idx_average:results_vector){
