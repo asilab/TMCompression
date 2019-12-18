@@ -61,7 +61,7 @@ gnuplot << EOF
     set key outside horiz center top
     set tics nomirror out scale 0.75
     set xrange [0:200]
-    set yrange [0:200]
+    set yrange [0:]
     set border 3 front ls 101
     set grid ytics lt -1
     set style fill solid
@@ -166,7 +166,7 @@ gnuplot << EOF
     set key outside horiz center top
     set tics nomirror out scale 0.75
     set xrange [0:3]
-    set yrange [0:200]
+    set yrange [0:]
     set border 3 front ls 101
     set grid ytics lt -1
     set style fill solid

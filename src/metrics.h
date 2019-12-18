@@ -11,6 +11,7 @@
 #include "turingMachine.h"
 
 struct Metrics{
+  TuringRecord tr;
   unsigned int k;
   unsigned int amplitude;
   double selfCompression;
@@ -18,9 +19,8 @@ struct Metrics{
   void print();
 };
 Metrics avg_metrics(std::vector<Metrics> vector_metrics);
-
-
-
+std::vector<Metrics> ranking(std::vector<Metrics> vector_metrics, unsigned int amplitude_criteria);
+Metrics get_first(const std::vector<Metrics>& vector_metrics);
 struct IndexAndMetrics{
   TmId tmNumber;
   Metrics metrics;

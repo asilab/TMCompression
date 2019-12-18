@@ -1,17 +1,20 @@
 #!/bin/bash
 #
-if [ $# -ne 3 ]; then
+if [ $# -ne 4 ]; then
     echo "Not enough arguments arguments provided, you need to provide 3 arguments:";
     echo "All args are boolean (0 or 1)";
     echo "";
     echo "If 1st Argument == 1: Filters are the results of a given file and provide the 50 most statistically complex machines";
-    echo "bash filteringResults.sh 1 0 0";
+    echo "bash filteringResults.sh 1 0 0 0";
     echo "";
-    echo "If 2nd Argument == 1:Requests the file and make the profile with the turing machines present in the file in the form of its indexes";
-    echo "bash filteringResults.sh 0 1 0";
+    echo "If 2nd Argument == 1:Requests the file and make the normal complexity profile with the turing machines present in the file in the form of its indexes";
+    echo "bash filteringResults.sh 0 1 0 0";
     echo "";
     echo "If 3rd Argument == 1:Requests the file and make the dynamical profile with the turing machines present in the file in the form of its indexes";
-    echo "bash filteringResults.sh 0 0 1";
+    echo "bash filteringResults.sh 0 0 1 0";
+    echo "";
+    echo "If 4th Argument == 1:Requests the file and make the rule complexity profile with the turing machines present in the file in the form of its indexes";
+    echo "bash filteringResults.sh 0 0 0 1";
     echo "";
     exit 1;
 fi
@@ -22,12 +25,11 @@ fi
 FILTER=$1;
 PROFILE=$2;
 DYNAMICPROFILE=$3;
-
+RULEPROFILE=$4;
 # Default Values
 NUMBERITERATION=50000;
 K=2;
 SavePath="../profiles/";
-
 # ==============================================================================
 # FILTER MOST RELEVANT MACHINES
 # ==============================================================================
@@ -118,6 +120,41 @@ if [[ "$DYNAMICPROFILE" -eq "1" ]];
         pdfunite DynProfile*.pdf AllDynProfile${STATE}St${ALPHABET}AlphTM.pdf;
         rm DynProfile*.pdf;
         cd ../..;
+    fi
+    cd ./scripts;
+fi
+
+# ==============================================================================
+# Rule Profile of TM in provided file
+# ==============================================================================
+if [[ "$RULEPROFILE" -eq "1" ]];
+    then
+    cd ../resultText;
+    echo "Please insert filtered file with machines that will make the profile: Ex: InterestingTM2st.txt";
+    read FILENAME;
+    if [[ $FILENAME == *.txt ]]
+      then
+        if [ -f $FILENAME ]; then
+            echo "Please insert #States: Ex: 2"
+            read STATE;
+            echo "Please insert #Alphabet: Ex: 2"
+            read ALPHABET;
+            pwd;
+            while read p; do
+                TM=$(echo $p | awk '{ print $1;}');
+                K=$(echo $p | awk '{ print $2;}');
+                #NUMBERITERATION=$(echo $p | awk '{ print $3;}');
+                NUMBERITERATION=1001;
+                bash ../scripts/ruleProfile.sh $TM $STATE $ALPHABET $NUMBERITERATION $K;
+            done <$FILENAME
+        
+            Folder=${STATE}St${ALPHABET}AlphTM/;
+            DIRECTORY=${SavePath}${Folder};
+            cd ${DIRECTORY};
+            pdfunite rule_profile*.pdf AllRuleProfile${STATE}St${ALPHABET}AlphTM.pdf;
+            rm rule_profile*.pdf;
+            cd ../..;
+        fi
     fi
     cd ./scripts;
 fi

@@ -1,6 +1,6 @@
 /**
-    ioStNormalize.cpp
-    Purpose: Program that reads txt file and normalizes amplitude and nmvc
+    ioAverage.cpp
+    Purpose: Program that reads txt file and outputs average amplitude and Bits Required and NC
 
     @author Jorge Miguel Ferreira da Silva
     @version 0.1
@@ -11,12 +11,11 @@
 #include <string>       // std::string
 #include <sstream>      // std::istringstream
 #include <vector>
+#include <numeric>      //std::accumulate
 #include <algorithm>
 #include <cmath>
 #include <iomanip>
 #include"tmId.h"
-
-
 
 int main(int argc, char *argv[])
 {   
@@ -25,7 +24,6 @@ int main(int argc, char *argv[])
     std::ifstream in;
     in.open(input);
     std::string line;
-    
     std::vector <TmId> tmVector;
     std::vector <unsigned int> kVector;
     std::vector <unsigned int> itVector;
@@ -43,39 +41,34 @@ int main(int argc, char *argv[])
         {
             std::string tm;
             unsigned int k;
-            unsigned int iterations;
-            unsigned int amplitude;
+            unsigned int it;
             double nmvc;
+            double amplitude;
             double nc;
-
+            
+            //std::cout << line << std::endl;
+            
             std::istringstream iss(line); //put line into stringstream
-            std::string word;
-            while(iss >> tm >> k >> iterations >> amplitude >> nmvc >> nc) //read word by word
+            
+            
+            while(iss >> tm >> k >> it >> amplitude >> nmvc >> nc) //read word by word
             {   
-                TmId tmInput = string_to_uint128(tm);
-                tmVector.push_back(tmInput);
-                kVector.push_back(k);
-                itVector.push_back(iterations);
+                //std::cout << tm << amplitude << nmvc << nc << std::endl;
+                //exit(42);
                 ampVector.push_back(amplitude);
                 nmvcVector.push_back(nmvc);
                 ncVector.push_back(nc);
             }
         }
     }
-    auto nmvcit = std::max_element(std::begin(nmvcVector), std::end(nmvcVector));
-    auto ampit = std::max_element(std::begin(ampVector), std::end(ampVector));
 
+    
+    auto sc_average = std::accumulate( nmvcVector.begin(), nmvcVector.end(), 0.0)/nmvcVector.size(); 
+    auto amp_average = std::accumulate( ampVector.begin(), ampVector.end(), 0.0)/ampVector.size(); 
+    auto nc_average = std::accumulate( ncVector.begin(), ncVector.end(), 0.0)/ncVector.size(); 
 
-    for(auto& v : nmvcVector){ 
-        nmvcVector2.push_back(v/(*nmvcit));
-    } 
-    for(auto& v : ampVector){ 
-        ampVector2.push_back( static_cast<double>(v)/( *ampit ));
-    } 
+    std::cout <<  amp_average << std::setprecision(5) << std::showpoint << "\t" 
+    << sc_average << std::setprecision(5) << std::showpoint << "\t" 
+    << nc_average << std::setprecision(5) << std::showpoint << "\t" << std::endl;
 
-    for (auto i = 0u; i < tmVector.size(); ++i) {
-        std::cout <<  tmVector[i] << "\t" << kVector[i] << "\t" << itVector[i] << "\t" 
-         << std::setprecision(5) << std::showpoint <<  ampVector2[i]  << "\t" << nmvcVector2[i] << "\t"
-         << ncVector[i] << std::endl;
-    }
 }

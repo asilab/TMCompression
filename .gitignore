@@ -38,6 +38,9 @@
 tm
 AC
 ioAverage
+bdmAvg
+ioAverage2
+ioGrowthAverage
 ioStNormalize
 TMsimulator
 goose

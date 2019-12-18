@@ -98,6 +98,13 @@ TmId StateMatrix::calculate_index() const {
   return id;
 }
 
+unsigned int StateMatrix::get_number_alphabet() const{
+  return this->alphSz;
+}
+unsigned int StateMatrix::get_number_states() const{
+  return this->nbStates;
+}
+
 std::vector<TuringRecord> StateMatrix::get_vector() const{
   return this->v;
 }
@@ -128,6 +135,11 @@ TuringRecord& StateMatrix::at(Char alph, State state){
 
 const TuringRecord& StateMatrix::at(Char alph, State state) const {
   return this->v.at(   (   (alph + 1) * this->nbStates   )   -   (   this->nbStates - state  )   );
+}
+
+// retrieve index of StateMatrix;
+unsigned int StateMatrix::get_index(Char alph, State state) const{
+  return   (   (alph + 1) * this->nbStates   )   -   (   this->nbStates - state  )   ;
 }
 
 bool StateMatrix::next(){
@@ -206,7 +218,7 @@ size_t Tape::getposition() {
 */
 TapeMoves Tape::setandmove(Move relativePos, Char value) {
 
-  TapeMoves tapeMove{0,false,false};
+  TapeMoves tapeMove{0,0,false,false,0,value};
   this->tape[this->position] = value;
   int replace_pos = relativePos - 1;
   
@@ -266,7 +278,7 @@ void Tape::print() const{
 } 
 
 
-std::string Tape::print_written_tape(bool print_to_console) const{
+std::string Tape::print_written_tape(bool print_to_console, std::string separator) const{
    if(print_to_console){
      std::cout << "Written  Tape" << std::endl;
      }
@@ -275,10 +287,19 @@ std::string Tape::print_written_tape(bool print_to_console) const{
       if(print_to_console){
         std::cout << *j << ' ';
         }
+      if (separator.empty()){
       written_tape += std::to_string(*j);
+      }
+      else{
+      written_tape += std::to_string(*j);
+      written_tape += separator;
+      }
   }
   if(print_to_console){
     std::cout << std::endl;
+  }
+  if (!separator.empty()){
+    written_tape = written_tape.substr(0, written_tape.size()-1);
   }
   return written_tape;
 }
@@ -321,6 +342,23 @@ TapeMoves TuringMachine::act(){
   return tpMove;
 }
 
+TapeMoves TuringMachine::act(bool rule){
+  TapeMoves tpMove;
+  Char alphValue = turingTape.getvalue();
+  auto tr = stMatrix.at(alphValue, this->state);
+  
+  tpMove = turingTape.setandmove(tr.move, tr.write);
+
+  if (rule) {
+      auto ruleIndex = stMatrix.get_index(alphValue, this->state);
+      tpMove.indexRule = ruleIndex;
+  }
+  this->state = tr.state;
+  return tpMove;
+}
+
+
+
 void TuringMachine::reset_tape_and_state(){
  this->turingTape.resetTape();
  this->state=0;
@@ -335,15 +373,15 @@ void TuringMachine::set_state_matrix(const StateMatrix& ruleMatrix){
 }
 
 
-std::string TuringMachine::print_written_tape(bool print_to_console) const {
-  return this->turingTape.print_written_tape(print_to_console);
+std::string TuringMachine::print_written_tape(bool print_to_console, std::string separator) const {
+  return this->turingTape.print_written_tape(print_to_console,separator);
 }
   std::vector<unsigned int> TuringMachine::get_written_tape() const{
     return this->turingTape.get_written_tape();
   }
 
 std::string TuringMachine::print_written_tape_genomic_alphabet() const {
-  std::string written_tape = this->turingTape.print_written_tape(false);
+  std::string written_tape = this->turingTape.print_written_tape(false,"");
 
   std::map<std::string,char> tapeLetter;
   tapeLetter["00"] = 'A';

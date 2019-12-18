@@ -16,7 +16,9 @@ git clone https://github.com/jorgeMFS/TMCompression.git;
 cd TMCompression;
 make;
 make ioStNormalize;
-make ioAverage;
+make ioAverage2;
+make ioGrowthAverage;
+make bdmAvg;
 make TMsimulator;
 ```
     
@@ -56,6 +58,10 @@ There are many ways to run this program see help for clarification :
 --profile       #Indicates programs that will receive through the tm number through the flag tm and will create a profile of that turing
 
 --dynprofile    #Indicates programs that will receive through the tm number through the flag tm and will create a dynamical temporal profile of that turing
+
+--ruleProfile   #Indicates programs to create a Compression profile of the rules for a given Turing Machine
+
+--ruleMetrics   #Indicates programs to compute the rule metrics of a given TMs
 
 --StMatrix      #Indicates programs to print the StateMatrix of a given TMs
 
@@ -110,12 +116,19 @@ There are many ways to run this program see help for clarification :
 #Monte Carlo:
 ./tm --brief -s 2 -a 2 -i 10 -k 1 -N 10 -j 4 -S monte_carlo
 #----------------
-#Run specific tm and obtain profile:
+#Run specific TM and obtain profile:
 ./tm --brief --profile -s 2 -a 2 -i 100 -k 2 -t 5
+#----------------
+#Run a specific TM and obtain their rules normal complexity profile
+./tm --brief --ruleProfile -s 2 -a 2 -i 100 -k 2 -t 5
 #----------------
 #Run specific tm and obtain dynamical temporal profile:
 ./tm --brief --dynprofile -s 2 -a 2 -i 100 -k 2 -t 5 
 #----------------
+# Run specific tm and obtain their Rule Compression Profile:
+#----------------
+./tm --brief --ruleMetrics -s 2 -a 2 -i 100 -t 5
+# ----------------
 #Replicate k and it determination:
 ./tm --brief --replicate -s 2 -a 2 -j 10
 #----------------
@@ -197,9 +210,34 @@ bash reprArticlePlot.sh 1 1 0 0 0 0;
 </p>
 
 ```bash
-# Recreate Plot of Inside vs Outside region...";
-bash getSampledRegion.sh;
+# Recreating Plot of Inside vs Outside region of TM Tapes...;
+bash getRegionTapeValues.sh;
+# Recreating Plot of Inside vs Outside region of TM Rules...
+bash getRegionRuleValues.sh 1 0 1 1;
 ```
+<b>Average Rule Complexity Profiles plots:</b>
+<p align="center">
+<img src="icons/Fig7.png" alt="TMs" width="400" border="0" /></p>
+<br>
+<p align="center">
+</p>
+
+```bash
+# Obtain Average Rule Profiles...
+bash avg_rule_profile.sh 1 1;
+```
+<b>Block Decomposition Method comparation with NC plots:</b>
+<p align="center">
+<img src="icons/Fig8.png" alt="TMs" width="400" border="0" /></p>
+<br>
+<p align="center">
+</p>
+
+```bash
+#Compare BDM with NC for #Q={6,8,10}...
+bash bdm_NC_comparisson.sh 1 0 1 1;
+```
+
 <b>Method I and II plots:</b>
 <p align="center">
 <img src="icons/Fig5.png" alt="TMs" width="400" border="0" /></p>
@@ -215,7 +253,6 @@ bash getSampledRegion.sh;
 bash evolve_tm_plot.sh Method_I_200;
 bash evolve_tm_plot.sh Method_II_2000;
 ```
-
 <b>3D Method II Plots:</b>
 <p align="center">
 <img src="icons/Fig6.png" alt="TMs" width="400" border="0" /></p>

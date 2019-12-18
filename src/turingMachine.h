@@ -29,11 +29,13 @@ struct function_malfunction_exception: public std::exception {
     }
 };
 
-
 struct TapeMoves{
   size_t previousValue;
+  size_t previousPosition;
   bool moveRight;
   bool moveLeft;
+  unsigned int indexRule;
+  unsigned int writtenValue;
 };
 
 struct TuringRecord{
@@ -61,7 +63,10 @@ struct StateMatrix{
   void set_by_index(TmId id);
   void set_rule(unsigned int index, TuringRecord& tr);
   TmId calculate_index() const;
+  unsigned int get_number_alphabet()const;
+  unsigned int get_number_states()const;
   std::string get_state_matrix_string();
+  unsigned int get_index(Char alph, State state)const;
   TuringRecord get_element(unsigned int index) const;
   unsigned int get_size()const;
   std::vector<TuringRecord> get_vector() const;
@@ -100,7 +105,7 @@ struct Tape {
   void resetTape();
   size_t getposition();
   void print() const;
-  std::string print_written_tape(bool print_to_console) const;
+  std::string print_written_tape(bool print_to_console, std::string separator) const;
 
   private:
     void reserve_right(size_t amount);
@@ -118,9 +123,10 @@ struct TuringMachine {
   StateMatrix get_state_matrix() const;
   void reset_tape_and_state();
   std::vector<unsigned int> get_written_tape() const;
-  std::string print_written_tape(bool print_to_console) const; 
+  std::string print_written_tape(bool print_to_console, std::string separator) const; 
   std::string print_written_tape_genomic_alphabet() const;
   TapeMoves act();
+  TapeMoves act(bool rule);
   void set_state_matrix(const StateMatrix& ruleMatrix);
   
 };

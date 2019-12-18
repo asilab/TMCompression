@@ -129,11 +129,12 @@ void evolve_multiple_tms(unsigned int repeats , unsigned int number_of_tms,unsig
   }
 }
 
-void evolve_multiple_tms2(unsigned int repeats , unsigned int number_of_iterations,unsigned int states,unsigned int alphabet_size){
+void evolve_multiple_tms2(unsigned int repeats, unsigned int iterations, unsigned int tape_iterations, unsigned int states,unsigned int alphabet_size){
   std::cout << "amp_ini" << "\t" << "SC_ini" << "\t" << "NC_ini" << "\t" << "amp_fin" << "\t" << "SC_fin" << "\t" << "NC_fin" << std::endl;
-  unsigned int number_of_tm_improves = 1000;
+  //unsigned int number_of_tm_improves = 1200000;
+  //unsigned int number_of_tm_improves = 1000;
   for (auto i = 0u; i<repeats;++i){
-    real_nc_evolution(number_of_tm_improves, number_of_iterations, states, alphabet_size, true);
+    real_nc_evolution(iterations, tape_iterations, states, alphabet_size, true, false);
   }
 }
 
@@ -152,7 +153,7 @@ void evolve_multiple_tms_graph(unsigned int max_number_tm_improve_repeats , unsi
 Metrics avg_real_tm_nc_evolution(unsigned int number_tms, unsigned int tm_improve_repeats , unsigned int tm_tape_iterations,unsigned int states,unsigned int alphabet_size){
   std::vector<Metrics> vector_metrics;//also amplitude---
   for (auto i = 0u; i<number_tms;++i){
-    vector_metrics.push_back(real_nc_evolution(tm_improve_repeats, tm_tape_iterations, states,alphabet_size, false));
+    vector_metrics.push_back(real_nc_evolution(tm_improve_repeats, tm_tape_iterations, states,alphabet_size, false, false));
   }
 return avg_metrics(vector_metrics);
 }
@@ -176,7 +177,7 @@ StateMatrix artificial_selection(std::pair<std::vector<double>,StateMatrix> stat
   return state_matrix_pair_1.second;
 }
 
-Metrics real_nc_evolution(unsigned int number_tm_it,unsigned int tm_tape_iterations, unsigned int states, unsigned int alphabet_size, bool print){
+Metrics real_nc_evolution(unsigned int number_tm_it,unsigned int tm_tape_iterations, unsigned int states, unsigned int alphabet_size, bool print, bool print2){
 
   std::random_device rnd_device;
   unsigned int seed =rnd_device();
@@ -186,6 +187,7 @@ Metrics real_nc_evolution(unsigned int number_tm_it,unsigned int tm_tape_iterati
   unsigned int amplitude_criteria = 50;//parameter
   Metrics values_initial;
   Metrics values_final;
+  Metrics value_current;
   BestKMarkovTables<NormalizedCompressionMarkovTable> bestMkvTableCompression(kvector, alphabet_size);
   StateMatrix stMatrix(states, alphabet_size);
   stMatrix.set_random(rng);
@@ -213,20 +215,25 @@ Metrics real_nc_evolution(unsigned int number_tm_it,unsigned int tm_tape_iterati
     bestMkvTableCompression.reset();
     auto amplitude2 = results.amplitude;
     auto nc2 = results.normalizedCompression;
-    if ( (nc2 <= nc) || (amplitude2*2 < amplitude || amplitude2 < 100) ){
-      stMatrix.set_rule(rule_index, tr_original);
-    }
-    else{
-      nc = nc2;
-      amplitude = amplitude2;
-    }
+
+      if ( (nc2 <= nc) || (amplitude2*2 < amplitude || amplitude2 < 500) ){
+        stMatrix.set_rule(rule_index, tr_original);
+      }
+      else{
+        nc = nc2;
+        amplitude = amplitude2;
+      }
+      if(print2 && (counter%12000)==0){
+        value_current = bestMkvTableCompression.update_string(recreate_tm(stMatrix, states, alphabet_size, tm_tape_iterations));
+        std::cout << counter/1200 << "\t" << value_current.amplitude << "\t" << value_current.selfCompression << "\t" << value_current.normalizedCompression << std::endl; 
+      }
   }
   vector_written_string = recreate_tm(stMatrix, states, alphabet_size, tm_tape_iterations);
   values_final = bestMkvTableCompression.update_string(vector_written_string);
   bestMkvTableCompression.reset();
   if (print){
-  std::cout << values_initial.amplitude << "\t" << values_initial.selfCompression << "\t" << values_initial.normalizedCompression << "\t" << 
-  values_final.amplitude << "\t" << values_final.selfCompression << "\t" << values_final.normalizedCompression << std::endl; 
+    std::cout << values_initial.amplitude << "\t" << values_initial.selfCompression << "\t" << values_initial.normalizedCompression << "\t" << 
+    values_final.amplitude << "\t" << values_final.selfCompression << "\t" << values_final.normalizedCompression << std::endl; 
   }
   Metrics variation;
   variation.amplitude = values_final.amplitude;
@@ -380,4 +387,151 @@ bool machine_filter(StateMatrix state_matrix, unsigned int states,unsigned int a
   auto amplitude = bestMkvTableCompression.update_string(machine.get_written_tape()).amplitude;
   bestMkvTableCompression.reset();
   return amplitude > amplitude_criteria;
+}
+
+
+Metrics evolve_bb_tm(unsigned int states, unsigned int alphabet,unsigned int iterations, unsigned int tape_iterations, bool print,bool print2){
+
+  //Best of the best 
+  // Random matrix
+  // NC of all
+  //Best of the Best
+  //Chose the best
+
+  std::vector<unsigned int> kvector{2,3,4,5,6,7,8,9};
+  BestKMarkovTables<NormalizedCompressionMarkovTable> bestMkvTableCompression(kvector, alphabet);
+  StateMatrix stMatrix(states, alphabet);
+  Metrics variation;
+  std::vector<unsigned int> vector_written_string;
+  Metrics values_initial;
+  Metrics value_current;
+  Metrics values_final;
+  Rng rng = generate_seed();
+  stMatrix.set_random(rng);
+  vector_written_string = recreate_tm(stMatrix, states, alphabet, tape_iterations);
+  values_initial = bestMkvTableCompression.update_string(vector_written_string);
+  bestMkvTableCompression.reset();
+  
+  //std::cerr << stMatrix.get_state_matrix_string() << std::endl;
+
+  unsigned int divisions =  static_cast<double>(tape_iterations) / static_cast<double>(iterations);
+  unsigned int tape_it = 0;
+  // calculate number /100/
+  for(auto counter = 0u; counter < iterations; ++counter){
+    if(tape_it<tape_iterations){
+        tape_it+= static_cast<int>(divisions);
+      }
+    stMatrix = get_tm_nc_ranking(stMatrix,tape_it);
+    if(print2 && (counter%10==0) ){
+      value_current = bestMkvTableCompression.update_string(recreate_tm(stMatrix, states, alphabet, tape_iterations));
+      std::cout << counter << "\t" << value_current.amplitude << "\t" << value_current.selfCompression << "\t" << value_current.normalizedCompression << std::endl; 
+    
+    }    
+  }
+
+  vector_written_string = recreate_tm(stMatrix, states, alphabet, tape_iterations);
+  values_final = bestMkvTableCompression.update_string(vector_written_string);
+  bestMkvTableCompression.reset();
+  
+  // std::cerr << stMatrix.get_state_matrix_string() << std::endl;
+  // if(print){
+  //   std::cout << values_initial.amplitude << "\t" << values_initial.selfCompression << "\t" << values_initial.normalizedCompression << "\t" << 
+  //   values_final.amplitude << "\t" << values_final.selfCompression << "\t" << values_final.normalizedCompression << std::endl; 
+  // }
+  
+  variation.amplitude = values_final.amplitude;
+  variation.normalizedCompression = (values_final.normalizedCompression - values_initial.normalizedCompression);
+  variation.selfCompression = (values_final.selfCompression - values_initial.selfCompression);
+  if (print){
+    std::cout << values_initial.amplitude << "\t" << values_initial.selfCompression << "\t" << values_initial.normalizedCompression << "\t" << 
+                 values_final.amplitude << "\t" << values_final.selfCompression << "\t" << values_final.normalizedCompression << std::endl; 
+  }
+  // std::cout << "final amplitude : " << variation.amplitude 
+  //           << "\t nc variation : " << variation.normalizedCompression 
+  //           << "\t sc variation : " << variation.selfCompression << std::endl;
+  return variation;
+}
+
+Rng generate_seed(){
+  std::random_device rnd_device;
+  unsigned int seed = rnd_device();
+  Rng rng{seed};
+  //std::cerr << seed << std::endl;
+  return rng;
+}
+
+
+StateMatrix get_tm_nc_ranking(StateMatrix& state_matrix,unsigned int &tape_iterations){
+  
+  std::vector<unsigned int> kvector{2,3,4,5,6,7,8,9};
+  BestKMarkovTables<NormalizedCompressionMarkovTable> bestMkvTableCompression(kvector, state_matrix.get_number_alphabet());
+  Metrics metrics;
+  Metrics best_metrics;
+  Metrics best_option;
+  std::vector<Metrics> rule_results;
+  std::vector<Metrics> rule_rank;
+  std::vector <Metrics> best_by_index;
+
+  unsigned int indx = state_matrix.get_size(); //as a test
+  double nc=0;
+  unsigned int criteria = 0.1 * tape_iterations;
+  //std::cerr<< "criteria :" << criteria << std::endl;
+  for (auto index=0u; index<state_matrix.get_size(); ++index){
+      auto original_rule = state_matrix.get_element(index);
+      TuringRecord tr{0,0,0};
+      while(tr.next(state_matrix.get_number_states(),state_matrix.get_number_alphabet())){
+        state_matrix.set_rule(index,tr);
+        auto vector_written_string = recreate_tm(state_matrix, state_matrix.get_number_states(), state_matrix.get_number_alphabet(), tape_iterations);
+        metrics = bestMkvTableCompression.update_string(vector_written_string);
+        metrics.tr=tr;
+        rule_results.push_back(metrics);
+        bestMkvTableCompression.reset();
+      }
+      
+      
+      rule_rank = ranking(rule_results, criteria);
+      
+      best_metrics = get_first(rule_rank);
+      
+      state_matrix.set_rule(index,original_rule);
+
+      if(best_metrics.normalizedCompression > (nc + 0.1)){
+        nc=best_metrics.normalizedCompression;
+        indx = index;
+        best_option = best_metrics;
+      }
+  
+  }
+  // std::cerr << "Amp : " << best_metrics.amplitude << std::endl;
+  // std::cerr << "NC : " << best_metrics.normalizedCompression << std::endl;
+  if(indx < state_matrix.get_size() ){
+    state_matrix.set_rule(indx,best_option.tr);
+  }
+  // else{
+  //   std::cerr << "improved" << std::endl;
+  //   exit(42);
+  // }
+
+  return state_matrix;
+}
+
+void evolve_multiple_tms3(unsigned int repeats,unsigned int iterations, unsigned int tape_iterations, unsigned int states, unsigned int alphabet_size){
+  std::cout << "amp_ini" << "\t" << "SC_ini" << "\t" << "NC_ini" << "\t" << "amp_fin" << "\t" << "SC_fin" << "\t" << "NC_fin" << std::endl;
+  for (auto i = 0u; i<repeats;++i){
+    evolve_bb_tm(states, alphabet_size, iterations, tape_iterations, true, false);
+  }
+}
+void growth_plot_tms3(unsigned int repeats,unsigned int iterations, unsigned int tape_iterations, unsigned int states, unsigned int alphabet_size){
+  std::cout << "Idx" << "\t" << "Amp" << "\t" << "SC" << "\t" << "NC" << std::endl;
+  for (auto i = 0u; i<repeats;++i){
+    evolve_bb_tm(states, alphabet_size, iterations, tape_iterations, false, true);
+  }
+}
+
+
+void growth_plot_tms2(unsigned int repeats , unsigned int iterations,unsigned int tape_iterations,unsigned int states,unsigned int alphabet_size){
+  std::cout << "Idx" << "\t" << "Amp" << "\t" << "SC" << "\t" << "NC" << std::endl;
+  for (auto i = 0u; i<repeats;++i){
+    real_nc_evolution(iterations, tape_iterations, states, alphabet_size, false, true);
+  }
 }
