@@ -38,7 +38,6 @@ int main(int argc, char *argv[])
     if(in.is_open())
     {
 
-
         while(std::getline(in, line)) //get 1 row as a string
         {
             std::string tm;

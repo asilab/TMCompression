@@ -287,12 +287,29 @@ bash scripts/processResults.sh;
 bash scripts/filteringResults.sh;
 ```
 
+## Read Article
+[Statistical Complexity Analysis of Turing Machine tapes with Fixed Algorithmic Complexity Using the Best-Order Markov Model.](https://www.mdpi.com/618562)
+
 ## CITE
 Please cite the followings, if you use TMCompression:
 
 ```Array.<string>
-- Processing...
+Silva, J. M., Pinho, E., Matos, S., & Pratas, D. (2020). Statistical Complexity Analysis of Turing Machine tapes with Fixed Algorithmic Complexity Using the Best-Order Markov Model. Entropy, 22(1), 105.
 ```
+```Array.<string>
+@article{silva2020statistical,
+  title={Statistical Complexity Analysis of Turing Machine tapes with Fixed Algorithmic Complexity Using the Best-Order Markov Model},
+  author={Silva, Jorge M and Pinho, Eduardo and Matos, S{\'e}rgio and Pratas, Diogo},
+  journal={Entropy},
+  volume={22},
+  number={1},
+  pages={105},
+  year={2020},
+  publisher={Multidisciplinary Digital Publishing Institute}
+}
+```
+
+
 ## ISSUES
 Please let us know if there is any
 [issues](https://github.com/jorgeMFS/TMCompression/issues).
